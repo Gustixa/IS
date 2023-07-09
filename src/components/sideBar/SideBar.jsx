@@ -14,6 +14,9 @@ import AppBar  from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import MenuIcon from '@mui/icons-material/Menu'
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu'
+import Card from '@mui/material/Card'
+import CardMedia from '@mui/material/CardMedia'
+import logoUVG from '@images/logoUvg.png'
 
 // Elementos del SideBar
 const buttonData = {
@@ -68,8 +71,12 @@ export default function SideBar(){
 
   return (
       <Box sx={{ flexGrow: 1}}>
-        <AppBar position="static">
-          <Toolbar variant='dense'>
+        <AppBar position="static"
+          sx={{backgroundColor:"#028d34"}}
+        >
+          <Toolbar variant='dense'
+            
+          >
             <IconButton edge="start" color="inherit"
               onClick={toggleDrawer('left', true)}
             >
@@ -80,7 +87,17 @@ export default function SideBar(){
               open={state['left']}
               onClose={toggleDrawer('left', false)}
             >
+              <Card>
+                <CardMedia
+                  component="img"
+                  alt="Logo UVG"
+                  height="60"
+                  image={logoUVG}
+                >
+                </CardMedia>
+              </Card>
               {list('left')}
+              
             </Drawer>
           </Toolbar>
         </AppBar>

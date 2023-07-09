@@ -18,6 +18,10 @@ export default defineConfig({
       {
         find:'@components',
         replacement: resolve(__dirname, './src/components')
+      },
+      {
+        find:"@images",
+        replacement: resolve(__dirname,'./public')
       }
     ]
   }
