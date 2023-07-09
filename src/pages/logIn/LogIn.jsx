@@ -4,11 +4,15 @@ import styles from './LogIn.module.css'
 import GoogleIcon from '@mui/icons-material/Google'
 import { Link, useNavigate } from 'react-router-dom'
 
+// Modificar las propiedades del boton como en css
 const hoverButtons = {
+  backgroundColor:'#028d34',
+  color:'white',
+  width:'150px',
   '&:hover': {
-    backgroundColor: 'rgba(1, 167, 245, 0.3)',
-    color: 'black',
-    transition: '0s',
+    backgroundColor: 'white',
+    color: '#028d34',
+    transition: '0.2s',
   },
 }
 const firstIcon = {
@@ -57,8 +61,13 @@ function LogIn() {
         <div className={styles.Box}>
           <div className={styles.logInContainer}>
             <form action="">
-              <h1 className={styles.tittle}>Iniciar Sesión</h1>
-              <Stack spacing={4} direction="column">
+              <Stack spacing={3} direction="column">
+                <div className={styles.imageContainer}>
+                  <img 
+                    className={styles.image}
+                    src="https://tienda.uvg.edu.gt/attach/tiendas/Logo-vertical-verde_5a8b26cb76441.jpg" 
+                    alt="logo"/>
+                </div>
                 <TextField
                   id="email"
                   type="email"
@@ -81,18 +90,18 @@ function LogIn() {
                   error={passwordValidation}
                   helperText={passwordErrorMessage}
                 />
-                <Button
-                  size="medium"
-                  sx={hoverButtons}
-                  type="submit"
-                  variant="outlined"
-                  onClick={(e) => handleLogIn(e)}
-                >
-                  Iniciar Sesión
-                </Button>
-                
+                <div className={styles.buttonPosition}>
+                  <Button
+                    size="medium"
+                    sx={hoverButtons}
+                    type="submit"
+                    variant="outlined"
+                    onClick={(e) => handleLogIn(e)}
+                  >
+                    Iniciar Sesión
+                  </Button>
+                </div>              
               </Stack>
-
             </form>
           </div>
         </div>

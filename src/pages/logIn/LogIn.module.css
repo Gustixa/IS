@@ -26,7 +26,6 @@ main{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 100px;
 }
 
 .tittle{
@@ -45,4 +44,20 @@ main{
     box-shadow: 5px 7px 9px rgba(0, 0, 0, 0.3);
     border-radius: 20px;
 }
-  
+
+.imageContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image{
+    height: 240px;
+    width: 240px;
+}
+
+.buttonPosition{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
