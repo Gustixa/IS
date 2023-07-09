@@ -1,7 +1,6 @@
 import React, { useState, KeyboardEvent, MouseEvent } from 'react'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
-import Button from '@mui/material/Button'
 import List from '@mui/material/List'
 import Divider from '@mui/material/Divider'
 import ListItem from '@mui/material/ListItem'
@@ -11,7 +10,10 @@ import ListItemText from '@mui/material/ListItemText'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'
 import IconButton from '@mui/material/IconButton'
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+
+import AppBar  from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import MenuIcon from '@mui/icons-material/Menu'
 
 export default function SideBar(){
   const [state, setState] = useState({left: false})
@@ -58,22 +60,24 @@ export default function SideBar(){
   )
 
   return (
-    <div>   
-      <React.Fragment key={'left'}>
-        <IconButton
-          onClick={toggleDrawer('left', 'left')}
-        >
-          <ArrowForwardIosIcon/>
-        </IconButton>
-        <Drawer
-          anchor={'left'}
-          open={state['left']}
-          onClose={toggleDrawer('left', false)}
-        >
-          {list('left')}
-        </Drawer>
-      </React.Fragment>
+      <Box sx={{ flexGrow: 1}}>
+        <AppBar position="static">
+          <Toolbar variant='dense'>
+            <IconButton edge="start" color="inherit"
+              onClick={toggleDrawer('left', 'left')}
+            >
+              <MenuIcon/>
+            </IconButton>
+            <Drawer
+              anchor={'left'}
+              open={state['left']}
+              onClose={toggleDrawer('left', false)}
+            >
+              {list('left')}
+            </Drawer>
+          </Toolbar>
+        </AppBar>
+      </Box>           
     
-  </div>
   )
 }
