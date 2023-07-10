@@ -13,15 +13,31 @@ import Groups2Icon from '@mui/icons-material/Groups2'
 import AppBar  from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import MenuIcon from '@mui/icons-material/Menu'
+import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+import Grid from '@mui/material/Grid'
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu'
 import Card from '@mui/material/Card'
 import CardMedia from '@mui/material/CardMedia'
 import logoUVG from '@images/logoUvg.png'
+import uvgLogo from '@images/logo_uvgadmin.png'
+import { useNavigate } from 'react-router-dom'
+import styles from './SideBar.module.css'
+
 
 // Elementos del SideBar
 const buttonData = {
-  'Charlas Delva': Groups2Icon,
-  'Horas Beca': HistoryEduIcon
+  'Charlas Delva': {
+    icon: Groups2Icon,
+    ruta: '/delva'
+  },
+  'Horas Beca':{
+    icon: HistoryEduIcon,
+    ruta: '/registro'
+  },
+  'Actividad Beca':{
+    icon: VolunteerActivismIcon,
+    ruta: '/actividadBeca'
+  } 
 }
 
 
@@ -34,6 +50,12 @@ export default function SideBar(){
     setState({...state,[anchor]: open})
   }
   
+  const navigate = useNavigate()
+
+  const handleButtonClick = (ruta) => {
+    navigate(ruta)
+  }
+
   const list = (anchor) => (
     <Box
       sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
@@ -45,9 +67,9 @@ export default function SideBar(){
       <List>
         {Object.keys(buttonData).map((text) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={() => handleButtonClick(buttonData[text].ruta)}>
               <ListItemIcon>
-                {React.createElement(buttonData[text])}
+                {React.createElement(buttonData[text].icon)}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
@@ -77,11 +99,18 @@ export default function SideBar(){
           <Toolbar variant='dense'
             
           >
+
             <IconButton edge="start" color="inherit"
               onClick={toggleDrawer('left', true)}
             >
               <MenuIcon/>
             </IconButton>
+            <Grid container justifyContent="center">
+              <img className={styles.uLogo} src={uvgLogo} alt="LOGO" />
+            </Grid>
+              
+            
+            
             <Drawer
               anchor={'left'}
               open={state['left']}

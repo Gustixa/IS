@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Stack, TextField, Button } from '@mui/material'
 import styles from './LogIn.module.css'
 import GoogleIcon from '@mui/icons-material/Google'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 // Modificar las propiedades del boton como en css
 const hoverButtons = {
