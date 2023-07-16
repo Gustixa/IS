@@ -16,32 +16,41 @@ import MenuIcon from '@mui/icons-material/Menu'
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import Grid from '@mui/material/Grid'
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu'
-import Card from '@mui/material/Card'
-import CardMedia from '@mui/material/CardMedia'
-import logoUVG from '@images/logoUvg.png'
 import uvgLogo from '@images/logo_uvgadmin.png'
 import { useNavigate } from 'react-router-dom'
+import HistoryIcon from '@mui/icons-material/History'
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import styles from './SideBar.module.css'
 
 
-// Elementos del SideBar
-const buttonData = {
-  'Charlas Delva': {
+// Elementos del sideBar para un administrador
+const adminButtons = {
+  'Crear actividad Beca': {
     icon: Groups2Icon,
-    ruta: '/delva'
-  },
-  'Horas Beca':{
-    icon: HistoryEduIcon,
-    ruta: '/registro'
-  },
-  'Actividad Beca':{
-    icon: VolunteerActivismIcon,
     ruta: '/actividadBeca'
-  } 
+  },
+  'Estudiantes becados':{
+    icon: HistoryEduIcon,
+    ruta: '/becarios'
+  },
+  
+}
+// Elementos del sideBar para un estudiante
+const studentButtons = {
+  'Historial Horas Beca': {
+    icon: HistoryIcon,
+    ruta:'/registroEstudiante'
+  },
+  'Actividades beca':{
+    icon:CalendarMonthIcon,
+    ruta:'/actividadBecario'
+  }
 }
 
 
-export default function SideBar(){
+export default function SideBar({ tipoUsuario }){
+  let buttons = {}
+
   const [state, setState] = useState({left: false})
   const toggleDrawer = (anchor, open) => (event) => {
     if(event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')){
@@ -55,7 +64,15 @@ export default function SideBar(){
   const handleButtonClick = (ruta) => {
     navigate(ruta)
   }
+  // Verificando el usuario, para mostrar la pantalla correspondiente
+  if( tipoUsuario === "admin"){
+    buttons = adminButtons
+  }
+  if( tipoUsuario === "estudiante"){
+    buttons = studentButtons
+  }
 
+  // Creacion de los elementos para el sideBar
   const list = (anchor) => (
     <Box
       sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
@@ -65,11 +82,11 @@ export default function SideBar(){
     >
       {/* Se ajusta el tema de poder automatizar los elementos que aparecen en el sideBar */}
       <List>
-        {Object.keys(buttonData).map((text) => (
+        {Object.keys(buttons).map((text) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton onClick={() => handleButtonClick(buttonData[text].ruta)}>
+            <ListItemButton onClick={() => handleButtonClick(buttons[text].ruta)}>
               <ListItemIcon>
-                {React.createElement(buttonData[text].icon)}
+                {React.createElement(buttons[text].icon)}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
@@ -93,13 +110,11 @@ export default function SideBar(){
 
   return (
       <Box sx={{ flexGrow: 1}}>
+        {/* Creacion de la toolBar */}
         <AppBar position="static"
           sx={{backgroundColor:"#028d34"}}
         >
-          <Toolbar variant='dense'
-            
-          >
-
+          <Toolbar variant='dense'>
             <IconButton edge="start" color="inherit"
               onClick={toggleDrawer('left', true)}
             >
@@ -108,23 +123,13 @@ export default function SideBar(){
             <Grid container justifyContent="center">
               <img className={styles.uLogo} src={uvgLogo} alt="LOGO" />
             </Grid>
-              
-            
-            
+            {/* Crea el sideBar en la parte izquierda */}
             <Drawer
               anchor={'left'}
               open={state['left']}
               onClose={toggleDrawer('left', false)}
             >
-              <Card>
-                <CardMedia
-                  component="img"
-                  alt="Logo UVG"
-                  height="60"
-                  image={logoUVG}
-                >
-                </CardMedia>
-              </Card>
+              {/* Muestra el condtenido del sideBar */}
               {list('left')}
               
             </Drawer>

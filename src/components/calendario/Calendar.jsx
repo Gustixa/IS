@@ -14,6 +14,21 @@ import Draggable from 'react-draggable'
 
 const localizer = momentLocalizer(moment)
 
+const hoverButtons = {
+  backgroundColor:'#028d34',
+  color:'white',
+  width:'175px',
+  marginLeft:'10px',
+  marginTop:'10px',
+  '&:hover': {
+    backgroundColor: 'white',
+    color: '#028d34',
+    transition: '0.2s',
+    border:'1px solid #028d34'
+  },
+}
+
+
 function PaperComponent(props) {
   return (
     <Draggable
@@ -24,6 +39,8 @@ function PaperComponent(props) {
     </Draggable>
   )
 }
+
+
 
 export default function Calendario() {
   const [events, setEvents] = useState([])
@@ -61,8 +78,9 @@ export default function Calendario() {
       <Button
         variant="contained"
         onClick={handleOpenDialog}
+        sx={hoverButtons}
       >
-        Agregar evento
+        Crear Actividad
       </Button>
       <Dialog 
         open={openDialog} 

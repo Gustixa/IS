@@ -2,7 +2,11 @@ import React, { useState } from 'react'
 import { Stack, TextField, Button } from '@mui/material'
 import styles from './LogIn.module.css'
 import GoogleIcon from '@mui/icons-material/Google'
+import IconButton from '@mui/material/IconButton'
 import { useNavigate } from 'react-router-dom'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import InputAdornment from '@mui/material/InputAdornment'
 
 // Modificar las propiedades del boton como en css
 const hoverButtons = {
@@ -13,6 +17,7 @@ const hoverButtons = {
     backgroundColor: 'white',
     color: '#028d34',
     transition: '0.2s',
+    border:'1px solid #028d34'
   },
 }
 const firstIcon = {
@@ -28,13 +33,19 @@ const firstIcon = {
 }
 
 function LogIn() {
+  // Funciona para poder mostrar la contraseña u ocultarla
+  const [showPassword, setShowPassword] = useState(false)
+  
+  // Almacenan los datos de sus respectivos campos
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  // Almacenan el mensaje de cada campo, segun el caso
   const [emailErrorMessage, setEmailErrorMessage] = useState('')
-  const [emailValidation, setEmailValidation] = useState(false)
-
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
+
+  // Funcionana para setear el mensaje de error en caso de ser necesario
+  const [emailValidation, setEmailValidation] = useState(false)
   const [passwordValidation, setPasswordValidation] = useState(false)
 
   const navigate = useNavigate()
@@ -51,8 +62,17 @@ function LogIn() {
       setPasswordErrorMessage('Debe ingresar un valor en el campo')
       setPasswordValidation(true)
     }
-    //Arreglar en base a las verficacion de usuarios
-    navigate('/')
+    /**
+     * Arreglar segun se estructure.
+     * El punto, es enviar el tipo de usuario, para poder mostrar una u otra pantalla
+     */
+    if( email === "admin"){
+      navigate('/', {state:{tipo:"admin", usuario: email}})
+    }
+    if( email === "estudiante"){
+      navigate('/', {state:{tipo:"estudiante", usuario: email}})
+    }
+    
   }
   
   return (
@@ -79,9 +99,10 @@ function LogIn() {
                   error={emailValidation}
                   helperText={emailErrorMessage}
                 />
+                
                 <TextField
                   id="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   variant="outlined"
                   label="Contraseña"
                   onChange={
@@ -89,6 +110,21 @@ function LogIn() {
                   }
                   error={passwordValidation}
                   helperText={passwordErrorMessage}
+                  InputProps={{
+                    endAdornment:(
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={() => setShowPassword(!showPassword)}
+                          onMouseDown={(e) => e.preventDefault()}
+                          edge="end"
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+
+                  }}
                 />
                 <div className={styles.buttonPosition}>
                   <Button
