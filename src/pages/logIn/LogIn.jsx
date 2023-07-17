@@ -81,7 +81,7 @@ function LogIn() {
         name:"Samuel",
         type:"admin"
       })
-      navigate('/')
+      navigate('/home/becarios')
 
     }
     if( email === "estudiante"){
@@ -90,7 +90,7 @@ function LogIn() {
         name:"Samuel",
         type:"estudiante"
       })
-      navigate('/')
+      navigate('/home/registroEstudiante')
     }
     
   }

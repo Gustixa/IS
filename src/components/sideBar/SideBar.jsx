@@ -20,7 +20,7 @@ import uvgLogo from '@images/logo_uvgadmin.png'
 import { useNavigate } from 'react-router-dom'
 import HistoryIcon from '@mui/icons-material/History'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
-import { useAuth } from '@contexts/AuthContext'
+import { useAuthContext } from '@contexts/AuthContext'
 import styles from './SideBar.module.css'
 
 
@@ -32,7 +32,7 @@ const adminButtons = {
   },
   'Estudiantes becados':{
     icon: HistoryEduIcon,
-    ruta: '/becarios'
+    ruta: '/home/becarios'
   },
   
 }
@@ -40,7 +40,7 @@ const adminButtons = {
 const studentButtons = {
   'Historial Horas Beca': {
     icon: HistoryIcon,
-    ruta:'/registroEstudiante'
+    ruta:'/home/registroEstudiante'
   },
   'Actividades beca':{
     icon:CalendarMonthIcon,
@@ -51,11 +51,12 @@ const studentButtons = {
 
 export default function SideBar(){
   // MODIFICAR PARA USAR EL AUTHCONTEXT
-  const {    
-    authUser,
-    setAuthUser,
-    isLoggedIn,
-    setIsLoggedIn} = useAuth()
+    // utilizacion para poder ingresar el usuario de manera global en la app
+    const { 
+      authUser,
+      setAuthUser,
+      isLoggedIn,
+      setIsLoggedIn} = useAuthContext()
   let buttons = {}
 
   const [state, setState] = useState({left: false})
@@ -81,6 +82,11 @@ export default function SideBar(){
     buttons = studentButtons
   }
 
+  // Funcion que cierra sesión
+  const handleLogOut = (e) => {
+    setIsLoggedIn(false)
+    navigate('/logIn')
+  }
   // Creacion de los elementos para el sideBar
   const list = (anchor) => (
     <Box
@@ -106,7 +112,7 @@ export default function SideBar(){
       <List>
         {/* En este caso, no es necesario automatizar, pues es solo 1 elemento */}
         <ListItem key='Cerrar sesión' disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={() => handleLogOut()}>
             <ListItemIcon>
               <LogoutIcon/>
             </ListItemIcon>

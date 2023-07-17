@@ -34,7 +34,7 @@ export default function Title({ titles }) {
                 La escala es 0,1,2,3,4,6,8,12,16,24
                */}
               {titles.map((element,index) => (
-                <Item key={6} elevation={6}>
+                <Item key={index} elevation={6}>
                   {element}
                 </Item>
               ))}
