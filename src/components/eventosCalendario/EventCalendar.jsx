@@ -1,27 +1,46 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, Stack } from '@mui/material';
+import styles from './EventCalendar.module.css'
+
+// Estilo del boton
+const styleButtons = {
+  backgroundColor:'#028d34',
+  color:'white',
+  width:'175px',
+  marginLeft:'10px',
+  marginTop:'10px',
+  '&:hover': {
+    backgroundColor: 'white',
+    color: '#028d34',
+    transition: '0.2s',
+    border:'1px solid #028d34'
+  },
+}
+
 
 const EventCalendar = ({ onAddEvent }) => {
   // Estado para el título del evento
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState('')
   // Estado para la fecha de inicio
-  const [startDate, setStartDate] = useState('');
+  const [startDate, setStartDate] = useState('')
   // Estado para la hora de inicio
-  const [startTime, setStartTime] = useState('');
+  const [startTime, setStartTime] = useState('')
   // Estado para la fecha de finalización
-  const [endDate, setEndDate] = useState('');
+  const [endDate, setEndDate] = useState('')
   // Estado para la hora de finalización
-  const [endTime, setEndTime] = useState('');
+  const [endTime, setEndTime] = useState('')
+  // Estado para la descripcion del evento
+  const [description, setDescription] = useState('')
 
   // Controlador de cambio de fecha de inicio
   const handleStartDateChange = (e) => {
-    setStartDate(e.target.value);
-  };
+    setStartDate(e.target.value)
+  }
 
   // Controlador de cambio de hora de inicio
   const handleStartTimeChange = (e) => {
-    setStartTime(e.target.value);
-  };
+    setStartTime(e.target.value)
+  }
 
   // Controlador de cambio de fecha de finalización
   const handleEndDateChange = (e) => {
@@ -55,8 +74,9 @@ const EventCalendar = ({ onAddEvent }) => {
         getDay(endDate),
         getHours(endTime),
         getMinutes(endTime)
-      )
-    };
+      ),
+      description, // descripcion del evento
+    }
 
     // Llamada a la función onAddEvent para agregar el nuevo evento
     onAddEvent(newEvent);
@@ -152,8 +172,16 @@ const EventCalendar = ({ onAddEvent }) => {
           value={endTime}
           onChange={handleEndTimeChange}
         />
+        <TextField
+          id="outlined-multiline-flexible"
+          label="Descripción"
+          multiline
+          maxRows={20}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
         {/* Botón para agregar el evento */}
-        <Button variant="contained" type="submit">
+        <Button sx={styleButtons} variant="contained" type="submit">
           Agregar evento
         </Button>
       </Stack>

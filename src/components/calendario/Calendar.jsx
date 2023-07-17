@@ -11,6 +11,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import Paper from '@mui/material/Paper'
 import Draggable from 'react-draggable'
+import { useAuthContext } from '@contexts/AuthContext'
 
 const localizer = momentLocalizer(moment)
 
@@ -40,20 +41,16 @@ function PaperComponent(props) {
   )
 }
 
-
-
 export default function Calendario() {
   const [events, setEvents] = useState([])
-  const [showForm, setShowForm] = useState(false)
+  const [selectedEvent, setSelectedEvent] = useState(null)
   const [openDialog, setOpenDialog] = useState(false)
+  const { authUser } = useAuthContext()
+
   
 
   const handleAddEvent = (newEvent) => {
     setEvents([...events, newEvent])
-  }
-
-  const handleToggleForm = () => {
-    setShowForm(!showForm);
   }
 
   const handleOpenDialog = () => {
@@ -74,13 +71,14 @@ export default function Calendario() {
         startAccessor="start"
         endAccessor="end"
         style={{ height: 500 }}
+        onSelectEvent={(event) => setSelectedEvent(event)}
       />
       <Button
         variant="contained"
         onClick={handleOpenDialog}
         sx={hoverButtons}
       >
-        Crear Actividad
+        Actividad Beca
       </Button>
       <Dialog 
         open={openDialog} 
@@ -88,9 +86,24 @@ export default function Calendario() {
         PaperComponent={PaperComponent}
         aria-aria-labelledby="draggable-dialog-title"
         >
-        <DialogTitle style={{ cursor:'move'}} id="draggable-dialog-title">Agregar Evento</DialogTitle>
-        <DialogContent>
-          <EventCalendar onAddEvent={handleAddEvent} />
+        <DialogTitle style={{ cursor:'move'}} id="draggable-dialog-title">
+          Detalles de la actividad
+        </DialogTitle>
+        <DialogContent >
+          {/** Verificar el tipo de usuario */}
+          {authUser.type === "admin" ?
+            (
+              <EventCalendar onAddEvent={handleAddEvent} />
+            ) : (<></>)
+          } 
+          {events && authUser && authUser.type === "estudiante" ? (
+             <div>
+
+             </div>
+            ) : (
+              <p>No se ha seleccionado ninguna actividad o el usuario no es un estudiante.</p>
+            )
+          }
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancelar</Button>

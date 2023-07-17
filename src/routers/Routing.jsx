@@ -30,7 +30,7 @@ export default function Routing(){
           <Route path='/home/becarios' element={<Becarios/>}/>
 
           <Route path='/home/registroEstudiante' element={<HistorialBeca/>}/>
-          <Route path='/actividadBecario' element={<ActividadBecario/>}/>
+          <Route path='/actividadBecario' element={<Calendario/>}/>
         </Routes>
       
     </BrowserRouter>
