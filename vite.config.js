@@ -8,8 +8,8 @@ export default defineConfig({
   resolve:{
     alias:[
       {
-        find:'@pages',
-        replacement: resolve(__dirname,'./src/pages')
+        find:'@trabajador',
+        replacement: resolve(__dirname,'./src/pages/trabajador')
       },
       {
         find:'@routers',
@@ -22,7 +22,20 @@ export default defineConfig({
       {
         find:"@images",
         replacement: resolve(__dirname,'./public')
+      },
+      {
+        find:"@pages",
+        replacement: resolve(__dirname,'./src/pages')
+      },
+      {
+        find:"@estudiante",
+        replacement: resolve(__dirname,'./src/pages/estudiante')
+      },
+      {
+        find:'@contexts',
+        replacement: resolve(__dirname,'./src/Contexts')
       }
+
     ]
   }
 })

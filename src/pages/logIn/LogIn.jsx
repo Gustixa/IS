@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Stack, TextField, Button } from '@mui/material'
 import styles from './LogIn.module.css'
 import GoogleIcon from '@mui/icons-material/Google'
@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import InputAdornment from '@mui/material/InputAdornment'
+import { useAuthContext } from '@contexts/AuthContext'
+
 
 // Modificar las propiedades del boton como en css
 const hoverButtons = {
@@ -33,6 +35,13 @@ const firstIcon = {
 }
 
 function LogIn() {
+  // utilizacion para poder ingresar el usuario de manera global en la app
+  const { 
+    authUser,
+    setAuthUser,
+    isLoggedIn,
+    setIsLoggedIn} = useAuthContext()
+  
   // Funciona para poder mostrar la contraseña u ocultarla
   const [showPassword, setShowPassword] = useState(false)
   
@@ -67,10 +76,21 @@ function LogIn() {
      * El punto, es enviar el tipo de usuario, para poder mostrar una u otra pantalla
      */
     if( email === "admin"){
-      navigate('/', {state:{tipo:"admin", usuario: email}})
+      setIsLoggedIn(true)
+      setAuthUser({
+        name:"Samuel",
+        type:"admin"
+      })
+      navigate('/')
+
     }
     if( email === "estudiante"){
-      navigate('/', {state:{tipo:"estudiante", usuario: email}})
+      setIsLoggedIn(true)
+      setAuthUser({
+        name:"Samuel",
+        type:"estudiante"
+      })
+      navigate('/')
     }
     
   }

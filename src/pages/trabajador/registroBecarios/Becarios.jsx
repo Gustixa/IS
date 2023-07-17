@@ -114,7 +114,9 @@ export default function Becarios(){
           titles={encabezados}
         ></Title>
       </div>
-      
+      <div className={styles.data}>
+        {/*  Aqui debe ir la data de los estudiantes para mostrarse */}
+      </div>
     </div>
   )
 }

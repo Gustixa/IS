@@ -1,4 +1,4 @@
-import React, { useState, KeyboardEvent, MouseEvent } from 'react'
+import React, { useState, useContext } from 'react'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
@@ -20,6 +20,7 @@ import uvgLogo from '@images/logo_uvgadmin.png'
 import { useNavigate } from 'react-router-dom'
 import HistoryIcon from '@mui/icons-material/History'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+import { useAuth } from '@contexts/AuthContext'
 import styles from './SideBar.module.css'
 
 
@@ -48,7 +49,13 @@ const studentButtons = {
 }
 
 
-export default function SideBar({ tipoUsuario }){
+export default function SideBar(){
+  // MODIFICAR PARA USAR EL AUTHCONTEXT
+  const {    
+    authUser,
+    setAuthUser,
+    isLoggedIn,
+    setIsLoggedIn} = useAuth()
   let buttons = {}
 
   const [state, setState] = useState({left: false})
@@ -64,11 +71,13 @@ export default function SideBar({ tipoUsuario }){
   const handleButtonClick = (ruta) => {
     navigate(ruta)
   }
+  console.log(authUser.type)
   // Verificando el usuario, para mostrar la pantalla correspondiente
-  if( tipoUsuario === "admin"){
+  if( authUser && authUser.type === "admin"){
     buttons = adminButtons
   }
-  if( tipoUsuario === "estudiante"){
+  if( authUser && authUser.type === "estudiante"){
+    
     buttons = studentButtons
   }
 
