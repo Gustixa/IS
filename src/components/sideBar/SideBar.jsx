@@ -32,7 +32,7 @@ const adminButtons = {
   },
   'Estudiantes becados':{
     icon: HistoryEduIcon,
-    ruta: '/home/becarios'
+    ruta: '/becarios'
   },
   
 }
@@ -40,10 +40,11 @@ const adminButtons = {
 const studentButtons = {
   'Historial Horas Beca': {
     icon: HistoryIcon,
-    ruta:'/home/registroEstudiante'
+    ruta:'/registroEstudiante'
   },
   'Actividades beca':{
     icon:CalendarMonthIcon,
+    // MODIFICAR LA RUTA, PUES NO SERA LA RUTA RAIN 
     ruta:'/actividadBecario'
   }
 }
@@ -73,14 +74,15 @@ export default function SideBar(){
     navigate(ruta)
   }
   console.log(authUser.type)
+
   // Verificando el usuario, para mostrar la pantalla correspondiente
-  if( authUser && authUser.type === "admin"){
+  if(authUser && authUser.type === "admin"){
     buttons = adminButtons
   }
-  if( authUser && authUser.type === "estudiante"){
-    
+  if(authUser && authUser.type === "estudiante"){ 
     buttons = studentButtons
   }
+
 
   // Funcion que cierra sesión
   const handleLogOut = (e) => {

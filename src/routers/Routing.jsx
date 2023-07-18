@@ -19,18 +19,29 @@ export default function Routing(){
           {/** Se creo el protected route para no acceder a la pagina, hasta estar verificado */}
           <Route
             exact
-            path="/home"
+            path="/"
             element={(
               <ProtectedRoute>
                 <Home />
               </ProtectedRoute>
             )}
           />
-          <Route path='/actividadBeca' element={<Calendario/>}/>
-          <Route path='/home/becarios' element={<Becarios/>}/>
+          {/** se pude cambiar a actividad Beca */}
+          <Route path='/actividadBeca' element={(
+            <ProtectedRoute>
+              <Calendario/>
+            </ProtectedRoute>
+          )}/>
+          <Route path='/becarios' element={<Becarios/>}/>
 
-          <Route path='/home/registroEstudiante' element={<HistorialBeca/>}/>
-          <Route path='/actividadBecario' element={<Calendario/>}/>
+          <Route path='/registroEstudiante' element={<HistorialBeca/>}/>
+          {/** Se puede cambiar a actividadBecario */}
+          <Route path='/actividadBecario' element={(
+            <ProtectedRoute>
+              <Calendario/>
+            </ProtectedRoute>
+          )}/>
+          
         </Routes>
       
     </BrowserRouter>
