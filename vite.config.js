@@ -38,9 +38,4 @@ export default defineConfig({
 
     ]
   },
-  server:{
-    rewrite:[
-      {from :'/', to:'/calendario'}
-    ]
-  }
 })

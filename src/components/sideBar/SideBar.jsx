@@ -20,21 +20,31 @@ import uvgLogo from '@images/logo_uvgadmin.png'
 import { useNavigate } from 'react-router-dom'
 import HistoryIcon from '@mui/icons-material/History'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+import AddIcon from '@mui/icons-material/Add'
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
+import SummarizeIcon from '@mui/icons-material/Summarize'
 import { useAuthContext } from '@contexts/AuthContext'
 import styles from './SideBar.module.css'
 
 
 // Elementos del sideBar para un administrador
 const adminButtons = {
-  'Crear actividad Beca': {
+  'Agregar Estudiante':{
+    icon: AddIcon,
+    ruta: '/NuevoEstudiante'
+  },
+  'Consultar Estudiantes':{
     icon: Groups2Icon,
-    ruta: '/actividadBeca'
-  },
-  'Estudiantes becados':{
-    icon: HistoryEduIcon,
     ruta: '/becarios'
-  },
-  
+  },/*
+  'Agendar Charla Delva': {
+    icon: CalendarTodayIcon,
+    ruta: '/delva'
+  },*/
+  'Actividades Beca':{
+    icon: VolunteerActivismIcon,
+    ruta: '/nuevaActividadBeca'
+  }  
 }
 // Elementos del sideBar para un estudiante
 const studentButtons = {
@@ -45,7 +55,7 @@ const studentButtons = {
   'Actividades beca':{
     icon:CalendarMonthIcon,
     // MODIFICAR LA RUTA, PUES NO SERA LA RUTA RAIN 
-    ruta:'/actividadBecario'
+    ruta: '/nuevaActividadBeca'
   }
 }
 

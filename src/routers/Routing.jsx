@@ -8,42 +8,34 @@ import Calendario from '@components/calendario'
 import Becarios from '@trabajador/registroBecarios'
 import HistorialBeca from '@estudiante/historialBeca'
 import ProtectedRoute from './protectedRoute/ProtectedRoute'
-import ActividadBecario from '@estudiante/actividadesBeca'
+import NuevoEstudiante from '@trabajador/agregarEstudiante'
+import ActividadBeca from '@pages/actividadesBeca'
 
 export default function Routing(){
 
   return (
     <BrowserRouter>
+    {/** El protected route es global, pues no se desea tener acceso, a menos que haya iniciado sesion */}
+      <ProtectedRoute>
         <Routes>
           <Route path='/logIn' element={<LogIn/>}/>
-          {/** Se creo el protected route para no acceder a la pagina, hasta estar verificado */}
           <Route
             exact
             path="/"
             element={(
-              <ProtectedRoute>
                 <Home />
-              </ProtectedRoute>
             )}
           />
           {/** se pude cambiar a actividad Beca */}
-          <Route path='/actividadBeca' element={(
-            <ProtectedRoute>
-              <Calendario/>
-            </ProtectedRoute>
-          )}/>
+          <Route path='/delva' element={(<Calendario/>)}/>
+          <Route path='/nuevaActividadBeca' element={(<ActividadBeca/>)}/>
           <Route path='/becarios' element={<Becarios/>}/>
-
+          <Route path='/NuevoEstudiante' element={<NuevoEstudiante/>}/>
           <Route path='/registroEstudiante' element={<HistorialBeca/>}/>
           {/** Se puede cambiar a actividadBecario */}
-          <Route path='/actividadBecario' element={(
-            <ProtectedRoute>
-              <Calendario/>
-            </ProtectedRoute>
-          )}/>
-          
+          <Route path='/delva' element={(<Calendario/>)}/>  
         </Routes>
-      
+      </ProtectedRoute>  
     </BrowserRouter>
   )
 }

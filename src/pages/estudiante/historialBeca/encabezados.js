@@ -1,8 +1,8 @@
 const encabezados = [
     "Actividad realizada",
     "Fecha",
-    "horas acreditadas",
-    "horas pendientes","acumulado años anteriores", "Horas realizadas", "Horas por realizar"
+    "Horas Acreditadas",
+    "Horas Acumuladas Durante la Carrera",
 ]
 
 export default encabezados
