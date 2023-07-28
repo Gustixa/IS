@@ -9,56 +9,15 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import LogoutIcon from '@mui/icons-material/Logout'
 import IconButton from '@mui/material/IconButton'
-import Groups2Icon from '@mui/icons-material/Groups2'
 import AppBar  from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import MenuIcon from '@mui/icons-material/Menu'
-import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import Grid from '@mui/material/Grid'
-import HistoryEduIcon from '@mui/icons-material/HistoryEdu'
 import uvgLogo from '@images/logo_uvgadmin.png'
 import { useNavigate } from 'react-router-dom'
-import HistoryIcon from '@mui/icons-material/History'
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
-import AddIcon from '@mui/icons-material/Add'
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
-import SummarizeIcon from '@mui/icons-material/Summarize'
 import { useAuthContext } from '@contexts/AuthContext'
 import styles from './SideBar.module.css'
-
-
-// Elementos del sideBar para un administrador
-const adminButtons = {
-  'Agregar Estudiante':{
-    icon: AddIcon,
-    ruta: '/NuevoEstudiante'
-  },
-  'Consultar Estudiantes':{
-    icon: Groups2Icon,
-    ruta: '/becarios'
-  },/*
-  'Agendar Charla Delva': {
-    icon: CalendarTodayIcon,
-    ruta: '/delva'
-  },*/
-  'Actividades Beca':{
-    icon: VolunteerActivismIcon,
-    ruta: '/nuevaActividadBeca'
-  }  
-}
-// Elementos del sideBar para un estudiante
-const studentButtons = {
-  'Historial Horas Beca': {
-    icon: HistoryIcon,
-    ruta:'/registroEstudiante'
-  },
-  'Actividades beca':{
-    icon:CalendarMonthIcon,
-    // MODIFICAR LA RUTA, PUES NO SERA LA RUTA RAIN 
-    ruta: '/nuevaActividadBeca'
-  }
-}
-
+import {adminButtons, studentButtons} from './pestanias'
 
 export default function SideBar(){
   // MODIFICAR PARA USAR EL AUTHCONTEXT
