@@ -1,10 +1,50 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Grid, Box, TextField } from '@mui/material'
 import SideBar from '@components/sideBar'
 import styles from './NuevoEstudiante.module.css'
 import {textFieldStyles} from './styles'
 
 export default function NuevoEstudiante(){
+  const [name, setName] = useState("")
+  const [carrera, setCarrera] = useState("")
+  const [cantidadBeca, setCantidadBeca] = useState("")
+  const [cantidadCreditoFinanciero, setCantidadCreditoFinanciero] = useState("")
+  const [currentYear, setCurrentYear] = useState("")
+
+
+  const [nameErrorMessage, setNameErrorMessage] = useState("")
+  const [carreraErrorMessage, setCarreraErrorMessage] = useState("")
+  const [cantidadBecaErrorMessage, setCantidadBecaErrorMessage] = useState("")
+  const [cantidadCreditoFinancieroErrorMessage, setCantidadCreditoFinancieroErrorMessage] = useState("")
+  const [currentYearErrorMessage, setCurrentYearErrrorMessage] = useState("")
+
+  const [nameValidation, setNameValidation] = useState(false)
+  const [carreraValidation, setCarreraValidation] = useState(false)
+  const [cantidadBecaValidation, setCantidadBecaValidation] = useState(false)
+  const [cantidadCreditoFinancieroValidation, setCantidadCreditoFinancieroValidation] = useState(false)
+  const [currentYearValidation, setCurrentYearValidation] = useState(false)
+  
+  if(name === ""){
+    setNameErrorMessage("Debe ingresar el nombre del estudiante")
+    setNameValidation(true)
+  }
+  if(carrera === ""){
+    setCarreraErrorMessage("Debe ingresar la carrera del estudiante")
+    setCarreraValidation(true)
+  }
+  if(cantidadBeca === ""){
+    setCantidadBecaErrorMessage("Debe ingresar la cantidad de beca del estudiantem, aun si es 0")
+    setCantidadBecaValidation(true)
+  }
+  if(cantidadCreditoFinanciero === ""){
+    setCantidadCreditoFinancieroErrorMessage("Debe ingresar una cantidad de credito financiero del estudiante, aun si es 0")
+    setCantidadCreditoFinancieroValidation(true)
+  }
+  if(currentYear === "") {
+    setCurrentYearErrrorMessage("Debe ingresar el año de ingreso del estudiante")
+    setCurrentYearValidation(true)
+  }
+
   return (
     <>
     <SideBar/>
