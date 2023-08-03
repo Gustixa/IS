@@ -4,7 +4,7 @@ import SideBar from '@components/sideBar'
 import styles from './NuevoEstudiante.module.css'
 import {textFieldStyles} from './styles'
 
-export default function NuevoEstudiante(){
+export default function NuevoEstudiante() {
   const [name, setName] = useState("")
   const [carrera, setCarrera] = useState("")
   const [cantidadBeca, setCantidadBeca] = useState("")
@@ -23,26 +23,35 @@ export default function NuevoEstudiante(){
   const [cantidadBecaValidation, setCantidadBecaValidation] = useState(false)
   const [cantidadCreditoFinancieroValidation, setCantidadCreditoFinancieroValidation] = useState(false)
   const [currentYearValidation, setCurrentYearValidation] = useState(false)
-  
-  if(name === ""){
-    setNameErrorMessage("Debe ingresar el nombre del estudiante")
-    setNameValidation(true)
+
+  const handleNameChange = (event) => {
+    setName(event.target.value)
+    setNameValidation(false)
+    setNameErrorMessage('')
   }
-  if(carrera === ""){
-    setCarreraErrorMessage("Debe ingresar la carrera del estudiante")
-    setCarreraValidation(true)
+
+  const handleCarreraChange = (event) => {
+    setCarrera(event.target.value)
+    setCarreraValidation(false)
+    setCarreraErrorMessage('')
   }
-  if(cantidadBeca === ""){
-    setCantidadBecaErrorMessage("Debe ingresar la cantidad de beca del estudiantem, aun si es 0")
-    setCantidadBecaValidation(true)
+
+  const handleCantidadBecaChange = (event) => {
+    setCantidadBeca(event.target.value)
+    setCantidadBecaValidation(false)
+    setCantidadBecaErrorMessage('')
   }
-  if(cantidadCreditoFinanciero === ""){
-    setCantidadCreditoFinancieroErrorMessage("Debe ingresar una cantidad de credito financiero del estudiante, aun si es 0")
-    setCantidadCreditoFinancieroValidation(true)
+
+  const handleCantidadCreditoFinancieroChange = (event) => {
+    setCantidadCreditoFinanciero(event.target.value)
+    setCantidadCreditoFinancieroValidation(false)
+    setCantidadCreditoFinancieroErrorMessage('')
   }
-  if(currentYear === "") {
-    setCurrentYearErrrorMessage("Debe ingresar el año de ingreso del estudiante")
-    setCurrentYearValidation(true)
+
+  const handleCurrentYearChange = (event) => {
+    setCurrentYear(event.target.value)
+    setCurrentYearValidation(false)
+    setCurrentYearErrorMessage('')
   }
 
   return (
@@ -60,6 +69,10 @@ export default function NuevoEstudiante(){
               variant="outlined"
               fullWidth
               style={textFieldStyles}
+              value={name}
+              onChange={handleNameChange}
+              error={nameValidation}
+              helperText={nameErrorMessage}
             />
           </Grid>
           <Grid item xs={6}>
@@ -68,6 +81,10 @@ export default function NuevoEstudiante(){
               variant="outlined"
               fullWidth
               style={textFieldStyles}
+              value={carrera}
+              onChange={handleCarreraChange}
+              error={carreraValidation}
+              helperText={carreraErrorMessage}
             />
           </Grid>
           <Grid item xs={6}>
@@ -76,6 +93,10 @@ export default function NuevoEstudiante(){
               variant="outlined"
               fullWidth
               style={textFieldStyles}
+              value={cantidadBeca}
+              onChange={handleCantidadBecaChange}
+              error={cantidadBecaValidation}
+              helperText={cantidadBecaErrorMessage}
             />
           </Grid>
           <Grid item xs={6}>
@@ -84,6 +105,10 @@ export default function NuevoEstudiante(){
               variant="outlined"
               fullWidth
               style={textFieldStyles}
+              value={cantidadCreditoFinanciero}
+              onChange={handleCantidadCreditoFinancieroChange}
+              error={cantidadCreditoFinancieroValidation}
+              helperText={cantidadCreditoFinancieroErrorMessage}
             />
           </Grid>
           <Grid item xs={6}>
@@ -92,6 +117,10 @@ export default function NuevoEstudiante(){
               variant="outlined"
               fullWidth
               style={textFieldStyles}
+              value={currentYear}
+              onChange={handleCurrentYearChange}
+              error={currentYearValidation}
+              helperText={currentYearErrorMessage}
             />
           </Grid>
           <Grid item xs={6}>
