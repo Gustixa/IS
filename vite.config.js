@@ -34,8 +34,16 @@ export default defineConfig({
       {
         find:'@contexts',
         replacement: resolve(__dirname,'./src/Contexts')
+      },
+      {
+        find:'@db-supabase',
+        replacement: resolve(__dirname,'./src/db/supabase')
       }
-
     ]
   },
+  test:{
+    setupFiles: './src/test/setupTexts.js',
+    globals: true,
+    enviroment: 'jsdom'
+  }
 })

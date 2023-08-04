@@ -8,6 +8,7 @@ import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import InputAdornment from '@mui/material/InputAdornment'
 import { useAuthContext } from '@contexts/AuthContext'
+import { supabase } from '@db-supabase/supabase.config'
 
 
 // Modificar las propiedades del boton como en css
@@ -66,31 +67,66 @@ function LogIn() {
     if(email === ''){
       setEmailErrorMessage('Debe ingresar un valor en el campo')
       setEmailValidation(true)
+      return
     }
     if(password === ''){
       setPasswordErrorMessage('Debe ingresar un valor en el campo')
       setPasswordValidation(true)
+      return
     }
     /**
      * Arreglar segun se estructure.
      * El punto, es enviar el tipo de usuario, para poder mostrar una u otra pantalla
      */
-    if( email === "admin"){
-      setIsLoggedIn(true)
-      setAuthUser({
-        name:"Samuel",
-        type:"admin"
-      })
-      navigate('/becarios')
 
-    }
-    if( email === "estudiante"){
+    try{
+      const { data, error } = await supabase
+        .from("usuario")
+        .select("*")
+        .eq("correo",email)
+      if(error){
+        // Mostrar un mensaje de error al usuario, por ejemplo, con una notificación o un mensaje en pantalla
+        console.log('Error al verificar las credenciales:', error.message)
+        return
+      }
+      
+      const userData = data.find(user => user.correo === email)
+      if (!userData) {
+        // Si no se encuentra un usuario con el correo proporcionado
+        setEmailErrorMessage("El correo es invalido. Verifique nuevamente.")
+        setEmailValidation(true)
+        return
+      }
+      
+      if (userData.password !== password) {
+        // Si se encontró el usuario pero la contraseña no coincide
+        setPasswordErrorMessage("La contraseña es inválida. Ingrésela nuevamente")
+        setPasswordValidation(true)
+        return
+      }
+      // Si las credenciales son correctas, establece la información del usuario en el contexto de autenticación
       setIsLoggedIn(true)
       setAuthUser({
-        name:"Samuel",
-        type:"estudiante"
+        name: userData.correo, // Obtener el correo desde el campo de la tabla
+        type: userData.admin // obtener el tipo de usuario desde el campo de la tabla
       })
-      navigate('/registroEstudiante')
+      
+      if(!data && data.admin === true){
+        navigate('/becarios')  
+      }else{
+        navigate('/registroEstudiante')  
+      }
+      // Limpia los campos y mensajes de error después del inicio de sesión exitoso
+      setEmail('')
+      setPassword('')
+      setEmailValidation(false)
+      setPasswordValidation(false)
+      setEmailErrorMessage('')
+      setPasswordErrorMessage('')
+    }catch(error){
+      console.error('Error al iniciar sesión:', error.message);
+      // Mostrar un mensaje de error al usuario, por ejemplo, con una notificación o un mensaje en pantalla
+      // MODIFICIAR
     }
     
   }

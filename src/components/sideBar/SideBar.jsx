@@ -42,13 +42,12 @@ export default function SideBar(){
   const handleButtonClick = (ruta) => {
     navigate(ruta)
   }
-  console.log(authUser.type)
 
   // Verificando el usuario, para mostrar la pantalla correspondiente
-  if(authUser && authUser.type === "admin"){
+  if(authUser && authUser.type === true){
     buttons = adminButtons
   }
-  if(authUser && authUser.type === "estudiante"){ 
+  if(authUser && authUser.type === false){ 
     buttons = studentButtons
   }
 
@@ -80,6 +79,7 @@ export default function SideBar(){
         ))}
       </List>
       <Divider />
+      <div>
       <List>
         {/* En este caso, no es necesario automatizar, pues es solo 1 elemento */}
         <ListItem key='Cerrar sesión' disablePadding>
@@ -91,6 +91,8 @@ export default function SideBar(){
           </ListItemButton>
         </ListItem>
       </List>
+      </div>
+      
     </Box>
   )
 
