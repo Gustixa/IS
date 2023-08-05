@@ -15,6 +15,7 @@ export function useAuth() {
 /**
  * Hook para devolver los datos del contexto
  * En este caso, para devolver la sesion actual
+ * @returns 
  * @returns
  */
 export function useAuthContext() {

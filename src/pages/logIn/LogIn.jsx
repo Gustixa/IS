@@ -96,6 +96,9 @@ function LogIn() {
         setEmailErrorMessage("El correo es invalido. Verifique nuevamente.")
         setEmailValidation(true)
         return
+      }else{
+        setEmailErrorMessage("")
+        setEmailValidation(false)
       }
       
       if (userData.password !== password) {
@@ -103,6 +106,9 @@ function LogIn() {
         setPasswordErrorMessage("La contraseña es inválida. Ingrésela nuevamente")
         setPasswordValidation(true)
         return
+      }else{
+        setPasswordErrorMessage("")
+        setPasswordValidation(false)
       }
       // Si las credenciales son correctas, establece la información del usuario en el contexto de autenticación
       setIsLoggedIn(true)

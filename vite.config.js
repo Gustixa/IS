@@ -5,45 +5,49 @@ import { resolve } from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  resolve:{
-    alias:[
+  resolve: {
+    alias: [
       {
-        find:'@trabajador',
-        replacement: resolve(__dirname,'./src/pages/trabajador')
+        find: '@trabajador',
+        replacement: resolve(__dirname, './src/pages/trabajador'),
       },
       {
-        find:'@routers',
-        replacement: resolve(__dirname,'./src/routers')
+        find: '@routers',
+        replacement: resolve(__dirname, './src/routers'),
       },
       {
-        find:'@components',
-        replacement: resolve(__dirname, './src/components')
+        find: '@components',
+        replacement: resolve(__dirname, './src/components'),
       },
       {
-        find:"@images",
-        replacement: resolve(__dirname,'./public')
+        find: '@images',
+        replacement: resolve(__dirname, './public'),
       },
       {
-        find:"@pages",
-        replacement: resolve(__dirname,'./src/pages')
+        find: '@pages',
+        replacement: resolve(__dirname, './src/pages'),
       },
       {
-        find:"@estudiante",
-        replacement: resolve(__dirname,'./src/pages/estudiante')
+        find: '@estudiante',
+        replacement: resolve(__dirname, './src/pages/estudiante'),
       },
       {
-        find:'@contexts',
-        replacement: resolve(__dirname,'./src/Contexts')
+        find: '@contexts',
+        replacement: resolve(__dirname, './src/Contexts'),
       },
       {
-        find:'@db-supabase',
-        replacement: resolve(__dirname,'./src/db/supabase')
+        find: '@db-supabase',
+        replacement: resolve(__dirname, './src/db/supabase'),
+      },
+      {
+        find: '@test',
+        replacement: resolve(__dirname, './src/test')
       }
-    ]
+    ],
   },
-  test:{
-    setupFiles: './src/test/setupTexts.js',
+  test: {
+    setupFiles: './src/test/setupTests',
     globals: true,
-    enviroment: 'jsdom'
-  }
+    environment: 'jsdom',
+  },
 })
