@@ -1,3 +1,12 @@
-const encabezados = ["Nombre", "Carnet","Carrera","Año","Porcentaje de Beca", "Porcentaje de Credito","Horas realizadas", "Horas acumuladas"]
+const encabezados = [
+    "Nombre",
+    "Carnet",
+    "Carrera",
+    "Facultad",
+    "Año",
+    "Porcentaje de Beca",
+    "Porcentaje de Credito",
+    "Horas acumuladas"
+]
 
 export default encabezados
