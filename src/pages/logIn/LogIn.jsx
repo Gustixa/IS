@@ -58,6 +58,8 @@ function LogIn() {
   const [emailValidation, setEmailValidation] = useState(false)
   const [passwordValidation, setPasswordValidation] = useState(false)
 
+  
+
   const navigate = useNavigate()
 
   // Definiendo lo que pasara, en caso de seleccionar el boton logIn
@@ -65,14 +67,21 @@ function LogIn() {
     e.preventDefault()
     // Verifcando que no este vacio el campo
     if(email === ''){
-      setEmailErrorMessage('Debe ingresar un valor en el campo')
+      setEmailErrorMessage("Debe ingresar un valor en el campo")
       setEmailValidation(true)
       return
+    }else{
+      setEmailErrorMessage("")
+      setEmailValidation(false)
     }
+
     if(password === ''){
-      setPasswordErrorMessage('Debe ingresar un valor en el campo')
+      setPasswordErrorMessage("Debe ingresar un valor en el campo")
       setPasswordValidation(true)
       return
+    }else{
+      setPasswordErrorMessage("")
+      setPasswordValidation(false)
     }
     /**
      * Arreglar segun se estructure.
@@ -100,6 +109,7 @@ function LogIn() {
         setEmailErrorMessage("")
         setEmailValidation(false)
       }
+      
       
       if (userData.password !== password) {
         // Si se encontró el usuario pero la contraseña no coincide

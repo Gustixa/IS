@@ -121,16 +121,15 @@ export default function NuevoEstudiante() {
     try{
       console.log('llamada a validacion campos')
       if(!validacionCampos()){
-        return
-      }else{
+        return      }else{
         console.log('salida')
         // Realizar la inserción en la tabla "becado" con los datos del estudiante
         const { data, error} = await supabase
         .from('becado')
         .insert([
           {
-            cantidad_beca:cantidadBeca,
-            cantidad_credito: cantidadCreditoFinanciero,
+            porcentaje_beca:cantidadBeca,
+            porcentaje_credito: cantidadCreditoFinanciero,
             carrera: carrera,        
             facultad: facultadCarrera,
             anio: "2023",
@@ -162,6 +161,15 @@ export default function NuevoEstudiante() {
     }catch(error){
       console.error('Error al agregar estudiante:', error.message)
     }
+
+    setName("")
+    setCarrera("")
+    setCantidadBeca("")
+    setCantidadCreditoFinanciero("")
+    setfacultadCarrera("")
+    setEmail("")
+    setContrasenia("")
+    setcarnetEstudiante("")
     
   }
 
@@ -248,7 +256,7 @@ export default function NuevoEstudiante() {
           </Grid>
           <Grid item xs={6}>
             <TextField
-              label="Constraseña"
+              label="Constraseña para que el estudiante ingrese"
               variant="outlined"
               fullWidth
               style={textFieldStyles}
@@ -272,15 +280,21 @@ export default function NuevoEstudiante() {
           </Grid>
         </Grid>
       </Box>
-      <Button 
-        size="medium"
-        sx={hoverButtons}
-        type="submit"
-        variant="outlined"
-        onClick={(e) => handleAgregarEstudiante(e)}
-      >
-        Agregar
-      </Button>
+      <Box display="flex" justifyContent="flex-end" paddingRight={8}>
+        <Button 
+          size="medium"
+          sx={{...hoverButtons, 
+            fontSize: '13px', // Aumenta el tamaño del texto dentro del botón
+            padding: '12px 24px',
+            width: '260px'}}
+          type="submit"
+          variant="outlined"
+          onClick={(e) => handleAgregarEstudiante(e)}
+        >
+          Agregar estudiante
+        </Button>
+      </Box>
+      
     </div>
     </>
   )

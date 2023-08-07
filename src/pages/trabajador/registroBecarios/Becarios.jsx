@@ -63,27 +63,33 @@ export default function Becarios(){
 
   // Obtencion de la informacion de la db
   useEffect(() => {
+    // Definición de la función async para obtener los datos de la base de datos
     async function fetchStudentsData(){
+      // Obtener los datos de la tabla "becado" desde la base de datos
       const { data, error } = await supabase
       .from("becado")
       .select("*")
 
       if(error){
+        // En caso de error al obtener los datos, se muestra un mensaje en la consola
         console.log("Error fetching data: ", error)
       }else{
+        // Filtrar los datos según los criterios de búsqueda ingresados por el usuario
         const filteredData = data.filter((student) => {
           return (
             student.anio.includes(filtroAnio) &&
             student.nombre_estudiante.toLowerCase().includes(filtroNombre.toLowerCase()) &&
             student.carnet.includes(filtroCarnet) &&
-            (filtroBeca === "" || student.porcentaje_beca >= parseInt(filtroBeca)) &&
+            (filtroBeca === "" || student.porcentaje_beca.toString().includes(filtroBeca)) &&
             (filtroFacultad === '' || student.facultad.toLowerCase().includes(filtroFacultad.toLowerCase())) &&
             (filtroHorasFaltantes === "" || student.horas_acumuladas >= parseInt(filtroHorasFaltantes))
           )
         })
+        // Establecer los datos filtrados en el estado "studentsData"
         setStudentsData(filteredData)
       }
     }
+    // Llamar a la función para obtener y filtrar los datos
     fetchStudentsData()
   }, [filtroAnio,filtroNombre,filtroCarnet,filtroBeca,filtroFacultad,filtroHorasFaltantes])
 
