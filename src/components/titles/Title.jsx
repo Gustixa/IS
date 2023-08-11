@@ -28,7 +28,7 @@ export default function Title({ titles }) {
                 display: 'grid',
                 gridTemplateColumns: columnSize, // Establecer el espacio de las columnas, segun su cantidad
                 gap: 2,
-              }}
+              }} data-testid="grid-container"
             >
               {/* el 6 representa el tipo de elevacion. 
                 La escala es 0,1,2,3,4,6,8,12,16,24
