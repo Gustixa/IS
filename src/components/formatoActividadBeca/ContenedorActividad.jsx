@@ -2,9 +2,15 @@ import React from 'react'
 import IconButton from '@mui/material/IconButton'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import { useNavigate } from 'react-router-dom'
 import styles from './ContenedorActividad.module.css'
 
 export default function ContenedorActividad() {
+  const navigate = useNavigate()
+
+  const handleEdit = (e) => {
+    navigate("/detallesActividad")
+  }
   return (
     <div className={styles.container}>
       
@@ -22,7 +28,11 @@ export default function ContenedorActividad() {
        </p>
       <p>participantes</p>
       <div className={styles.buttons}>
-        <IconButton color="primary" size="large">
+        <IconButton 
+          color="primary"
+          size="large"
+          onClick={(e) => handleEdit(e)}
+          >
           <EditIcon/>
         </IconButton>
         <IconButton color="secondary" size="large">
