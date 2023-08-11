@@ -10,10 +10,13 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
   height: 60,
   lineHeight: '60px',
+  fontSize: '20px',
+  fontWeight: 'bold'
 }))
 
 const lightTheme = createTheme({ palette: { mode: 'light' } })
 
+/* Este archivo sirve para poder mostrar los titulos de cada seccion de una manera mas llamativa */
 export default function Title({ titles }) {
   const columnSize = `repeat(${titles.length}, 1fr)` // Calcular la cantidad de columnas
   return (

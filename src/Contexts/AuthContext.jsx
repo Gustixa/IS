@@ -22,7 +22,7 @@ export function useAuthContext() {
   return useContext(AuthContext)
 }
 
-export function AuthProvider({ children }) {
+function AuthProvider({ children }) {
   const [authUser, setAuthUser] = useState(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
@@ -40,6 +40,8 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
+
+export { AuthProvider }
 
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,

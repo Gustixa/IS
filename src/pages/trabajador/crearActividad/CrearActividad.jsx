@@ -1,114 +1,147 @@
 import React, { useState, useEffect } from 'react'
 import { Grid, Box, TextField, Button } from '@mui/material'
-import SideBar from '@components/sideBar'
 import styles from './CrearActividad.module.css'
-import {textFieldStyles, hoverButtons} from './styles'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '@db-supabase/supabase.config'
+import {textFieldStyles, hoverButtons, hoverCancelButton} from './muiStyles'
 
-export default function CrearActividad() {
-  const [name, setName] = useState("")
 
-  const [nameErrorMessage, setNameErrorMessage] = useState("")
+export default function CrearActividad(){
+  const[nombreActividad, setNombreActividad] = useState("")
+  const[descripcion, setDescripcion] = useState("")
+  const[cantidadVoluntarios, setCantidadVoluntarios] = useState("")
 
-  const [nameValidation, setNameValidation] = useState(false)
+  const[nombreActividadValidation, setNombreActividadValidation] = useState(false)
+  const[descripcionValidation, setDescripcionValidation] = useState(false)
+  const[cantidadVoluntariosValidation, setCantidadVoluntariosValidations] = useState(false)
 
+  const[nombreActividadErrorMessage, setNombreActividadErrorMessage] = useState("")
+  const[descripcionErrorMessage, setDescripcionErrorMessage] = useState("")
+  const[cantidadVoluntariosErrorMessage, setCantidadVoluntariosErrorMessage] = useState("")
+
+  const navigate = useNavigate()
   /**
-   * Verificacion de los campos, que son datos requeridos para almacenar en la db
+   * Validacion de los campos, en esta caso, se espera que se ingresen datos en los campos
    */
   const validacionCampos = () => {
-    let isValid = true;
-    // nombre actividad
-    if(!name){
-      setNameValidation(true)
-      setNameErrorMessage('Debe ingresar el nombre de la actividad')
+    let isValid = true
+    // Nombre actividad
+    if(!nombreActividad){
+      setNombreActividadValidation(true)
+      setNombreActividadErrorMessage('Debe ingresar el nombre de la actividad')
       isValid = false
     }else{
-      setNameValidation(false)
-      setNameErrorMessage('')
+      setNombreActividadValidation(false)
+      setNombreActividadErrorMessage('')
     }
-    console.log('isValid', isValid)
+    // Cantidad voluntarios
+    if(!cantidadVoluntarios){
+      setCantidadVoluntariosValidations(true)
+      setCantidadVoluntariosErrorMessage("Debe ingresar la cantidad de voluntarios para la actividad")
+    }else{
+      setCantidadVoluntariosValidations(false)
+      setCantidadVoluntariosErrorMessage("")
+    }
+    // Descripcion de la actividad
+    if(!descripcion){
+      setDescripcionValidation(true)
+      setDescripcionErrorMessage("Debe ingresar la descripcion de la actividad")
+    }else{
+      setDescripcionValidation(false)
+      setDescripcionErrorMessage("")
+    }
     return isValid
   }
-
-  const handleAgregarActividad = async (e) => {
-    e.preventDefault()
-    
-    try{
-      console.log('llamada a validacion campos')
-      if(!validacionCampos()){
-        return      }else{
-        console.log('salida')
-        // Realizar la inserción en la tabla "activodad" con los datos de la actividad
-        const { data, error} = await supabase
-        .from('actividad')
-        .insert([
-          {
-            nombre_actividad:name
-          }
-        ])
-        console.log(data)
-        console.log(error)
-        // Insertar la actividad en la tabla "actividades"
-        const { dataUser, errorUser } = await supabase
-          .from('actividad')
-          .insert([
-            {
-              email,
-              contrasenia,
-              admin: false,
-            }
-          ])
-    
-        if(data){
-          console.log(data)
-        }
-      }
-      
-    }catch(error){
-      console.error('Error al agregar la actividad:', error.message)
-    }
-
-    setName("")
+  
+  const handleCreacionActividad = () => {
+    navigate("/nuevaActividadBeca")
   }
 
+  const handleCancelarProceso = () => {
+    navigate("/nuevaActividadBeca")
+  }
   return (
     <>
-    <SideBar/>
-    <div className={styles.title}>
-      <h1>Apartado para agregar una nueva actividad</h1>
-    </div>
-    <div className={styles.container}>
-      <Box px={8} pb={8}> {/* Agregamos el espaciado horizontal al contenedor  pb=horizontal, px=vertical*/}
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <TextField
-              label="Nombre de la Actividad"
-              variant="outlined"
-              fullWidth
-              style={textFieldStyles}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              error={nameValidation}
-              helperText={nameErrorMessage}
-            />
+      <div className={styles.title}>
+        <h1>DETALLES PARA LA ACTIVIDAD DE HORAS BECA</h1>
+      </div>
+      <div className={styles.container}>
+        <Box px={8} pb={8}> {/* Agregamos el espaciado horizontal al contenedor  pb=horizontal, px=vertical*/}
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                label="Nombre actividad"
+                variant="outlined"
+                fullWidth
+                style={textFieldStyles}
+                value={nombreActividad}
+                onChange={(e) => setNombreActividad(e.target.value)}
+                error={nombreActividadValidation}
+                helperText={nombreActividadErrorMessage}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label="Cantidad voluntarios"
+                variant="outlined"
+                fullWidth
+                type="number"
+                style={textFieldStyles}
+                onChange={(e) => setCantidadVoluntarios(e.target.value)}
+                inputProps={{min: '0'}}
+                InputLabelProps={{
+                  shrink: true
+                }}
+                error={cantidadVoluntariosValidation}
+                helperText={cantidadVoluntariosErrorMessage}
+                
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Descripcion"
+                variant="outlined"
+                fullWidth
+                style={textFieldStyles}
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
+                error={descripcionValidation}
+                helperText={descripcionErrorMessage}
+                multiline
+                maxRows={9}
+              />
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
-      <Box display="flex" justifyContent="flex-end" paddingRight={8}>
-        <Button 
-          size="medium"
-          sx={{...hoverButtons, 
-            fontSize: '13px', // Aumenta el tamaño del texto dentro del botón
-            padding: '12px 24px',
-            width: '260px'}}
-          type="submit"
-          variant="outlined"
-          onClick={(e) => handleAgregarActividad(e)}
-        >
-          Agregar actividad
-        </Button>
-      </Box>
-    </div>
+        </Box>
+        <Box display="flex" justifyContent="flex-end" paddingRight={8}>
+          <Button 
+            size="medium"
+            sx={{...hoverButtons, 
+              fontSize: '13px', // Aumenta el tamaño del texto dentro del botón
+              padding: '12px 24px',
+              width: '260px'}}
+            type="submit"
+            variant="outlined"
+            onClick={(e) => handleCreacionActividad(e)}
+          >
+            Agregar
+          </Button>
+          <Button
+            size="medium"
+            sx={{...hoverCancelButton,
+              fontSize: '13px', // Aumenta el tamaño del texto dentro del botón
+              padding: '12px 24px',
+              width: '260px',
+              marginLeft: '20px'
+            }}
+            type="submit"
+            variant="outlined"
+            onClick={(e) => handleCancelarProceso(e)}
+          >
+            Cancelar
+          </Button>
+        </Box>
+      </div>
     </>
   )
 }

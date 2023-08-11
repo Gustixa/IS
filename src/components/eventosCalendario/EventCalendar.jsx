@@ -17,7 +17,6 @@ const styleButtons = {
   },
 }
 
-
 const EventCalendar = ({ onAddEvent }) => {
   // Estado para el título del evento
   const [title, setTitle] = useState('')

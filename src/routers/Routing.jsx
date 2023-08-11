@@ -10,6 +10,7 @@ import HistorialBeca from '@estudiante/historialBeca'
 import ProtectedRoute from './protectedRoute/ProtectedRoute'
 import NuevoEstudiante from '@trabajador/agregarEstudiante'
 import ActividadBeca from '@pages/actividadesBeca'
+import CrearActividad from '@trabajador/crearActividad'
 
 export default function Routing(){
 
@@ -32,6 +33,7 @@ export default function Routing(){
           <Route path='/becarios' element={<Becarios/>}/>
           <Route path='/NuevoEstudiante' element={<NuevoEstudiante/>}/>
           <Route path='/registroEstudiante' element={<HistorialBeca/>}/>
+          <Route path='/detallesActividad' element={<CrearActividad/>}/>
           {/** Se puede cambiar a actividadBecario */}
           <Route path='/delva' element={(<Calendario/>)}/>  
         </Routes>

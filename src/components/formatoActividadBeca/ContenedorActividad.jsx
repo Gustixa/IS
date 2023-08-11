@@ -1,28 +1,34 @@
 import React from 'react'
-import Grid from '@mui/material/Grid'
-import Paper from '@mui/material/Paper'
-import Box from '@mui/material/Box'
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles'
-
-const Item = styled(Paper)(({ theme }) => ({
-  ...theme.typography.body2,
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-  height: 60,
-  lineHeight: '60px',
-  borderRadius:'20'
-}));
-
-const lightTheme = createTheme({ palette: { mode: 'light' } });
+import IconButton from '@mui/material/IconButton'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
+import styles from './ContenedorActividad.module.css'
 
 export default function ContenedorActividad() {
   return (
-    <>
-      <ThemeProvider theme={lightTheme}>
-        <Item key={6} elevation={6}>
-          {`Nada=${6}`}
-        </Item>
-      </ThemeProvider>
-    </>
+    <div className={styles.container}>
+      
+      <h1>titulo</h1>
+      <p className={styles.scrollableText}>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat 
+        nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+        deserunt mollit anim id est laborum.
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat 
+        nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+        deserunt mollit anim id est laborum.
+       </p>
+      <p>participantes</p>
+      <div className={styles.buttons}>
+        <IconButton color="primary" size="large">
+          <EditIcon/>
+        </IconButton>
+        <IconButton color="secondary" size="large">
+          <DeleteIcon/>
+        </IconButton>
+      </div>
+    </div>
   )
 }
