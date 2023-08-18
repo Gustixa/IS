@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from 'react'
 import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -178,21 +179,34 @@ export default function Becarios(){
               </TableRow>
             </TableHead>
             <TableBody>
-              {studentsData.map((student) => (
-                <StyledTableRow key={student.id}>
-                  <StyledTableCell component="th" scope="row">
-                    {student.nombre_estudiante}
+              {studentsData.length > 0 ? (
+                studentsData.map((student) => (
+                  <StyledTableRow key={student.id}>
+                    <StyledTableCell component="th" scope="row">
+                      {student.nombre_estudiante}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">{student.carnet}</StyledTableCell>
+                    <StyledTableCell align="right">{student.carrera}</StyledTableCell>
+                    <StyledTableCell align="right">{student.facultad}</StyledTableCell>
+                    <StyledTableCell align="right">{student.anio}</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {student.porcentaje_beca}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      {student.porcentaje_credito}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      {student.horas_acumuladas}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))
+              ) : (
+                <StyledTableRow>
+                  <StyledTableCell colSpan={8} align="center">
+                    <CircularProgress />
                   </StyledTableCell>
-                  <StyledTableCell align="right">{student.carnet}</StyledTableCell>
-                  <StyledTableCell align="right">{student.carrera}</StyledTableCell>
-                  <StyledTableCell align="right">{student.facultad}</StyledTableCell>
-                  <StyledTableCell align="right">{student.anio}</StyledTableCell>
-                  <StyledTableCell align="right">{student.porcentaje_beca}</StyledTableCell>
-                  <StyledTableCell align="right">{student.porcentaje_credito}</StyledTableCell>
-                  <StyledTableCell align="right">{student.horas_acumuladas}</StyledTableCell>
-                  
                 </StyledTableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </TableContainer>
