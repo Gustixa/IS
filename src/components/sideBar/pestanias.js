@@ -16,11 +16,11 @@ export const adminButtons = {
     'Consultar Estudiantes':{
       icon: Groups2Icon,
       ruta: '/becarios'
-    },/*
-    'Agendar Charla Delva': {
+    },
+    'Detalles Actividades': {
       icon: CalendarTodayIcon,
-      ruta: '/delva'
-    },*/
+      ruta: '/actividadBecario'
+    },
     'Actividades Beca':{
       icon: VolunteerActivismIcon,
       ruta: '/nuevaActividadBeca'

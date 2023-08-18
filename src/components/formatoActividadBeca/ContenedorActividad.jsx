@@ -5,7 +5,8 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { useNavigate } from 'react-router-dom'
 import styles from './ContenedorActividad.module.css'
 
-export default function ContenedorActividad() {
+export default function ContenedorActividad({nombre_actividad, cupos_disponibles,
+horas_acreditadas, descripcion}) {
   const navigate = useNavigate()
 
   const handleEdit = (e) => {
@@ -14,19 +15,12 @@ export default function ContenedorActividad() {
   return (
     <div className={styles.container}>
       
-      <h1>titulo</h1>
+      <h1>{nombre_actividad}</h1>
       <p className={styles.scrollableText}>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat 
-        nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-        deserunt mollit anim id est laborum.
-        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat 
-        nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-        deserunt mollit anim id est laborum.
+        {descripcion}
        </p>
-      <p>participantes</p>
+      <p>{cupos_disponibles}</p>
+      <p>{horas_acreditadas}</p>
       <div className={styles.buttons}>
         <IconButton 
           color="primary"

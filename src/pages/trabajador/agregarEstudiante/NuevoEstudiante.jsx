@@ -119,10 +119,10 @@ export default function NuevoEstudiante() {
     e.preventDefault()
     
     try{
-      console.log('llamada a validacion campos')
+      // Validar que esten llenos los campos requeridos
       if(!validacionCampos()){
-        return      }else{
-        console.log('salida')
+        return      
+      }else{
         // Realizar la inserción en la tabla "becado" con los datos del estudiante
         const { data, error} = await supabase
         .from('becado')

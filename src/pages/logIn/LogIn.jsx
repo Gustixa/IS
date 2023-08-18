@@ -9,6 +9,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import InputAdornment from '@mui/material/InputAdornment'
 import { useAuthContext } from '@contexts/AuthContext'
 import { supabase } from '@db-supabase/supabase.config'
+import logInIMG from '@images/logInIMG.jpg'
 
 
 // Modificar las propiedades del boton como en css
@@ -157,7 +158,7 @@ function LogIn() {
                 <div className={styles.imageContainer}>
                   <img 
                     className={styles.image}
-                    src="https://tienda.uvg.edu.gt/attach/tiendas/Logo-vertical-verde_5a8b26cb76441.jpg" 
+                    src={logInIMG} 
                     alt="logo"/>
                 </div>
                 <TextField

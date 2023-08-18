@@ -10,14 +10,17 @@ export default function CrearActividad(){
   const[nombreActividad, setNombreActividad] = useState("")
   const[descripcion, setDescripcion] = useState("")
   const[cantidadVoluntarios, setCantidadVoluntarios] = useState("")
+  const[horasAcreditar, setHorasAcreditar] = useState("")
 
   const[nombreActividadValidation, setNombreActividadValidation] = useState(false)
   const[descripcionValidation, setDescripcionValidation] = useState(false)
   const[cantidadVoluntariosValidation, setCantidadVoluntariosValidations] = useState(false)
+  const[horasAcreditarValidation, setHorasAcreditarValidation] = useState(false)
 
   const[nombreActividadErrorMessage, setNombreActividadErrorMessage] = useState("")
   const[descripcionErrorMessage, setDescripcionErrorMessage] = useState("")
   const[cantidadVoluntariosErrorMessage, setCantidadVoluntariosErrorMessage] = useState("")
+  const[horasAcreditarErrorMessage, setHorasAcreditarErrorMessage] = useState("")
 
   const navigate = useNavigate()
   /**
@@ -50,10 +53,39 @@ export default function CrearActividad(){
       setDescripcionValidation(false)
       setDescripcionErrorMessage("")
     }
+    // Horas a acreditar para la actividad
+    if(!horasAcreditar){
+      setHorasAcreditarValidation(true)
+      setHorasAcreditarErrorMessage("Debe ingresar las horas que acreditara")
+    }else{
+      setHorasAcreditarValidation(false)
+      setHorasAcreditarErrorMessage("")
+    }
     return isValid
   }
   
-  const handleCreacionActividad = () => {
+  const handleCreacionActividad = async (e) => {
+    e.preventDefault()
+    try{
+      //validar que los campos no esten vacios
+      if(!validacionCampos()){
+        return
+      }else{
+        const{data, error} = await supabase
+        .from("actividad_beca")
+        .insert([
+          {
+           nombre_actividad: nombreActividad,
+           cupos_disponibles: cantidadVoluntarios,
+           horas_acreditadas: horasAcreditar,
+           descripcion: descripcion
+          }
+        ])
+      }
+
+    }catch(error){
+      console.log("Error al crear la actividad: ", error.message)
+    }
     navigate("/nuevaActividadBeca")
   }
 
@@ -80,7 +112,7 @@ export default function CrearActividad(){
                 helperText={nombreActividadErrorMessage}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={3}>
               <TextField
                 label="Cantidad voluntarios"
                 variant="outlined"
@@ -94,7 +126,22 @@ export default function CrearActividad(){
                 }}
                 error={cantidadVoluntariosValidation}
                 helperText={cantidadVoluntariosErrorMessage}
-                
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                label="Cantidad voluntarios"
+                variant="outlined"
+                fullWidth
+                type="number"
+                style={textFieldStyles}
+                onChange={(e) => setHorasAcreditar(e.target.value)}
+                inputProps={{min: '0'}}
+                InputLabelProps={{
+                  shrink: true
+                }}
+                error={horasAcreditarValidation}
+                helperText={horasAcreditarErrorMessage}
               />
             </Grid>
             <Grid item xs={12}>

@@ -1,75 +1,92 @@
-/* Este archivo tiene la funcionalidad de poder extrar toda la informacion de la
-base de datos de la nube, para luego presentar la informacion de una manera]
-mas amena a la vista */
-import React, { useState, useEffect } from 'react'
-import SideBar from '@components/sideBar'
-import ContenedorActividad from '@components/formatoActividadBeca'
-import Title from '@components/titles'
-import encabezado from './encabezado'
-import IconButton from '@mui/material/IconButton'
+import React, { useState, useEffect } from 'react';
+import SideBar from '@components/sideBar';
+import ContenedorActividad from '@components/formatoActividadBeca';
+import Title from '@components/titles';
+import encabezado from './encabezado';
+import IconButton from '@mui/material/IconButton';
+import CircularProgress from '@mui/material/CircularProgress';
 import AddIcon from '@mui/icons-material/Add';
-import { Button } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
-import { supabase } from '@db-supabase/supabase.config'
-import buttonStyle from './styleButton'
-import styles from './ActividadBeca.module.css'
+import TextField from '@mui/material/TextField';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@db-supabase/supabase.config';
+import buttonStyle from './styleButton';
+import styles from './ActividadBeca.module.css';
 
-export default function ActividadBeca(){
-  const[fetchError, setFetchError] = useState(null)
-  const[actividad, setActividad] = useState(null)
+export default function ActividadBeca() {
+  const [actividad, setActividad] = useState(null);
+  const [filtroNombreActividad, setFiltroNombreActividad] = useState('');
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  // Poder redireccionar para tener los detalles de la actividad
   const handleCreateActivity = () => {
-    navigate("/detallesActividad")
-  }
+    navigate('/detallesActividad');
+  };
+
+  const handleFiltrarActividad = (e) => {
+    setFiltroNombreActividad(e.target.value);
+  };
+
   useEffect(() => {
     const fetchActividad = async () => {
-      const { data, error } = await supabase
-      .from("actividad_beca")
-      .select("*")
+      try {
+        const { data, error } = await supabase
+          .from('actividad_beca')
+          .select('*');
 
-      if(error){
-        setFetchError("No se pudo obtener la informacion de la base de datos.")
-        setActividad(null)
-        console.log(error)
+        if (error) {
+          console.log('Error fetching data: ', error);
+        } else {
+          const filteredData = data.filter((detalles) =>
+            detalles.nombre_actividad.toLowerCase().includes(filtroNombreActividad.toLowerCase())
+          );
+
+          // Establecer los datos filtrados en el estado 'actividad'
+          setActividad(filteredData);
+        }
+      } catch (error) {
+        console.error('Error fetching data: ', error);
       }
-      if(data){
-        setActividad(data)
-        setFetchError(null)
-      }
-    }
-    fetchActividad()
-  }, [])
+    };
+
+    fetchActividad();
+  }, [filtroNombreActividad]);
+
   return (
     <>
-      <SideBar/>
-      <Title titles={encabezado}></Title>
-      <Button>
-        Crear Actividad
-      </Button>
+      <SideBar />
+      <Title titles={encabezado} />
+      <Button>Crear Actividad</Button>
+      <TextField
+        label="Filtrar por nombre"
+        variant="outlined"
+        onChange={(e) => handleFiltrarActividad(e)}
+        sx={{ width: '200px' }}
+      />
       <div className={styles.display}>
-        <ContenedorActividad/>
-        <ContenedorActividad/>
-        <ContenedorActividad/>
-        <ContenedorActividad/>
-        <ContenedorActividad/>
-        <ContenedorActividad/>
-        <ContenedorActividad/>
-        <ContenedorActividad/>
-        <ContenedorActividad/>
-        <ContenedorActividad/>
-        <IconButton 
+        {actividad !== null ? (
+          actividad.map((detalles) => (
+            <ContenedorActividad
+              key={detalles.id}
+              nombre_actividad={detalles.nombre_actividad}
+              cupos_disponibles={detalles.cupos_disponibles}
+              horas_acreditadas={detalles.horas_acreditadas}
+              descripcion={detalles.descripcion}
+            />
+          ))
+        ) : (
+          <CircularProgress />
+        )}
+        <IconButton
           size="large"
-          style={buttonStyle} color="primary"
+          style={buttonStyle}
+          color="primary"
           onClick={() => handleCreateActivity()}
-          >
-          <AddIcon style={{ fontSize: 'inherit' }}/>
+        >
+          <AddIcon style={{ fontSize: 'inherit' }} />
         </IconButton>
-      </div>  
-      <div className={styles.finalBlock}>
-      </div>    
+      </div>
+      <div className={styles.finalBlock}></div>
     </>
-  )
+  );
 }
