@@ -2,34 +2,52 @@ import React from 'react'
 import IconButton from '@mui/material/IconButton'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { supabase } from '@db-supabase/supabase.config'
 import styles from './ContenedorActividad.module.css'
 
-export default function ContenedorActividad({nombre_actividad, cupos_disponibles,
-horas_acreditadas, descripcion}) {
-  const navigate = useNavigate()
+export default function ContenedorActividad({ actividad, onDelete }) {
 
-  const handleEdit = (e) => {
-    navigate("/detallesActividad")
+  const handleDelete = async (e) => {
+    try{
+      const { data, error } = await supabase
+      .from("actividad_beca")
+      .delete()
+      .eq("id", actividad.id)
+      onDelete(actividad.id)
+      if(data){
+        console.log(data)
+       
+      }
+
+    }catch(error){
+
+    }
+
   }
   return (
     <div className={styles.container}>
       
-      <h1>{nombre_actividad}</h1>
+      <h1>{actividad.nombre_actividad}</h1>
       <p className={styles.scrollableText}>
-        {descripcion}
+        {actividad.descripcion}
        </p>
-      <p>{cupos_disponibles}</p>
-      <p>{horas_acreditadas}</p>
+      <p>{actividad.cupos_disponibles}</p>
+      <p>{actividad.horas_acreditadas}</p>
       <div className={styles.buttons}>
+        <Link to={'/actualizarActividad/'+actividad.id}>
+          <IconButton 
+            color="primary"
+            size="large"
+            >      
+            <EditIcon/>
+          </IconButton>
+        </Link>
         <IconButton 
-          color="primary"
+          color="secondary"
           size="large"
-          onClick={(e) => handleEdit(e)}
+          onClick={(e) => handleDelete(e)}
           >
-          <EditIcon/>
-        </IconButton>
-        <IconButton color="secondary" size="large">
           <DeleteIcon/>
         </IconButton>
       </div>

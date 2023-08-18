@@ -23,7 +23,7 @@ export const adminButtons = {
     },
     'Actividades Beca':{
       icon: VolunteerActivismIcon,
-      ruta: '/nuevaActividadBeca'
+      ruta: '/actividadesBeca'
     }  
   }
   // Elementos del sideBar para un estudiante

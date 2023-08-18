@@ -1,10 +1,10 @@
 import React, {
-  createContext, useState, useContext, useMemo,
+  createContext, useState, useContext, useMemo, useEffect,
 } from 'react'
 import PropTypes from 'prop-types'
 
 const AuthContext = createContext()
-// Hook para iniciazliar el contexto
+
 export function useAuth() {
   const context = useContext(AuthContext)
   if (!context) {
@@ -12,12 +12,7 @@ export function useAuth() {
   }
   return context
 }
-/**
- * Hook para devolver los datos del contexto
- * En este caso, para devolver la sesion actual
- * @returns 
- * @returns
- */
+
 export function useAuthContext() {
   return useContext(AuthContext)
 }
@@ -26,19 +21,36 @@ function AuthProvider({ children }) {
   const [authUser, setAuthUser] = useState(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  // Memorizamos el valor del contexto con useMemo
+  useEffect(() => {
+    // Verificar si hay información de usuario almacenada en localStorage al cargar la página
+    const storedUser = localStorage.getItem('authUser');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setAuthUser(parsedUser);
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const logout = () => {
+    // Restablecer la información de usuario y el estado de inicio de sesión al cerrar sesión
+    localStorage.removeItem('authUser');
+    setAuthUser(null);
+    setIsLoggedIn(false);
+  };
+
   const value = useMemo(() => ({
     authUser,
     setAuthUser,
     isLoggedIn,
     setIsLoggedIn,
-  }), [authUser, setAuthUser, isLoggedIn, setIsLoggedIn])
+    logout,
+  }), [authUser, setAuthUser, isLoggedIn, setIsLoggedIn]);
 
   return (
     <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
-  )
+  );
 }
 
 export { AuthProvider }

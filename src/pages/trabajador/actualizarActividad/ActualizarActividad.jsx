@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState} from 'react'
 import { Grid, Box, TextField, Button } from '@mui/material'
-import styles from './CrearActividad.module.css'
-import { useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '@db-supabase/supabase.config'
+import styles from './ActualizarActividad.module.css'
 import {textFieldStyles, hoverButtons, hoverCancelButton} from './muiStyles'
 
+export default function ActualizarActividad(){
+  // Obteniendo el id de la actividad a actulizar
+  const { id } = useParams()
+  const navigate = useNavigate()
 
-export default function CrearActividad(){
   const[nombreActividad, setNombreActividad] = useState("")
   const[descripcion, setDescripcion] = useState("")
   const[cantidadVoluntarios, setCantidadVoluntarios] = useState("")
@@ -22,7 +25,27 @@ export default function CrearActividad(){
   const[cantidadVoluntariosErrorMessage, setCantidadVoluntariosErrorMessage] = useState("")
   const[horasAcreditarErrorMessage, setHorasAcreditarErrorMessage] = useState("")
 
-  const navigate = useNavigate()
+  useEffect(() => {
+    const fetchActivityDetails = async () => {
+      const { data, error } = await supabase
+      .from("actividad_beca")
+      .select()
+      .eq("id",id)
+      .single()
+
+      if(error){
+        navigate("/actividadesBeca", {replace:true})
+      }
+      if(data){
+        setNombreActividad(data.nombre_actividad)
+        setCantidadVoluntarios(data.cupos_disponibles)
+        setHorasAcreditar(data.horas_acreditadas)
+        setDescripcion(data.descripcion)
+      }
+    }
+    fetchActivityDetails()
+  },[id, navigate])
+
   /**
    * Validacion de los campos, en esta caso, se espera que se ingresen datos en los campos
    */
@@ -63,39 +86,53 @@ export default function CrearActividad(){
     }
     return isValid
   }
-  
-  const handleCreacionActividad = async (e) => {
+
+  /**
+   * 
+   * @param {*} e 
+   */
+  const handleActualizarActividad = async (e) => {
     e.preventDefault()
     try{
-      //validar que los campos no esten vacios
-      if(!validacionCampos()){
+      if(!validacionCampos){
         return
       }else{
-        const{data, error} = await supabase
-        .from("actividad_beca")
-        .insert([
-          {
-           nombre_actividad: nombreActividad,
-           cupos_disponibles: cantidadVoluntarios,
-           horas_acreditadas: horasAcreditar,
-           descripcion: descripcion
-          }
-        ])
+        const { data, error} = await supabase
+          .from("actividad_beca")
+          .update(
+            {
+              nombre_actividad:nombreActividad,
+              cupos_disponibles:cantidadVoluntarios,
+              horas_acreditadas:horasAcreditar,
+              descripcion:descripcion})
+          .eq("id",id)
+          .select()
+        if(data){
+          console.log("data: ", data)
+        }
+        if(error){
+          console.log("NO FUNCIONO")
+        }
       }
-
+      
     }catch(error){
-      console.log("Error al crear la actividad: ", error.message)
+      console.log("Algo salio mal")
     }
+
     navigate("/actividadesBeca")
   }
 
+  /**
+   * Metodo para navegar a la pantalla general de actividades
+   * en caso de no desar realizar cambios
+   */
   const handleCancelarProceso = () => {
     navigate("/actividadesBeca")
   }
-  return (
+  return(
     <>
       <div className={styles.title}>
-        <h1>DETALLES PARA LA ACTIVIDAD DE HORAS BECA</h1>
+        <h1>ACTULIZAR DETALLES PARA LA ACTIVIDAD DE HORAS BECA</h1>
       </div>
       <div className={styles.container}>
         <Box px={8} pb={8}> {/* Agregamos el espaciado horizontal al contenedor  pb=horizontal, px=vertical*/}
@@ -119,6 +156,7 @@ export default function CrearActividad(){
                 fullWidth
                 type="number"
                 style={textFieldStyles}
+                value={cantidadVoluntarios}
                 onChange={(e) => setCantidadVoluntarios(e.target.value)}
                 inputProps={{min: '0'}}
                 InputLabelProps={{
@@ -134,6 +172,7 @@ export default function CrearActividad(){
                 variant="outlined"
                 fullWidth
                 type="number"
+                value={horasAcreditar}
                 style={textFieldStyles}
                 onChange={(e) => setHorasAcreditar(e.target.value)}
                 inputProps={{min: '0'}}
@@ -169,7 +208,7 @@ export default function CrearActividad(){
               width: '260px'}}
             type="submit"
             variant="outlined"
-            onClick={(e) => handleCreacionActividad(e)}
+            onClick={(e) => handleActualizarActividad(e)}
           >
             Agregar
           </Button>

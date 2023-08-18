@@ -12,6 +12,7 @@ import NuevoEstudiante from '@trabajador/agregarEstudiante'
 import ActividadBeca from '@pages/actividadesBeca'
 import CrearActividad from '@trabajador/crearActividad'
 import ActividadBecario from '@trabajador/actividadBecario'
+import ActualizarActividad from '@trabajador/actualizarActividad'
 
 export default function Routing(){
 
@@ -28,14 +29,24 @@ export default function Routing(){
                 <Home />
             )}
           />
-          {/** se pude cambiar a actividad Beca */}
-          <Route path='/nuevaActividadBeca' element={(<ActividadBeca/>)}/>
+          {/* ESTE APARTADO ES PARA LOS ADMINISTRADORES Y LA NAVEGACION QUE POSEERAN */}
+          {/** Pagina para mostrar todas las actividades beca vigentes */}
+          <Route path='/actividadesBeca' element={(<ActividadBeca/>)}/>
+          {/* Pagina para mostrar informacion de los estudiantes */}
           <Route path='/becarios' element={<Becarios/>}/>
+          {/* Pagina para poder ingrear un nuevo estudiante al sistema */}
           <Route path='/NuevoEstudiante' element={<NuevoEstudiante/>}/>
-          <Route path='/registroEstudiante' element={<HistorialBeca/>}/>
-          <Route path='/detallesActividad' element={<CrearActividad/>}/>
-          {/** Se puede cambiar a actividadBecario */}
+          {/** Pagina como alternativa para ingresa manualmente los datos de la actividad beca */}
           <Route path='/actividadBecario' element={(<ActividadBecario/>)}/>  
+          {/**Pagina para crear una actividad de horas beca */}
+          <Route path='/nuevaActividad' element={<CrearActividad/>}/>
+          <Route path='/actualizarActividad/:id' element={<ActualizarActividad/>}/>
+
+
+          {/* ESTE APARTADO ES PARA LA NAVEGACION DE LO ESTUDIANTES */}
+          {/* Pagina donde el estudiante ve como ha realizado sus horas de beca */}
+          <Route path='/registroEstudiante' element={<HistorialBeca/>}/>
+          
         </Routes>
       </ProtectedRoute>  
     </BrowserRouter>

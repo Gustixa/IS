@@ -3,24 +3,32 @@ import SideBar from '@components/sideBar';
 import ContenedorActividad from '@components/formatoActividadBeca';
 import Title from '@components/titles';
 import encabezado from './encabezado';
-import IconButton from '@mui/material/IconButton';
 import CircularProgress from '@mui/material/CircularProgress';
-import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@db-supabase/supabase.config';
-import buttonStyle from './styleButton';
+import hoverButtons from './muiStyles';
 import styles from './ActividadBeca.module.css';
+import { supabase } from '@db-supabase/supabase.config'
 
 export default function ActividadBeca() {
-  const [actividad, setActividad] = useState(null);
+  const [dataActividad, setDataActividad] = useState(null)
   const [filtroNombreActividad, setFiltroNombreActividad] = useState('');
 
   const navigate = useNavigate();
 
+  /**
+   * Metodo para hacer una acutlizacion autmatica de las actividades, en caso de eliminar
+   * alguna
+   * @param {*} id 
+   */
+  const handleDelete = (id) => {
+    setDataActividad(prevDataActivity => {
+      return prevDataActivity.filter(dataActi => dataActi.id !== id)
+    })
+  }
   const handleCreateActivity = () => {
-    navigate('/detallesActividad');
+    navigate('/nuevaActividad');
   };
 
   const handleFiltrarActividad = (e) => {
@@ -32,17 +40,18 @@ export default function ActividadBeca() {
       try {
         const { data, error } = await supabase
           .from('actividad_beca')
-          .select('*');
+          .select('*')
+          .order('id')
 
         if (error) {
           console.log('Error fetching data: ', error);
         } else {
           const filteredData = data.filter((detalles) =>
             detalles.nombre_actividad.toLowerCase().includes(filtroNombreActividad.toLowerCase())
-          );
+          )
 
           // Establecer los datos filtrados en el estado 'actividad'
-          setActividad(filteredData);
+          setDataActividad(filteredData);
         }
       } catch (error) {
         console.error('Error fetching data: ', error);
@@ -56,35 +65,33 @@ export default function ActividadBeca() {
     <>
       <SideBar />
       <Title titles={encabezado} />
-      <Button>Crear Actividad</Button>
-      <TextField
-        label="Filtrar por nombre"
-        variant="outlined"
-        onChange={(e) => handleFiltrarActividad(e)}
-        sx={{ width: '200px' }}
-      />
+      <div className={styles.buttonContainer}>
+        <TextField
+          label="Filtrar por nombre"
+          variant="outlined"
+          onChange={(e) => handleFiltrarActividad(e)}
+          sx={{ width: '200px' }}
+        />
+        <Button
+          onClick={() => handleCreateActivity()}
+          sx={hoverButtons}
+          >
+          Crear Actividad
+        </Button>
+      </div>
+      
       <div className={styles.display}>
-        {actividad !== null ? (
-          actividad.map((detalles) => (
+        {dataActividad !== null ? (
+          dataActividad.map((detalles) => (
             <ContenedorActividad
               key={detalles.id}
-              nombre_actividad={detalles.nombre_actividad}
-              cupos_disponibles={detalles.cupos_disponibles}
-              horas_acreditadas={detalles.horas_acreditadas}
-              descripcion={detalles.descripcion}
+              actividad={detalles}
+              onDelete={handleDelete}
             />
           ))
         ) : (
           <CircularProgress />
         )}
-        <IconButton
-          size="large"
-          style={buttonStyle}
-          color="primary"
-          onClick={() => handleCreateActivity()}
-        >
-          <AddIcon style={{ fontSize: 'inherit' }} />
-        </IconButton>
       </div>
       <div className={styles.finalBlock}></div>
     </>

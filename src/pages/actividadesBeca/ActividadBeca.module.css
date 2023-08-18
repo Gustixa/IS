@@ -3,12 +3,16 @@
   grid-template-columns: auto auto auto auto;
   gap: 20px;
   max-width: 100%;
-  height: 20%;
-  justify-content: center;
   align-items: center;
   justify-content: center;
-  align-content: center;
-  align-self: center;
+  grid-auto-flow: row; /* Hacer que los elementos fluyan en filas */
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espacio entre los elementos */
+  margin-left: 30px;
 }
 
 .finalBlock{

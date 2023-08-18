@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Stack, TextField, Button } from '@mui/material'
 import styles from './LogIn.module.css'
-import GoogleIcon from '@mui/icons-material/Google'
 import IconButton from '@mui/material/IconButton'
 import { useNavigate } from 'react-router-dom'
 import Visibility from '@mui/icons-material/Visibility'
@@ -11,142 +10,121 @@ import { useAuthContext } from '@contexts/AuthContext'
 import { supabase } from '@db-supabase/supabase.config'
 import logInIMG from '@images/logInIMG.jpg'
 
-
-// Modificar las propiedades del boton como en css
 const hoverButtons = {
-  backgroundColor:'#028d34',
-  color:'white',
-  width:'150px',
+  backgroundColor: '#028d34',
+  color: 'white',
+  width: '150px',
   '&:hover': {
     backgroundColor: 'white',
     color: '#028d34',
     transition: '0.2s',
-    border:'1px solid #028d34'
+    border: '1px solid #028d34'
   },
-}
-const firstIcon = {
-  height: '25px',
-  width: '25px',
-  position: 'absolute',
-  left: '30px',
-  bottom: 0,
-  top: '3px',
-  alignSelf: 'flex-start',
-  pointerEvents: 'none',
-  display: 'flex',
-}
+};
 
 function LogIn() {
-  // utilizacion para poder ingresar el usuario de manera global en la app
-  const { 
-    authUser,
-    setAuthUser,
-    isLoggedIn,
-    setIsLoggedIn} = useAuthContext()
+  // Obtener funciones y estado del contexto de autenticación
+  const { authUser, setAuthUser, isLoggedIn, setIsLoggedIn } = useAuthContext();
   
-  // Funciona para poder mostrar la contraseña u ocultarla
-  const [showPassword, setShowPassword] = useState(false)
+  // Estado para mostrar u ocultar la contraseña
+  const [showPassword, setShowPassword] = useState(false);
   
-  // Almacenan los datos de sus respectivos campos
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-
-  // Almacenan el mensaje de cada campo, segun el caso
-  const [emailErrorMessage, setEmailErrorMessage] = useState('')
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
-
-  // Funcionana para setear el mensaje de error en caso de ser necesario
-  const [emailValidation, setEmailValidation] = useState(false)
-  const [passwordValidation, setPasswordValidation] = useState(false)
-
+  // Estados para almacenar los datos del formulario
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   
+  // Estados y mensajes de error para validación de campos
+  const [emailErrorMessage, setEmailErrorMessage] = useState('');
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+  const [emailValidation, setEmailValidation] = useState(false);
+  const [passwordValidation, setPasswordValidation] = useState(false);
+  
+  // Navegación para redirigir después del inicio de sesión
+  const navigate = useNavigate();
 
-  const navigate = useNavigate()
-
-  // Definiendo lo que pasara, en caso de seleccionar el boton logIn
   const handleLogIn = async (e) => {
-    e.preventDefault()
-    // Verifcando que no este vacio el campo
-    if(email === ''){
-      setEmailErrorMessage("Debe ingresar un valor en el campo")
-      setEmailValidation(true)
-      return
-    }else{
-      setEmailErrorMessage("")
-      setEmailValidation(false)
+    e.preventDefault();
+
+    // Verificar campos vacíos
+    if (email === '') {
+      setEmailErrorMessage("Debe ingresar un valor en el campo");
+      setEmailValidation(true);
+      return;
+    } else {
+      setEmailErrorMessage("");
+      setEmailValidation(false);
     }
 
-    if(password === ''){
-      setPasswordErrorMessage("Debe ingresar un valor en el campo")
-      setPasswordValidation(true)
-      return
-    }else{
-      setPasswordErrorMessage("")
-      setPasswordValidation(false)
+    if (password === '') {
+      setPasswordErrorMessage("Debe ingresar un valor en el campo");
+      setPasswordValidation(true);
+      return;
+    } else {
+      setPasswordErrorMessage("");
+      setPasswordValidation(false);
     }
-    /**
-     * Arreglar segun se estructure.
-     * El punto, es enviar el tipo de usuario, para poder mostrar una u otra pantalla
-     */
 
-    try{
+    try {
       const { data, error } = await supabase
         .from("usuario")
         .select("*")
-        .eq("correo",email)
-      if(error){
-        // Mostrar un mensaje de error al usuario, por ejemplo, con una notificación o un mensaje en pantalla
-        console.log('Error al verificar las credenciales:', error.message)
-        return
+        .eq("correo", email);
+
+      if (error) {
+        console.log('Error al verificar las credenciales:', error.message);
+        return;
       }
-      
-      const userData = data.find(user => user.correo === email)
+
+      const userData = data.find(user => user.correo === email);
+
       if (!userData) {
-        // Si no se encuentra un usuario con el correo proporcionado
-        setEmailErrorMessage("El correo es invalido. Verifique nuevamente.")
-        setEmailValidation(true)
-        return
-      }else{
-        setEmailErrorMessage("")
-        setEmailValidation(false)
+        setEmailErrorMessage("El correo es inválido. Verifique nuevamente.");
+        setEmailValidation(true);
+        return;
+      } else {
+        setEmailErrorMessage("");
+        setEmailValidation(false);
       }
-      
-      
+
       if (userData.password !== password) {
-        // Si se encontró el usuario pero la contraseña no coincide
-        setPasswordErrorMessage("La contraseña es inválida. Ingrésela nuevamente")
-        setPasswordValidation(true)
-        return
-      }else{
-        setPasswordErrorMessage("")
-        setPasswordValidation(false)
+        setPasswordErrorMessage("La contraseña es inválida. Ingrésela nuevamente");
+        setPasswordValidation(true);
+        return;
+      } else {
+        setPasswordErrorMessage("");
+        setPasswordValidation(false);
       }
-      // Si las credenciales son correctas, establece la información del usuario en el contexto de autenticación
-      setIsLoggedIn(true)
+
+      setIsLoggedIn(true);
       setAuthUser({
-        name: userData.correo, // Obtener el correo desde el campo de la tabla
-        type: userData.admin // obtener el tipo de usuario desde el campo de la tabla
-      })
-      
-      if(!data && data.admin === true){
-        navigate('/becarios')  
-      }else{
-        navigate('/registroEstudiante')  
+        name: userData.correo,
+        type: userData.admin
+      });
+
+      // Almacenar información de usuario en localStorage
+      localStorage.setItem('authUser', JSON.stringify({
+        name: userData.correo,
+        type: userData.admin
+      }));
+
+      if (userData.admin === true) {
+        navigate('/becarios');
+      } else {
+        navigate("/registroEstudiante");
       }
-      // Limpia los campos y mensajes de error después del inicio de sesión exitoso
-      setEmail('')
-      setPassword('')
-      setEmailValidation(false)
-      setPasswordValidation(false)
-      setEmailErrorMessage('')
-      setPasswordErrorMessage('')
-    }catch(error){
+
+      setEmail('');
+      setPassword('');
+      setEmailValidation(false);
+      setPasswordValidation(false);
+      setEmailErrorMessage('');
+      setPasswordErrorMessage('');
+    } catch (error) {
       console.error('Error al iniciar sesión:', error.message);
-      // Mostrar un mensaje de error al usuario, por ejemplo, con una notificación o un mensaje en pantalla
-      // MODIFICIAR
+      // Mostrar mensaje de error al usuario
     }
-    
   }
+
   
   return (
     <main>
