@@ -210,7 +210,7 @@ export default function ActualizarActividad(){
             variant="outlined"
             onClick={(e) => handleActualizarActividad(e)}
           >
-            Agregar
+            Actualizar
           </Button>
           <Button
             size="medium"

@@ -35,7 +35,7 @@ export const adminButtons = {
     'Actividades beca':{
       icon:CalendarMonthIcon,
       // MODIFICAR LA RUTA, PUES NO SERA LA RUTA RAIN 
-      ruta: '/nuevaActividadBeca'
+      ruta: '/actividadesBeca'
     }
   }
 

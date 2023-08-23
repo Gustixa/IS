@@ -63,7 +63,7 @@ export default function CrearActividad(){
     }
     return isValid
   }
-  
+
   const handleCreacionActividad = async (e) => {
     e.preventDefault()
     try{
@@ -82,6 +82,11 @@ export default function CrearActividad(){
           }
         ])
       }
+
+      // Obtén la lista de direcciones de correo electrónico de estudiantes
+      const { correos, error } = await supabase
+      .from("becado")
+      .select("correo")
 
     }catch(error){
       console.log("Error al crear la actividad: ", error.message)

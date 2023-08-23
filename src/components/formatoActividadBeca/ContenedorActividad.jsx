@@ -3,10 +3,19 @@ import IconButton from '@mui/material/IconButton'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Link } from 'react-router-dom'
+import { Button } from '@mui/material'
 import { supabase } from '@db-supabase/supabase.config'
+import { useAuthContext } from '@contexts/AuthContext'
 import styles from './ContenedorActividad.module.css'
+import {hoverButtons} from './muiStyles'
 
 export default function ContenedorActividad({ actividad, onDelete }) {
+
+  const { 
+    authUser,
+    setAuthUser,
+    isLoggedIn,
+    setIsLoggedIn} = useAuthContext()
 
   const handleDelete = async (e) => {
     try{
@@ -35,21 +44,41 @@ export default function ContenedorActividad({ actividad, onDelete }) {
       <p>{actividad.cupos_disponibles}</p>
       <p>{actividad.horas_acreditadas}</p>
       <div className={styles.buttons}>
-        <Link to={'/actualizarActividad/'+actividad.id}>
-          <IconButton 
+        {/* Conditionally render the buttons based on authUser.type */}
+        {authUser.type === true && (
+          <>
+            <Link to={'/actualizarActividad/' + actividad.id}>
+              <IconButton color="primary" size="large">
+                <EditIcon />
+              </IconButton>
+            </Link>
+            <IconButton
+              color="secondary"
+              size="large"
+              onClick={(e) => handleDelete(e)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </>
+        )}
+        {authUser.type === false && (
+          <div className={styles.buttonsStudent}>
+            <Button
+            variant="contained"
             color="primary"
-            size="large"
-            >      
-            <EditIcon/>
-          </IconButton>
-        </Link>
-        <IconButton 
-          color="secondary"
-          size="large"
-          onClick={(e) => handleDelete(e)}
-          >
-          <DeleteIcon/>
-        </IconButton>
+              sx={{...hoverButtons}}
+            >
+              Inscribirse
+            </Button>
+            <Button
+            variant="contained"
+            color="primary"
+              sx={{...hoverButtons,marginLeft:'10px'}}
+            >
+              Detalles
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )

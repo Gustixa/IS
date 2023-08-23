@@ -5,9 +5,9 @@ import Title from '@components/titles';
 import encabezado from './encabezado';
 import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
-import { Button } from '@mui/material';
+import { Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
-import hoverButtons from './muiStyles';
+import hoverButtons from './muiStyles'
 import styles from './ActividadBeca.module.css';
 import { supabase } from '@db-supabase/supabase.config'
 
@@ -95,5 +95,5 @@ export default function ActividadBeca() {
       </div>
       <div className={styles.finalBlock}></div>
     </>
-  );
+  )
 }
