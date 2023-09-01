@@ -1,19 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import SideBar from '@components/sideBar';
-import ContenedorActividad from '@components/formatoActividadBeca';
-import Title from '@components/titles';
-import encabezado from './encabezado';
-import CircularProgress from '@mui/material/CircularProgress';
-import TextField from '@mui/material/TextField';
+import React, { useState, useEffect } from 'react'
+import CircularProgress from '@mui/material/CircularProgress'
+import TextField from '@mui/material/TextField'
 import { Button } from '@mui/material'
-import { useNavigate } from 'react-router-dom';
-import hoverButtons from './muiStyles'
-import styles from './ActividadBeca.module.css';
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '@db-supabase/supabase.config'
+import { useAuthContext } from '@contexts/AuthContext'
+import SideBar from '@components/sideBar'
+import ContenedorActividad from '@components/formatoActividadBeca'
+import Title from '@components/titles'
+import encabezado from './encabezado'
+import hoverButtons from './muiStyles'
+import styles from './ActividadBeca.module.css'
+
 
 export default function ActividadBeca() {
   const [dataActividad, setDataActividad] = useState(null)
   const [filtroNombreActividad, setFiltroNombreActividad] = useState('');
+
+  const { 
+    authUser,
+    setAuthUser,
+    isLoggedIn,
+    setIsLoggedIn} = useAuthContext()
 
   const navigate = useNavigate();
 
@@ -71,13 +79,17 @@ export default function ActividadBeca() {
           variant="outlined"
           onChange={(e) => handleFiltrarActividad(e)}
           sx={{ width: '200px' }}
+          id="filtroActividades"
         />
-        <Button
-          onClick={() => handleCreateActivity()}
-          sx={hoverButtons}
-          >
-          Crear Actividad
-        </Button>
+        {authUser.type === true && (
+          <Button
+            onClick={() => handleCreateActivity()}
+            sx={hoverButtons}
+            >
+            Crear Actividad
+          </Button>
+        )}
+        
       </div>
       
       <div className={styles.display}>

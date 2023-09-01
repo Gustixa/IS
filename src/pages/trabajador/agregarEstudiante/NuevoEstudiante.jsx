@@ -9,30 +9,30 @@ export default function NuevoEstudiante() {
   const [name, setName] = useState("")
   const [carrera, setCarrera] = useState("")
   const [cantidadBeca, setCantidadBeca] = useState("")
-  const [cantidadCreditoFinanciero, setCantidadCreditoFinanciero] = useState("")
   const [facultadCarrera, setfacultadCarrera] = useState("")
   const [email, setEmail] = useState("")
-  const [contrasenia, setContrasenia] = useState("")
+  const [depto, setDepto] = useState("")
   const [carnetEstudiante, setcarnetEstudiante] = useState("")
+  const [horasEstudiante, setHorasEstudiante] = useState("")
 
 
   const [nameErrorMessage, setNameErrorMessage] = useState("")
   const [carreraErrorMessage, setCarreraErrorMessage] = useState("")
   const [cantidadBecaErrorMessage, setCantidadBecaErrorMessage] = useState("")
-  const [cantidadCreditoFinancieroErrorMessage, setCantidadCreditoFinancieroErrorMessage] = useState("")
   const [facultadCarreraErrorMessage, setfacultadCarreraErrorMessage] = useState("")
   const [emailErrorMessage, setEmailErrorMessage] = useState("")
-  const [contraseniaErrorMessage, setContraseniaErrorMessage] = useState("")
+  const [deptoErrorMessage, setDeptoErrorMessage] = useState("")
   const [carnetEstudianteErrorMessage, setcarnetEstudianteErrorMessage] = useState("")
+  const [horasEstudianteErrorMessage, setHorasEstudianteErrorMessage] = useState("")
 
   const [nameValidation, setNameValidation] = useState(false)
   const [carreraValidation, setCarreraValidation] = useState(false)
   const [cantidadBecaValidation, setCantidadBecaValidation] = useState(false)
-  const [cantidadCreditoFinancieroValidation, setCantidadCreditoFinancieroValidation] = useState(false)
   const [facultadCarreraValidation, setfacultadCarreraValidation] = useState(false)
   const [emailValidation, setEmailValidation] = useState(false)
-  const [contraseniaValidation, setContraseniaValidation] = useState(false)
+  const [deptoValidation, setDeptoValidation] = useState(false)
   const [carnetEstudianteValidation, setcarnetEstudianteValidation] = useState(false)
+  const [horasEstudianteValidation, setHorasEstudianteValidation] = useState(false)
 
   /**
    * Verificacion de los campos, que son datos requeridos para almacenar en la db
@@ -65,14 +65,14 @@ export default function NuevoEstudiante() {
       setCantidadBecaValidation(false)
       setCantidadBecaErrorMessage("")
     }
-    // cantidad credito financiero estudiante
-    if(!cantidadCreditoFinanciero){
-      setCantidadCreditoFinancieroValidation(true)
-      setCantidadCreditoFinancieroErrorMessage("Debe ingresar la cantidad de credito financiero")
+    // Horas que el estudiante debe realizar por ciclo
+    if(!horasEstudiante){
+      setHorasEstudianteValidation(true)
+      setHorasEstudianteErrorMessage("Debe ingresar la cantidad de horas que debe realizar el estudiante")
       isValid = false
     }else{
-      setCantidadCreditoFinancieroValidation(false)
-      setCantidadCreditoFinancieroErrorMessage("")
+      setHorasEstudianteValidation(false)
+      setHorasEstudianteErrorMessage("")
     }
     // facultad a la que pertenece la carrera
     if(!facultadCarrera){
@@ -93,13 +93,13 @@ export default function NuevoEstudiante() {
       setEmailErrorMessage("")
     }
     // contrasenia para ingresar al sistema y ver su registro de hroas beca
-    if(!contrasenia){
-      setContraseniaValidation(true)
-      setContraseniaErrorMessage("Debe ingresar la contraseña para el estudiante, esto para que use el sistema")
+    if(!depto){
+      setDeptoValidation(true)
+      setDeptoErrorMessage("Debe ingresar la contraseña para el estudiante, esto para que use el sistema")
       isValid = false
     }else{
-      setContraseniaValidation(false)
-      setContraseniaErrorMessage("")
+      setDeptoValidation(false)
+      setDeptoErrorMessage("")
     }
     // carnet del estudiante
     if(!carnetEstudiante){
@@ -110,11 +110,24 @@ export default function NuevoEstudiante() {
       setcarnetEstudianteValidation(false)
       setcarnetEstudianteErrorMessage("")
     }
-    console.log('isValid', isValid)
+    // validacion de las horas a realizar
+    if(!horasEstudiante){
+      setHorasEstudianteValidation(true)
+      setHorasEstudianteErrorMessage("Debe ingresar un valor para las horas que debe realizar el estudiante")
+      isValid = false
+    }else{
+      setHorasEstudianteValidation(false)
+      setHorasEstudianteErrorMessage("")
+    }
     return isValid
   }
 
+  // Obtener el año actual del sistema
+  const obtenerAnioActual = () => new Date().getFullYear()
 
+  // Llamar a la función para obtener el año actual
+  const anioActual = obtenerAnioActual()
+  
   const handleAgregarEstudiante = async (e) => {
     e.preventDefault()
     
@@ -129,46 +142,48 @@ export default function NuevoEstudiante() {
         .insert([
           {
             porcentaje_beca:cantidadBeca,
-            porcentaje_credito: cantidadCreditoFinanciero,
+            horas_realizar: horasEstudiante,
             carrera: carrera,        
             facultad: facultadCarrera,
-            anio: "2023",
+            anio: anioActual,
             horas_acumuladas:"0",
             nombre_estudiante:name,
             carnet: carnetEstudiante,
             correo: email,
-            password:contrasenia
+            departamento:depto
           }
         ])
-        console.log(data)
-        console.log(error)
-        // Insertar al estudiante en la tabla "usuario"
-        const { dataUser, errorUser } = await supabase
-          .from('usuario')
-          .insert([
-            {
-              email,
-              contrasenia,
-              admin: false,
-            }
-          ])
-    
-        if(data){
-          console.log(data)
-        }
       }
       
     }catch(error){
       console.error('Error al agregar estudiante:', error.message)
     }
 
+    try{
+      // Insertar al estudiante en la tabla "usuario"
+      const { dataUser, errorUser } = await supabase
+        .from('usuario')
+        .insert([
+          {
+            correo:email,
+            password: carnetEstudiante,
+            admin: false,
+          }
+        ])
+  
+      if(dataUser){
+        console.log(data)
+      }
+    }catch(error){
+      console.log("Error: ", error.message)
+    }
     setName("")
     setCarrera("")
     setCantidadBeca("")
-    setCantidadCreditoFinanciero("")
+    setHorasEstudiante("")
     setfacultadCarrera("")
     setEmail("")
-    setContrasenia("")
+    setDepto("")
     setcarnetEstudiante("")
     
   }
@@ -208,26 +223,14 @@ export default function NuevoEstudiante() {
           </Grid>
           <Grid item xs={6}>
             <TextField
-              label="Cantidad de beca"
+              label="Departamento"
               variant="outlined"
               fullWidth
               style={textFieldStyles}
-              value={cantidadBeca}
-              onChange={(e) => setCantidadBeca(e.target.value)}
-              error={cantidadBecaValidation}
-              helperText={cantidadBecaErrorMessage}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Cantidad de credito financiero"
-              variant="outlined"
-              fullWidth
-              style={textFieldStyles}
-              value={cantidadCreditoFinanciero}
-              onChange={(e) => setCantidadCreditoFinanciero(e.target.value)}
-              error={cantidadCreditoFinancieroValidation}
-              helperText={cantidadCreditoFinancieroErrorMessage}
+              value={depto}
+              onChange={(e) => setDepto(e.target.value)}
+              error={deptoValidation}
+              helperText={deptoErrorMessage}
             />
           </Grid>
           <Grid item xs={6}>
@@ -241,6 +244,30 @@ export default function NuevoEstudiante() {
               error={facultadCarreraValidation}
               helperText={facultadCarreraErrorMessage}
             />
+          </Grid>          
+          <Grid item xs={6}>
+            <TextField
+              label="Cantidad de beca"
+              variant="outlined"
+              fullWidth
+              style={textFieldStyles}
+              value={cantidadBeca}
+              onChange={(e) => setCantidadBeca(e.target.value)}
+              error={cantidadBecaValidation}
+              helperText={cantidadBecaErrorMessage}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Cantidad Horas a Realizar por el Estudiante"
+              variant="outlined"
+              fullWidth
+              style={textFieldStyles}
+              value={horasEstudiante}
+              onChange={(e) => setHorasEstudiante(e.target.value)}
+              error={horasEstudianteValidation}
+              helperText={horasEstudianteErrorMessage}
+            />
           </Grid>
           <Grid item xs={6}>
             <TextField
@@ -253,19 +280,7 @@ export default function NuevoEstudiante() {
               error={emailValidation}
               helperText={emailErrorMessage}
             />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Constraseña para que el estudiante ingrese"
-              variant="outlined"
-              fullWidth
-              style={textFieldStyles}
-              value={contrasenia}
-              onChange={(e) => setContrasenia(e.target.value)}
-              error={contraseniaValidation}
-              helperText={contraseniaErrorMessage}
-            />
-          </Grid>
+          </Grid>          
           <Grid item xs={6}>
             <TextField
               label="Carnet"

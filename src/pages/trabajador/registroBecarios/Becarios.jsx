@@ -1,5 +1,4 @@
 import React, { useState,useEffect } from 'react'
-import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
@@ -18,6 +17,7 @@ import { StyledTableCell, StyledTableRow} from './muiStylesBecario'
 
 export default function Becarios(){
   const[studentsData, setStudentsData] = useState([])
+
   const[filtroAnio, setFiltroAnio] = useState("")
   const[filtroNombre, setFiltroNombre] = useState("")
   const[filtroCarnet, setFiltroCarnet] = useState("")
@@ -193,7 +193,7 @@ export default function Becarios(){
                       {student.porcentaje_beca}
                     </StyledTableCell>
                     <StyledTableCell align="right">
-                      {student.porcentaje_credito}
+                      {student.horas_realizar}
                     </StyledTableCell>
                     <StyledTableCell align="right">
                       {student.horas_acumuladas}

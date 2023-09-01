@@ -1,3 +1,7 @@
+/**
+ * Este archivo funciona para poder tener los encabezados para la tabla que se presentara a
+ * los trabajadores
+ */
 const encabezados = [
     "Nombre",
     "Carnet",
@@ -5,7 +9,7 @@ const encabezados = [
     "Facultad",
     "Año",
     "Porcentaje de Beca",
-    "Porcentaje de Credito",
+    "Horas a Ralizar Presente Ciclo",
     "Horas acumuladas"
 ]
 

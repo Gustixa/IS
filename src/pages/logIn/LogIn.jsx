@@ -97,13 +97,13 @@ function LogIn() {
 
       setIsLoggedIn(true);
       setAuthUser({
-        name: userData.correo,
+        correo: userData.correo,
         type: userData.admin
       });
 
       // Almacenar información de usuario en localStorage
       localStorage.setItem('authUser', JSON.stringify({
-        name: userData.correo,
+        correo: userData.correo,
         type: userData.admin
       }));
 

@@ -26,18 +26,34 @@ export default function ContenedorActividad({ actividad, onDelete }) {
       onDelete(actividad.id)
       if(data){
         console.log(data)
-       
       }
 
     }catch(error){
-
+      console.log("Algo salio mal: ", error)
     }
+  }
+  console.log(authUser.correo)
+  const handleInscripcion = async (e) => {
+    try{
+      const { dataEstudiante, error } = await supabase
+      .from("inscripcion_actividad")
+      .insert([
+        {
+          actividad_id: actividad.id,
+          acreditado: false,
+          correo_estudiante: authUser.correo
+        }
+      ])
+      .select()
 
+    }catch(error){
+      console.log("Error: ", error.message)
+    }
   }
   return (
     <div className={styles.container}>
       
-      <h1>{actividad.nombre_actividad}</h1>
+      <h1 id='tituloActividad'>{actividad.nombre_actividad}</h1>
       <p className={styles.scrollableText}>
         {actividad.descripcion}
        </p>
@@ -61,12 +77,13 @@ export default function ContenedorActividad({ actividad, onDelete }) {
             </IconButton>
           </>
         )}
-        {authUser.type === false && (
+         {authUser.type === false && (
           <div className={styles.buttonsStudent}>
             <Button
-            variant="contained"
-            color="primary"
+              variant="contained"
+              color="primary"
               sx={{...hoverButtons}}
+              onClick={(e) => handleInscripcion(e)}
             >
               Inscribirse
             </Button>

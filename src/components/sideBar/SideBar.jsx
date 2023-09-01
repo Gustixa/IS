@@ -105,6 +105,7 @@ export default function SideBar(){
           <Toolbar variant='dense'>
             <IconButton edge="start" color="inherit"
               onClick={toggleDrawer('left', true)}
+              id='menuIcono'
             >
               <MenuIcon/>
             </IconButton>

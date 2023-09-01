@@ -1,5 +1,5 @@
 import React, {
-  createContext, useState, useContext, useMemo, useEffect,
+  createContext, useState, useContext, useMemo, useEffect, useRef,
 } from 'react'
 import PropTypes from 'prop-types'
 
@@ -18,7 +18,10 @@ export function useAuthContext() {
 }
 
 function AuthProvider({ children }) {
-  const [authUser, setAuthUser] = useState(null)
+  const [authUser, setAuthUser] = useState({
+    correo: '',
+    type: false
+  })
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {

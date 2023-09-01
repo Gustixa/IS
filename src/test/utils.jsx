@@ -1,12 +1,20 @@
-import { AuthProvider } from '@contexts/AuthContext'
-import { render } from '@testing-library/react'
+/* eslint-disable import/export */
+import { cleanup, render } from '@testing-library/react';
+import { afterEach } from 'vitest';
 
-export function renderWithContext(ui, context) {
-  return {
-    ...render(
-      <AuthProvider value={context}>
-         {ui}  
-      </AuthProvider>  
-    ),
-  } 
+afterEach(() => {
+  cleanup();
+});
+
+function customRender(ui, options = {}) {
+  return render(ui, {
+    // wrap provider(s) here if needed
+    wrapper: ({ children }) => children,
+    ...options,
+  });
 }
+
+export * from '@testing-library/react';
+export { default as userEvent } from '@testing-library/user-event';
+// override render export
+

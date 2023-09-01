@@ -18,37 +18,69 @@ export default function Routing(){
 
   return (
     <BrowserRouter>
+    
     {/** El protected route es global, pues no se desea tener acceso, a menos que haya iniciado sesion */}
-      <ProtectedRoute>
-        <Routes>
-          <Route path='/logIn' element={<LogIn/>}/>
-          <Route
-            exact
-            path="/"
-            element={(
-                <Home />
-            )}
-          />
-          {/* ESTE APARTADO ES PARA LOS ADMINISTRADORES Y LA NAVEGACION QUE POSEERAN */}
-          {/** Pagina para mostrar todas las actividades beca vigentes */}
-          <Route path='/actividadesBeca' element={(<ActividadBeca/>)}/>
-          {/* Pagina para mostrar informacion de los estudiantes */}
-          <Route path='/becarios' element={<Becarios/>}/>
-          {/* Pagina para poder ingrear un nuevo estudiante al sistema */}
-          <Route path='/NuevoEstudiante' element={<NuevoEstudiante/>}/>
-          {/** Pagina como alternativa para ingresa manualmente los datos de la actividad beca */}
-          <Route path='/actividadBecario' element={(<ActividadBecario/>)}/>  
-          {/**Pagina para crear una actividad de horas beca */}
-          <Route path='/nuevaActividad' element={<CrearActividad/>}/>
-          <Route path='/actualizarActividad/:id' element={<ActualizarActividad/>}/>
+      
+      <Routes>
+        <Route path='/logIn' element={<LogIn/>}/>
+            
+        <Route
+          exact
+          path="/"
+          element={(
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          )}
+        />
+        {/* ESTE APARTADO ES PARA LOS ADMINISTRADORES Y LA NAVEGACION QUE POSEERAN */}
+        {/** Pagina para mostrar todas las actividades beca vigentes */}
+        <Route path='/actividadesBeca' element={(
+          <ProtectedRoute>
+            <ActividadBeca/>
+          </ProtectedRoute>
+        )}/>
+        {/* Pagina para mostrar informacion de los estudiantes */}
+        <Route path='/becarios' element={
+          <ProtectedRoute>
+            <Becarios/>
+          </ProtectedRoute>
+        }/>
+        {/* Pagina para poder ingrear un nuevo estudiante al sistema */}
+        <Route path='/NuevoEstudiante' element={
+          <ProtectedRoute>
+            <NuevoEstudiante/>
+          </ProtectedRoute>
+        }/>
+        {/** Pagina como alternativa para ingresa manualmente los datos de la actividad beca */}
+        <Route path='/actividadBecario' element={(
+          <ProtectedRoute>
+            <ActividadBecario/>
+          </ProtectedRoute>
+        )}/>  
+        {/**Pagina para crear una actividad de horas beca */}
+        <Route path='/nuevaActividad' element={
+          <ProtectedRoute>
+            <CrearActividad/>
+          </ProtectedRoute>
+        
+        }/>
+        <Route path='/actualizarActividad/:id' element={
+          <ProtectedRoute>
+            <ActualizarActividad/>
+          </ProtectedRoute>
+        }/>
 
 
-          {/* ESTE APARTADO ES PARA LA NAVEGACION DE LO ESTUDIANTES */}
-          {/* Pagina donde el estudiante ve como ha realizado sus horas de beca */}
-          <Route path='/registroEstudiante' element={<HistorialBeca/>}/>
-          
-        </Routes>
-      </ProtectedRoute>  
+        {/* ESTE APARTADO ES PARA LA NAVEGACION DE LO ESTUDIANTES */}
+        {/* Pagina donde el estudiante ve como ha realizado sus horas de beca */}
+        <Route path='/registroEstudiante' element={
+          <ProtectedRoute>
+            <HistorialBeca/>
+          </ProtectedRoute>
+        }/>
+        
+      </Routes>
     </BrowserRouter>
   )
 }
