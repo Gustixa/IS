@@ -36,7 +36,8 @@
     "react-router-dom": "^6.14.1",
     "vite": "^4.4.6",
     "vitest": "^0.34.1",
-    "yarn": "^1.22.19"
+    "yarn": "^1.22.19",
+    "yarn.lock": "^0.0.1-security"
   },
   "devDependencies": {
     "@types/react": "^18.0.37",

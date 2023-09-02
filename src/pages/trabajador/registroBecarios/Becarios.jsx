@@ -128,9 +128,11 @@ export default function Becarios(){
           type="number"
           onChange={handleChangeCarnet}
           inputProps={{min: '0'}}
+          id="filterCarne"
           InputLabelProps={{
             shrink:true
           }}
+          
         />
         <TextField
           className={styles.input}
