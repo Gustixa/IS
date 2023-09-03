@@ -1,3 +1,8 @@
+/**
+ * Formato base para mostrar las actividades de horas beca que
+ * pueden realizar los estudiantes. En si, es para presentar las actividades
+ * creadas y a las que se pueden inscribir.
+ */
 import React from 'react'
 import IconButton from '@mui/material/IconButton'
 import EditIcon from '@mui/icons-material/Edit'
@@ -9,7 +14,7 @@ import { useAuthContext } from '@contexts/AuthContext'
 import styles from './ContenedorActividad.module.css'
 import {hoverButtons} from './muiStyles'
 
-export default function ContenedorActividad({ actividad, onDelete }) {
+export default function ContenedorActividad({ actividad, onDelete, inscrito }) {
 
   const { 
     authUser,
@@ -77,8 +82,9 @@ export default function ContenedorActividad({ actividad, onDelete }) {
             </IconButton>
           </>
         )}
-         {authUser.type === false && (
-          <div className={styles.buttonsStudent}>
+        <div className={styles.buttonsStudent}>
+         {authUser.type === false && !inscrito && (
+          
             <Button
               variant="contained"
               color="primary"
@@ -87,6 +93,10 @@ export default function ContenedorActividad({ actividad, onDelete }) {
             >
               Inscribirse
             </Button>
+          
+        )}
+        {authUser.type === false && (
+          
             <Button
             variant="contained"
             color="primary"
@@ -94,8 +104,9 @@ export default function ContenedorActividad({ actividad, onDelete }) {
             >
               Detalles
             </Button>
-          </div>
+          
         )}
+        </div>
       </div>
     </div>
   )

@@ -12,93 +12,115 @@ import encabezado from './encabezado'
 import hoverButtons from './muiStyles'
 import styles from './ActividadBeca.module.css'
 
-
 export default function ActividadBeca() {
-  const [dataActividad, setDataActividad] = useState(null)
-  const [filtroNombreActividad, setFiltroNombreActividad] = useState('');
+  const [dataActividad, setDataActividad] = useState(null) // Estado para almacenar datos de actividades generales
+  const [filtroNombreActividad, setFiltroNombreActividad] = useState('') // Estado para el filtro de nombre de actividad
 
   const { 
     authUser,
     setAuthUser,
     isLoggedIn,
-    setIsLoggedIn} = useAuthContext()
+    setIsLoggedIn
+  } = useAuthContext() // Obtiene el contexto de autenticación del usuario
 
-  const navigate = useNavigate();
+  const navigate = useNavigate() // Permite la navegación entre rutas
 
-  /**
-   * Metodo para hacer una acutlizacion autmatica de las actividades, en caso de eliminar
-   * alguna
-   * @param {*} id 
-   */
+  // Función para manejar la eliminación de actividades
   const handleDelete = (id) => {
     setDataActividad(prevDataActivity => {
       return prevDataActivity.filter(dataActi => dataActi.id !== id)
     })
   }
+
+  // Función para redirigir a la creación de una nueva actividad
   const handleCreateActivity = () => {
-    navigate('/nuevaActividad');
-  };
+    navigate('/nuevaActividad')
+  }
 
+  // Función para manejar el cambio en el filtro de nombre de actividad
   const handleFiltrarActividad = (e) => {
-    setFiltroNombreActividad(e.target.value);
-  };
+    setFiltroNombreActividad(e.target.value)
+  }
 
+  // Efecto para cargar las actividades generales
   useEffect(() => {
     const fetchActividad = async () => {
       try {
-        const { data, error } = await supabase
-          .from('actividad_beca')
-          .select('*')
-          .order('id')
+        // Obtener los IDs de las actividades en las que el usuario está inscrito
+        const { data: inscripcionData, error: errorInscripcionData } = await supabase
+          .from("inscripcion_actividad")
+          .select("actividad_id")
+          .eq("correo_estudiante", authUser.correo)
 
-        if (error) {
-          console.log('Error fetching data: ', error);
+        if (errorInscripcionData) {
+          console.log("Error fetching inscripcionData: ", errorInscripcionData)
         } else {
-          const filteredData = data.filter((detalles) =>
-            detalles.nombre_actividad.toLowerCase().includes(filtroNombreActividad.toLowerCase())
-          )
+          // Obtener una lista de IDs de actividades inscritas
+          const actividadIdsInscritas = inscripcionData.map((inscripcion) => inscripcion.actividad_id)
 
-          // Establecer los datos filtrados en el estado 'actividad'
-          setDataActividad(filteredData);
+          // Obtener todas las actividades generales
+          const { data: actividadData, error: errorActividadData } = await supabase
+            .from("actividad_beca")
+            .select("*")
+            .order('id')
+
+          if (errorActividadData) {
+            console.log("Error fetching actividadData: ", errorActividadData)
+          } else {
+            // Filtrar las actividades generales para excluir las inscritas
+            const actividadesGenerales = actividadData.filter((actividad) =>
+              !actividadIdsInscritas.includes(actividad.id)
+            )
+
+            // Filtrar las actividades generales por nombre
+            const filteredData = actividadesGenerales.filter((detalles) =>
+              detalles.nombre_actividad.toLowerCase().includes(filtroNombreActividad.toLowerCase())
+            )
+
+            // Establecer los datos filtrados en el estado 'actividad'
+            setDataActividad(filteredData)
+          }
         }
       } catch (error) {
-        console.error('Error fetching data: ', error);
+        console.error('Error fetching data: ', error)
       }
-    };
+    }
 
-    fetchActividad();
-  }, [filtroNombreActividad]);
+    fetchActividad()
+  }, [filtroNombreActividad, authUser.correo])
 
   return (
     <>
-      <SideBar />
-      <Title titles={encabezado} />
+      <SideBar /> {/* Barra lateral */}
+      <Title titles={encabezado} /> {/* Título de la página */}
       <div className={styles.buttonContainer}>
+        {/* Campo de filtro de nombre de actividad */}
         <TextField
-          label="Filtrar por nombre"
+          label="Filtrar actividad por nombre"
           variant="outlined"
           onChange={(e) => handleFiltrarActividad(e)}
           sx={{ width: '200px' }}
           id="filtroActividades"
         />
+        {/* Botón para crear una nueva actividad (solo visible para usuarios con tipo true) */}
         {authUser.type === true && (
           <Button
             onClick={() => handleCreateActivity()}
             sx={hoverButtons}
-            >
+          >
             Crear Actividad
           </Button>
         )}
-        
       </div>
-      
       <div className={styles.display}>
+        {/* Muestra las actividades generales */}
         {dataActividad !== null ? (
           dataActividad.map((detalles) => (
             <ContenedorActividad
               key={detalles.id}
               actividad={detalles}
               onDelete={handleDelete}
+              inscrito={false} // Todas las actividades son generales
             />
           ))
         ) : (

@@ -13,6 +13,7 @@ import ActividadBeca from '@pages/actividadesBeca'
 import CrearActividad from '@trabajador/crearActividad'
 import ActividadBecario from '@trabajador/actividadBecario'
 import ActualizarActividad from '@trabajador/actualizarActividad'
+import ActividadInscrita from '@estudiante/actividadInscrita'
 
 export default function Routing(){
 
@@ -77,6 +78,12 @@ export default function Routing(){
         <Route path='/registroEstudiante' element={
           <ProtectedRoute>
             <HistorialBeca/>
+          </ProtectedRoute>
+        }/>
+        {/* Pagina para ver las actividades en las que el estudiante se ha inscrito */}
+        <Route path='/actividadesInscritas' element={
+          <ProtectedRoute>
+            <ActividadInscrita/>
           </ProtectedRoute>
         }/>
         

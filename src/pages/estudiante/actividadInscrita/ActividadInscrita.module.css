@@ -1,0 +1,22 @@
+.display{
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    gap: 20px;
+    max-width: 100%;
+    align-items: center;
+    justify-content: center;
+    grid-auto-flow: row; /* Hacer que los elementos fluyan en filas */
+  }
+  
+
+  .buttonContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espacio entre los elementos */
+    margin-left: 30px;
+    margin-top: 20px;
+  }
+
+  .finalBlock{
+    height: 30px;
+  }

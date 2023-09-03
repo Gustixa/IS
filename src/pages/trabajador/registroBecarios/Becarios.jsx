@@ -1,51 +1,51 @@
-import React, { useState,useEffect } from 'react'
-import CircularProgress from '@mui/material/CircularProgress'
-import Box from '@mui/material/Box'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
-import TextField from '@mui/material/TextField'
-import SideBar from '@components/sideBar'
-import { supabase } from '@db-supabase/supabase.config'
-import styles from './Becarios.module.css'
-import encabezados from './data'
-import { StyledTableCell, StyledTableRow} from './muiStylesBecario'
+import React, { useState, useEffect } from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SideBar from '@components/sideBar';
+import { supabase } from '@db-supabase/supabase.config';
+import styles from './Becarios.module.css';
+import encabezados from './data';
+import { StyledTableCell, StyledTableRow } from './muiStylesBecario';
 
+export default function Becarios() {
+  const [studentsData, setStudentsData] = useState([]);
+  const [filtroAnio, setFiltroAnio] = useState('');
+  const [filtroNombre, setFiltroNombre] = useState('');
+  const [filtroCarnet, setFiltroCarnet] = useState('');
+  const [filtroBeca, setFiltroBeca] = useState('');
+  const [filtroFacultad, setFiltroFacultad] = useState('');
+  const [filtroHorasFaltantes, setFiltroHorasFaltantes] = useState('');
 
-export default function Becarios(){
-  const[studentsData, setStudentsData] = useState([])
-
-  const[filtroAnio, setFiltroAnio] = useState("")
-  const[filtroNombre, setFiltroNombre] = useState("")
-  const[filtroCarnet, setFiltroCarnet] = useState("")
-  const[filtroBeca, setFiltroBeca] = useState("")
-  const[filtroFacultad, setFiltroFacultad] = useState("")
-  const[filtroHorasFaltantes, setFiltroHorasFaltantes] = useState("")
-  
   const handleChangeAnio = (event) => {
-    const inputValue = event.target.value
-    if(inputValue >= 0 || inputValue === ''){
-      setFiltroAnio(inputValue)
+    const inputValue = event.target.value;
+    if (inputValue >= 0 || inputValue === '') {
+      setFiltroAnio(inputValue);
     }
-  }
+  };
 
   const handleChangeNombre = (event) => {
-    setFiltroNombre(event.target.value)
-  }
+    setFiltroNombre(event.target.value);
+  };
 
   const handleChangeCarnet = (event) => {
-    const inputValue = event.target.value; // Corregir event.traget.value a event.target.value
-    if (inputValue >= 0 || inputValue === "") {
+    const inputValue = event.target.value;
+    if (inputValue >= 0 || inputValue === '') {
       setFiltroCarnet(inputValue);
     }
   };
 
   const handleChangeBeca = (event) => {
     const inputValue = event.target.value;
-    if (inputValue >= 0 || inputValue === "") {
+    if (inputValue >= 0 || inputValue === '') {
       setFiltroBeca(inputValue);
     }
   };
@@ -56,61 +56,65 @@ export default function Becarios(){
 
   const handleChangeHorasFaltantes = (event) => {
     const inputValue = event.target.value;
-    if (inputValue >= 0 || inputValue === "") {
+    if (inputValue >= 0 || inputValue === '') {
       setFiltroHorasFaltantes(inputValue);
     }
   };
 
+  const handleDelete = async (studentId) => {
+    try {
+      const { error } = await supabase.from('becado').delete().eq('id', studentId);
 
-  // Obtencion de la informacion de la db
+      if (error) {
+        console.error('Error al eliminar el estudiante:', error);
+      } else {
+        setStudentsData((prevData) => prevData.filter((student) => student.id !== studentId));
+      }
+    } catch (error) {
+      console.error('Error al eliminar el estudiante:', error);
+    }
+  };
+
   useEffect(() => {
-    // Definición de la función async para obtener los datos de la base de datos
-    async function fetchStudentsData(){
-      // Obtener los datos de la tabla "becado" desde la base de datos
-      const { data, error } = await supabase
-      .from("becado")
-      .select("*")
+    async function fetchStudentsData() {
+      try {
+        const { data, error } = await supabase.from('becado').select('*');
 
-      if(error){
-        // En caso de error al obtener los datos, se muestra un mensaje en la consola
-        console.log("Error fetching data: ", error)
-      }else{
-        // Filtrar los datos según los criterios de búsqueda ingresados por el usuario
-        const filteredData = data.filter((student) => {
-          return (
-            student.anio.includes(filtroAnio) &&
-            student.nombre_estudiante.toLowerCase().includes(filtroNombre.toLowerCase()) &&
-            student.carnet.includes(filtroCarnet) &&
-            (filtroBeca === "" || student.porcentaje_beca.toString().includes(filtroBeca)) &&
-            (filtroFacultad === '' || student.facultad.toLowerCase().includes(filtroFacultad.toLowerCase())) &&
-            (filtroHorasFaltantes === "" || student.horas_acumuladas >= parseInt(filtroHorasFaltantes))
-          )
-        })
-        // Establecer los datos filtrados en el estado "studentsData"
-        setStudentsData(filteredData)
+        if (error) {
+          console.log('Error fetching data: ', error);
+        } else {
+          const filteredData = data.filter((student) => {
+            return (
+              student.anio.includes(filtroAnio) &&
+              student.nombre_estudiante.toLowerCase().includes(filtroNombre.toLowerCase()) &&
+              student.carnet.includes(filtroCarnet) &&
+              (filtroBeca === '' || student.porcentaje_beca.toString().includes(filtroBeca)) &&
+              (filtroFacultad === '' || student.facultad.toLowerCase().includes(filtroFacultad.toLowerCase())) &&
+              (filtroHorasFaltantes === '' || student.horas_acumuladas >= parseInt(filtroHorasFaltantes))
+            );
+          });
+          setStudentsData(filteredData);
+        }
+      } catch (error) {
+        console.error('Error fetching data: ', error);
       }
     }
-    // Llamar a la función para obtener y filtrar los datos
-    fetchStudentsData()
-  }, [filtroAnio,filtroNombre,filtroCarnet,filtroBeca,filtroFacultad,filtroHorasFaltantes])
+    fetchStudentsData();
+  }, [filtroAnio, filtroNombre, filtroCarnet, filtroBeca, filtroFacultad, filtroHorasFaltantes]);
 
   return (
     <div>
-     <SideBar/>
-      
-      <Box
-        component="form"
-        className={styles.box}
-      >
+      <SideBar />
+      <Box component="form" className={styles.box}>
         <TextField
           className={styles.input}
           label="Filtrar por año"
           variant="outlined"
           type="number"
           onChange={handleChangeAnio}
-          inputProps={{min: '0'}}
+          inputProps={{ min: '0' }}
           InputLabelProps={{
-            shrink: true
+            shrink: true,
           }}
           sx={{ width: '150px' }}
         />
@@ -127,12 +131,11 @@ export default function Becarios(){
           variant="outlined"
           type="number"
           onChange={handleChangeCarnet}
-          inputProps={{min: '0'}}
+          inputProps={{ min: '0' }}
           id="filterCarne"
           InputLabelProps={{
-            shrink:true
+            shrink: true,
           }}
-          
         />
         <TextField
           className={styles.input}
@@ -140,9 +143,9 @@ export default function Becarios(){
           variant="outlined"
           type="number"
           onChange={handleChangeBeca}
-          inputProps={{min: '0'}}
+          inputProps={{ min: '0' }}
           InputLabelProps={{
-            shrink: true
+            shrink: true,
           }}
         />
         <TextField
@@ -151,9 +154,9 @@ export default function Becarios(){
           variant="outlined"
           type="text"
           onChange={handleChangeFiltroFacultad}
-          inputProps={{min: '0'}}
+          inputProps={{ min: '0' }}
           InputLabelProps={{
-            shrink: true
+            shrink: true,
           }}
         />
         <TextField
@@ -162,15 +165,14 @@ export default function Becarios(){
           variant="outlined"
           type="number"
           onChange={handleChangeHorasFaltantes}
-          inputProps={{min: '0'}}
+          inputProps={{ min: '0' }}
           InputLabelProps={{
-            shrink: true
+            shrink: true,
           }}
           sx={{ width: '200px' }}
         />
       </Box>
       <div className={styles.data}>
-        {/*  Aqui debe ir la data de los estudiantes para mostrarse */}
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
@@ -178,6 +180,7 @@ export default function Becarios(){
                 {encabezados.map((encabezado) => (
                   <StyledTableCell key={encabezado}>{encabezado}</StyledTableCell>
                 ))}
+                <StyledTableCell align="right">Acciones</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -191,20 +194,23 @@ export default function Becarios(){
                     <StyledTableCell align="right">{student.carrera}</StyledTableCell>
                     <StyledTableCell align="right">{student.facultad}</StyledTableCell>
                     <StyledTableCell align="right">{student.anio}</StyledTableCell>
+                    <StyledTableCell align="right">{student.porcentaje_beca}</StyledTableCell>
+                    <StyledTableCell align="right">{student.horas_realizar}</StyledTableCell>
+                    <StyledTableCell align="right">{student.horas_acumuladas}</StyledTableCell>
                     <StyledTableCell align="right">
-                      {student.porcentaje_beca}
-                    </StyledTableCell>
-                    <StyledTableCell align="right">
-                      {student.horas_realizar}
-                    </StyledTableCell>
-                    <StyledTableCell align="right">
-                      {student.horas_acumuladas}
+                      <IconButton
+                        color="secondary"
+                        aria-label="Eliminar estudiante"
+                        onClick={() => handleDelete(student.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
                     </StyledTableCell>
                   </StyledTableRow>
                 ))
               ) : (
                 <StyledTableRow>
-                  <StyledTableCell colSpan={8} align="center">
+                  <StyledTableCell colSpan={9} align="center">
                     <CircularProgress />
                   </StyledTableCell>
                 </StyledTableRow>
@@ -214,5 +220,5 @@ export default function Becarios(){
         </TableContainer>
       </div>
     </div>
-  )
+  );
 }

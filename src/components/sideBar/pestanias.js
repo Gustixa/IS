@@ -6,6 +6,7 @@ import SummarizeIcon from '@mui/icons-material/Summarize'
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu'
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism'
 import Groups2Icon from '@mui/icons-material/Groups2'
+import LocalActivityIcon from '@mui/icons-material/LocalActivity'
 
 // Elementos del sideBar para un administrador
 export const adminButtons = {
@@ -36,6 +37,10 @@ export const adminButtons = {
       icon:CalendarMonthIcon,
       // MODIFICAR LA RUTA, PUES NO SERA LA RUTA RAIN 
       ruta: '/actividadesBeca'
+    },
+    'Actividades incritas':{
+      icon: LocalActivityIcon,
+      ruta:'/actividadesInscritas'
     }
   }
 
