@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SideBar from '@components/sideBar';
-import { supabase } from '@db-supabase/supabase.config';
-import styles from './Becarios.module.css';
-import encabezados from './data';
-import { StyledTableCell, StyledTableRow } from './muiStylesBecario';
+import React, { useState, useEffect } from 'react'
+import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
+import TextField from '@mui/material/TextField'
+import IconButton from '@mui/material/IconButton'
+import DeleteIcon from '@mui/icons-material/Delete'
+import SideBar from '@components/sideBar'
+import { supabase } from '@db-supabase/supabase.config'
+import styles from './Becarios.module.css'
+import encabezados from './data'
+import { StyledTableCell, StyledTableRow } from './muiStylesBecario'
 
 export default function Becarios() {
-  const [studentsData, setStudentsData] = useState([]);
-  const [filtroAnio, setFiltroAnio] = useState('');
-  const [filtroNombre, setFiltroNombre] = useState('');
-  const [filtroCarnet, setFiltroCarnet] = useState('');
-  const [filtroBeca, setFiltroBeca] = useState('');
-  const [filtroFacultad, setFiltroFacultad] = useState('');
-  const [filtroHorasFaltantes, setFiltroHorasFaltantes] = useState('');
+  const [studentsData, setStudentsData] = useState([])
+  const [filtroAnio, setFiltroAnio] = useState('')
+  const [filtroNombre, setFiltroNombre] = useState('')
+  const [filtroCarnet, setFiltroCarnet] = useState('')
+  const [filtroBeca, setFiltroBeca] = useState('')
+  const [filtroFacultad, setFiltroFacultad] = useState('')
+  const [filtroHorasFaltantes, setFiltroHorasFaltantes] = useState('')
 
   const handleChangeAnio = (event) => {
     const inputValue = event.target.value;
@@ -220,5 +220,5 @@ export default function Becarios() {
         </TableContainer>
       </div>
     </div>
-  );
+  )
 }

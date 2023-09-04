@@ -1,0 +1,24 @@
+.box{
+    display: flex;
+    margin-top: 20px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+}
+
+.input{
+    margin: 10px;
+    width: 150px;
+}
+
+.filterButton{
+    display: flex;
+    justify-content: end;
+    width: 82.5%;
+}
+
+.data{
+    margin-top: 20px;
+    width: 100%;
+}
