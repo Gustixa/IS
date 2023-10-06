@@ -5,4 +5,7 @@ const encabezados = [
     "Horas Faltantes Durante la Carrera",
 ]
 
-export default encabezados
+const encabezado_seccion_principal = [
+    "Registro de actividades de horas realizadas"
+]
+export  {encabezados, encabezado_seccion_principal}

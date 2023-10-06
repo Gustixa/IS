@@ -1,0 +1,13 @@
+name: Say Hello
+
+on:
+  push:
+    branches:
+        - "main"
+
+jobs:
+  hello_world:
+    runs-on: windows-2019
+    steps:
+        - name: Echo the message
+          run: echo "Hola mundo"

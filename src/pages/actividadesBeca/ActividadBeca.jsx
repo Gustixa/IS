@@ -32,6 +32,12 @@ export default function ActividadBeca() {
     })
   }
 
+  // Funcion para manejar la inscripcion en las actividades.
+  const handleSuscribe = (id) => {
+    setDataActividad(prevDataActivity => {
+      return prevDataActivity.filter(dataActi => dataActi.id !== id)
+    })
+  }
   // Función para redirigir a la creación de una nueva actividad
   const handleCreateActivity = () => {
     navigate('/nuevaActividad')
@@ -121,6 +127,7 @@ export default function ActividadBeca() {
               actividad={detalles}
               onDelete={handleDelete}
               inscrito={false} // Todas las actividades son generales
+              onSuscribe={handleSuscribe}
             />
           ))
         ) : (

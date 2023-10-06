@@ -10,6 +10,7 @@ import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
 import SideBar from '@components/sideBar'
 import { supabase } from '@db-supabase/supabase.config'
 import styles from './Becarios.module.css'
@@ -199,11 +200,11 @@ export default function Becarios() {
                     <StyledTableCell align="right">{student.horas_acumuladas}</StyledTableCell>
                     <StyledTableCell align="right">
                       <IconButton
-                        color="secondary"
+                        color="primary"
                         aria-label="Eliminar estudiante"
                         onClick={() => handleDelete(student.id)}
                       >
-                        <DeleteIcon />
+                        <EditIcon/>
                       </IconButton>
                     </StyledTableCell>
                   </StyledTableRow>

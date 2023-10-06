@@ -11,7 +11,7 @@ import { supabase } from '@db-supabase/supabase.config'
 import { StyledTableCell, StyledTableRow } from './muiStylesRegistro'
 import SideBar from '@components/sideBar'
 import Title from '@components/titles'
-import encabezados from './encabezados'
+import {encabezados, encabezado_seccion_principal} from './encabezados'
 import styles from './HistorialBeca.module.css'
 
 export default function HistorialBeca(){
@@ -38,13 +38,14 @@ export default function HistorialBeca(){
   return (
     <>
       <SideBar/>
+      <Title titles={encabezado_seccion_principal} /> {/* Título de la página */}
       <div className={styles.data}>
       <TableContainer component={Paper}>
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
               <TableRow>
                 {encabezados.map((encabezado) => (
-                  <StyledTableCell key={encabezado}>{encabezado}</StyledTableCell>
+                  <StyledTableCell align="center" key={encabezado}>{encabezado}</StyledTableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -53,10 +54,10 @@ export default function HistorialBeca(){
                 dataRegistro.map((item) => (
                   <StyledTableRow key={item.id}>
                     
-                    <StyledTableCell align="right">{item.nombre_actividad}</StyledTableCell>
-                    <StyledTableCell align="right">{item.horas_acreditar}</StyledTableCell>
-                    <StyledTableCell align="right">{item.correo_estudiante}</StyledTableCell>
-                    <StyledTableCell align="right">{item.fecha}</StyledTableCell>
+                    <StyledTableCell align="center">{item.nombre_actividad}</StyledTableCell>
+                    <StyledTableCell align="center">{item.fecha}</StyledTableCell>
+                    <StyledTableCell align="center">{item.horas_acreditar}</StyledTableCell>
+                    <StyledTableCell align="center">{item.correo_estudiante}</StyledTableCell>
                   </StyledTableRow>
                 ))
               ) : (

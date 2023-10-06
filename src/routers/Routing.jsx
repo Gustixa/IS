@@ -72,7 +72,6 @@ export default function Routing(){
           </ProtectedRoute>
         }/>
 
-
         {/* ESTE APARTADO ES PARA LA NAVEGACION DE LO ESTUDIANTES */}
         {/* Pagina donde el estudiante ve como ha realizado sus horas de beca */}
         <Route path='/registroEstudiante' element={
