@@ -17,14 +17,7 @@ jobs:
           node-version: '14'
       - name: Use a different package registry
         run: yarn config set registry https://registry.npmjs.org/
-      - name: Retry installing dependencies
-        run: |
-          n=0
-          until [ $n -ge 5 ]
-          do
-            yarn install && break
-            n=$((n+1))
-            sleep 15
-          done
+      - name: Install dependencies
+        run: yarn install
       - name: Lint
         run: yarn lint
