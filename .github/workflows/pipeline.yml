@@ -16,6 +16,6 @@ jobs:
         with:
           node-version: '14'
       - name: Install dependecies
-        run: yarn add
+        run: yarn add packaged.json
       - name: Lint
         run: yarn lint
