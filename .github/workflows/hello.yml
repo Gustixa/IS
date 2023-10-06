@@ -13,4 +13,5 @@ jobs:
           run: echo "Hola mundo"
         - name: Echo the message
           run: date
-        - run: ls -l
+        - name: Echo lista
+          run: ls -l
