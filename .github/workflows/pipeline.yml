@@ -15,8 +15,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
-      - name: Use a different package registry
-        run: yarn config set registry https://registry.npmjs.org/
+      
       - name: Install dependencies
         run: yarn install
       - name: Lint
