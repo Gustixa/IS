@@ -1,9 +1,9 @@
 name: Deployment Pipeline
 
 on:
- push:
-   branches:
-     - "main"
+  push:
+    branches:
+      - "main"
 
 jobs:
   deploy:
@@ -15,7 +15,15 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
-      - name: Install dependecies
-        run: yarn install
+      - name: Retry installing dependencies
+        run: |
+          n=0
+          until [ $n -ge 5 ]
+          do
+            yarn install && break
+            n=$((n+1))
+            sleep 15
+          done
       - name: Lint
         run: yarn lint
+      
