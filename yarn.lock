@@ -2182,11 +2182,6 @@ eslint-import-resolver-node@^0.3.7:
     is-core-module "^2.11.0"
     resolve "^1.22.1"
 
-eslint-import-resolver-vite@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/eslint-import-resolver-vite/-/eslint-import-resolver-vite-1.3.0.tgz#eb0ffd09aa19588c4a45fe6eac20402b6cb815ec"
-  integrity sha512-iHew6o9T8gwuaPV/IeMbi+1rLw5knJFjiECiC7BU4Ej+3L5gzU+3X2LsYn4Mhumn09qhTXZb8kx3VoJqZSKOJQ==
-
 eslint-module-utils@^2.7.4:
   version "2.8.0"
   resolved "https://registry.npmjs.org/eslint-module-utils/-/eslint-module-utils-2.8.0.tgz"
