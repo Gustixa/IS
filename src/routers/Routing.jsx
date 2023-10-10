@@ -14,6 +14,7 @@ import CrearActividad from '@trabajador/crearActividad'
 import ActividadBecario from '@trabajador/actividadBecario'
 import ActualizarActividad from '@trabajador/actualizarActividad'
 import ActividadInscrita from '@estudiante/actividadInscrita'
+import ActualizarEstudiante from '@trabajador/actualizarEstudiante'
 
 export default function Routing(){
 
@@ -69,6 +70,11 @@ export default function Routing(){
         <Route path='/actualizarActividad/:id' element={
           <ProtectedRoute>
             <ActualizarActividad/>
+          </ProtectedRoute>
+        }/>
+        <Route path='/actualizarEstudiante/:id' element={
+          <ProtectedRoute>
+            <ActualizarEstudiante/>
           </ProtectedRoute>
         }/>
 

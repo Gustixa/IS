@@ -1,7 +1,7 @@
 const hoverButtons = {
   backgroundColor: '#028d34',
   color: 'white',
-  width: '200px',
+  width: '250px',
   '&:hover': {
     backgroundColor: 'white',
     color: '#028d34',

@@ -10,6 +10,7 @@ import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
+import { Link } from 'react-router-dom'
 import EditIcon from '@mui/icons-material/Edit'
 import SideBar from '@components/sideBar'
 import { supabase } from '@db-supabase/supabase.config'
@@ -199,13 +200,14 @@ export default function Becarios() {
                     <StyledTableCell align="right">{student.horas_realizar}</StyledTableCell>
                     <StyledTableCell align="right">{student.horas_acumuladas}</StyledTableCell>
                     <StyledTableCell align="right">
-                      <IconButton
-                        color="primary"
-                        aria-label="Eliminar estudiante"
-                        onClick={() => handleDelete(student.id)}
-                      >
-                        <EditIcon/>
-                      </IconButton>
+                      <Link to={'/actualizarEstudiante/' + student.id}>
+                        <IconButton
+                          color="primary"
+                          aria-label="Eliminar estudiante"
+                        >
+                          <EditIcon/>
+                        </IconButton>
+                      </Link>
                     </StyledTableCell>
                   </StyledTableRow>
                 ))

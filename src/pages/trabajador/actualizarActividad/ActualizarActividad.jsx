@@ -6,7 +6,7 @@ import styles from './ActualizarActividad.module.css'
 import {textFieldStyles, hoverButtons, hoverCancelButton} from './muiStyles'
 
 export default function ActualizarActividad(){
-  // Obteniendo el id de la actividad a actulizar
+  // Obteniendo el id de la actividad a actualizar
   const { id } = useParams()
   const navigate = useNavigate()
 

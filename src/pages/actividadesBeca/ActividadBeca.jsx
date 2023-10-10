@@ -105,7 +105,7 @@ export default function ActividadBeca() {
           label="Filtrar actividad por nombre"
           variant="outlined"
           onChange={(e) => handleFiltrarActividad(e)}
-          sx={{ width: '200px' }}
+          sx={{ width: '250px' }}
           id="filtroActividades"
         />
         {/* Botón para crear una nueva actividad (solo visible para usuarios con tipo true) */}
