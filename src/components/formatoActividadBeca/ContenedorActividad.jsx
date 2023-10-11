@@ -20,7 +20,7 @@ import Paper from '@mui/material/Paper'
 import { supabase } from '@db-supabase/supabase.config'
 import { useAuthContext } from '@contexts/AuthContext'
 import styles from './ContenedorActividad.module.css'
-import {hoverButtons} from './muiStyles'
+import {hoverButtons, adminDetailsButton} from './muiStyles'
 
 function PaperComponent(props){
   return (
@@ -77,7 +77,6 @@ export default function ContenedorActividad({ actividad, onDelete, inscrito, onS
   const handleInscripcion = async (e) => {
     try{
       const cuposDisponibles = actividad.cupos_disponibles
-      console.log(cuposDisponibles)
       //verificar si hay cupos disponibles
       if(cuposDisponibles > 0){
         const { dataEstudiante, error } = await supabase
@@ -135,6 +134,9 @@ export default function ContenedorActividad({ actividad, onDelete, inscrito, onS
         {/* Conditionally render the buttons based on authUser.type */}
         {authUser.type === true && (
           <>
+            <Button sx={adminDetailsButton}>
+              Detalles
+            </Button>
             <Link to={'/actualizarActividad/' + actividad.id}>
               <IconButton color="primary" size="large">
                 <EditIcon />
