@@ -101,11 +101,23 @@ export default function ContenedorActividad({ actividad, onDelete, inscrito, onS
     <div className={styles.container}>
       
       <h1 id='tituloActividad'>{actividad.nombre_actividad}</h1>
+      <p className={styles.activityDescriptionLabel}>Descripcion:</p>
       <p className={styles.scrollableText}>
         {actividad.descripcion}
-       </p>
-      <p>{actividad.cupos_disponibles}</p>
-      <p>{actividad.horas_acreditadas}</p>
+        </p>
+      <div className={styles.dataTitles}>
+        <p className={styles.activityCuposLabel}>Cupos disponibles: </p>
+        <p className={styles.activityHorasLabel}>Horas a acreditar</p>
+        
+      </div>
+        <div className={styles.activityContainer}>
+          <div className={styles.activityPair}>
+            <div className={styles.activityCupos}>{actividad.cupos_disponibles}</div>
+            <div className={styles.activityHoras}>{actividad.horas_acreditadas}</div>
+          </div>
+          
+        </div>
+    
       <div className={styles.buttons}>
         {/* Conditionally render the buttons based on authUser.type */}
         {authUser.type === true && (

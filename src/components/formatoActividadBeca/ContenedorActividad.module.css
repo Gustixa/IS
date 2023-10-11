@@ -21,14 +21,96 @@
 
 .scrollableText {
   overflow: auto;
-  max-height: 125px; /* Ajusta la altura máxima según tus necesidades */
+  max-height: 75px; /* Ajusta la altura máxima según tus necesidades */
   text-align: justify;
   margin: 0 25px;
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 10px;
 }
 
 .buttonsStudent{
   margin-bottom: 5px;
   margin-right: 10px;
   width: 100%;
+}
 
+/* Estilo para la descripción de la actividad */
+.activityDescriptionLabel {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+  margin-top: 10px;
+  text-align: left;
+  margin-left: 25px;
+}
+
+/* Estilo para el número de cupos disponibles */
+.activityCuposLabel {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+  margin-left: 20px;
+  text-align: left;
+}
+
+.activityCupos {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 10px;
+  text-align: center;
+  margin-left: 80px;
+}
+
+/* Estilo para las horas acreditadas */
+.activityHorasLabel {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+  margin-left: 20px;
+  text-align: center;
+}
+
+.activityHoras {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 10px;
+  text-align: center;
+ margin-right: 80px;
+}
+
+.dataTitles{
+  display: flex;
+  flex-direction: row;
+}
+
+/* Estilo para centrar el contenido de dataValues */
+.dataValues {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+}
+
+/* Estilo para centrar cada par título-valor verticalmente */
+.dataPair {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.activityContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row; /* Esto es opcional si deseas alinear horizontalmente */
+  max-width: 100%;
+}
+
+.activityPair {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; /* Espacio entre los elementos */
+  align-items: center; /* Alineación vertical centrada */
+  max-width: 100%;
+  width: 100%; /* Asegura que los elementos se expandan para ocupar el espacio disponible */
 }
