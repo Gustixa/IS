@@ -20,7 +20,7 @@ import Paper from '@mui/material/Paper'
 import { supabase } from '@db-supabase/supabase.config'
 import { useAuthContext } from '@contexts/AuthContext'
 import styles from './ContenedorActividad.module.css'
-import {hoverButtons, adminDetailsButton} from './muiStyles'
+import {hoverButtons, adminDetailsButton, hoverCancelButton, hoverAcceditHours} from './muiStyles'
 
 function PaperComponent(props){
   return (
@@ -31,6 +31,7 @@ function PaperComponent(props){
 export default function ContenedorActividad({ actividad, onDelete, inscrito, onSuscribe }) {
   const [open, setOpen] = useState(false)
   const [isInscrito, setIsInscrito] = useState(inscrito) // Estado para controlar si el usuario está inscrito
+  const [estudiantesInscritos, setEstudiantesInscritos] = useState([])
 
   const { 
     authUser,
@@ -109,6 +110,23 @@ export default function ContenedorActividad({ actividad, onDelete, inscrito, onS
     }
   }
 
+  const fetchEstudiantesInscritos = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('inscripcion_actividad')
+        .select('*')
+        .eq('actividad_id', actividad.id);
+  
+      if (data) {
+        setEstudiantesInscritos(data);
+      } else {
+        console.error('Error al recuperar los datos de los estudiantes inscritos:', error);
+      }
+    } catch (error) {
+      console.error('Error al recuperar los datos de los estudiantes inscritos:', error.message);
+    }
+  };
+  console.log(estudiantesInscritos)
   return (
     <div className={styles.container}>
       
@@ -134,9 +152,49 @@ export default function ContenedorActividad({ actividad, onDelete, inscrito, onS
         {/* Conditionally render the buttons based on authUser.type */}
         {authUser.type === true && (
           <>
-            <Button sx={adminDetailsButton}>
+            <Button sx={adminDetailsButton}
+              onClick={() => {
+                handleClickOpen()
+                fetchEstudiantesInscritos()
+              }}
+            >
               Detalles
             </Button>
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              PaperComponent={PaperComponent}
+              aria-labelledby="draggable-dialog-title"
+             >
+              <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+                {actividad.nombre_actividad}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  <div>
+                    <strong>Estudiantes Inscritos:</strong>
+                    <ul>
+                      {estudiantesInscritos.map((estudiante) => (
+                        <li key={estudiante.id}>{estudiante.correo_estudiante}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button 
+                  sx={hoverButtons}
+                  autoFocus onClick={handleClose}>
+                  Acreditar horas
+                </Button>
+                <Button 
+                  sx={hoverCancelButton}
+                  autoFocus onClick={handleClose}>
+                  Cancel
+                </Button>
+              </DialogActions>
+            </Dialog>
+
             <Link to={'/actualizarActividad/' + actividad.id}>
               <IconButton color="primary" size="large">
                 <EditIcon />
@@ -185,18 +243,20 @@ export default function ContenedorActividad({ actividad, onDelete, inscrito, onS
               </DialogTitle>
               <DialogContent>
                 <DialogContentText>
-                <div>
-                      <p className={styles.scrollableText}>
+                 <div>
+                    <div className={styles.scrollableText}>
+                      <p>
                         <strong>Descripción:</strong>
                         {actividad.descripcion}
                       </p>
-                      <p>
-                        <strong>Cupos Disponibles:</strong> {actividad.cupos_disponibles}
-                      </p>
-                      <p>
-                        <strong>Horas Acreditadas:</strong> {actividad.horas_acreditadas}
-                      </p>
                     </div>
+                    <p>
+                      <strong>Cupos Disponibles:</strong> {actividad.cupos_disponibles}
+                    </p>
+                    <p>
+                      <strong>Horas Acreditadas:</strong> {actividad.horas_acreditadas}
+                    </p>
+                  </div>
                 </DialogContentText>
               </DialogContent>
               <DialogActions>

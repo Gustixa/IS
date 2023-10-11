@@ -1,4 +1,4 @@
-const hoverButtons = {
+export const hoverButtons = {
   backgroundColor: '#028d34',
   color: 'white',
   width: '250px',
