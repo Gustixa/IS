@@ -3,7 +3,7 @@
  * pueden realizar los estudiantes. En si, es para presentar las actividades
  * creadas y a las que se pueden inscribir.
  */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import IconButton from '@mui/material/IconButton'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -76,20 +76,33 @@ export default function ContenedorActividad({ actividad, onDelete, inscrito, onS
    */
   const handleInscripcion = async (e) => {
     try{
-      const { dataEstudiante, error } = await supabase
-      .from("inscripcion_actividad")
-      .insert([
-        {
-          actividad_id: actividad.id,
-          acreditado: false,
-          correo_estudiante: authUser.correo
-        }
-      ])
-      .select()
-      // Llama a la función onSuscribe pasando la actividad para ocultarla
-      onSuscribe(actividad.id)
-      // Cambia el estado para indicar que el usuario está inscrito
-      setIsInscrito(true)
+      const cuposDisponibles = actividad.cupos_disponibles
+      console.log(cuposDisponibles)
+      //verificar si hay cupos disponibles
+      if(cuposDisponibles > 0){
+        const { dataEstudiante, error } = await supabase
+        .from("inscripcion_actividad")
+        .insert([
+          {
+            actividad_id: actividad.id,
+            acreditado: false,
+            correo_estudiante: authUser.correo
+          }
+        ])
+        .select()
+        // Llama a la función onSuscribe pasando la actividad para ocultarla
+        onSuscribe(actividad.id)
+        // Cambia el estado para indicar que el usuario está inscrito
+        setIsInscrito(true)
+        // Actuazliar los cupos disponibles de la actividad cuando se haga la inscripcion
+        const updateCupos = cuposDisponibles - 1
+        const {actualizarActividad, errorActualizarActividad} = await supabase
+        .from("actividad_beca")
+        .update({cupos_disponibles: updateCupos})
+        .eq("id",actividad.id)
+        .select()
+      }
+      
       
 
     }catch(error){

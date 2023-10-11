@@ -69,22 +69,24 @@ export default function ActividadBeca() {
             .from("actividad_beca")
             .select("*")
             .order('id')
-
+          
           if (errorActividadData) {
             console.log("Error fetching actividadData: ", errorActividadData)
           } else {
             // Filtrar las actividades generales para excluir las inscritas
-            const actividadesGenerales = actividadData.filter((actividad) =>
-              !actividadIdsInscritas.includes(actividad.id)
-            )
+              const actividadesGenerales = actividadData.filter((actividad) =>
+                !actividadIdsInscritas.includes(actividad.id)
+              )
 
-            // Filtrar las actividades generales por nombre
-            const filteredData = actividadesGenerales.filter((detalles) =>
-              detalles.nombre_actividad.toLowerCase().includes(filtroNombreActividad.toLowerCase())
-            )
+              // Filtrar las actividades generales por nombre
+              const filteredData = actividadesGenerales.filter((detalles) =>
+                detalles.nombre_actividad.toLowerCase().includes(filtroNombreActividad.toLowerCase())
+              )
 
-            // Establecer los datos filtrados en el estado 'actividad'
-            setDataActividad(filteredData)
+              // Establecer los datos filtrados en el estado 'actividad'
+              setDataActividad(filteredData)
+            
+
           }
         }
       } catch (error) {
@@ -119,17 +121,19 @@ export default function ActividadBeca() {
         )}
       </div>
       <div className={styles.display}>
-        {/* Muestra las actividades generales */}
+        {/* Muestra las actividades generales con cupos disponibles */}
         {dataActividad !== null ? (
-          dataActividad.map((detalles) => (
-            <ContenedorActividad
-              key={detalles.id}
-              actividad={detalles}
-              onDelete={handleDelete}
-              inscrito={false} // Todas las actividades son generales
-              onSuscribe={handleSuscribe}
-            />
-          ))
+          dataActividad
+            .filter((detalles) => detalles.cupos_disponibles > 0)
+            .map((detalles) => (
+              <ContenedorActividad
+                key={detalles.id}
+                actividad={detalles}
+                onDelete={handleDelete}
+                inscrito={false} // Todas las actividades son generales
+                onSuscribe={handleSuscribe}
+              />
+            ))
         ) : (
           <CircularProgress />
         )}
