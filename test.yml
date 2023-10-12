@@ -39,6 +39,4 @@ scenarios:
           - json: $.token 
         - get: 
             url: "/registoEstudiante"
-            - post: 
-                url: "/acitividadesInscritas"
           
