@@ -3,6 +3,7 @@ import { Grid, Box, TextField, Button } from '@mui/material'
 import styles from './CrearActividad.module.css'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@db-supabase/supabase.config'
+import { useAuthContext } from '@contexts/AuthContext'
 import {textFieldStyles, hoverButtons, hoverCancelButton} from './muiStyles'
 
 
@@ -22,6 +23,7 @@ export default function CrearActividad(){
   const[cantidadVoluntariosErrorMessage, setCantidadVoluntariosErrorMessage] = useState("")
   const[horasAcreditarErrorMessage, setHorasAcreditarErrorMessage] = useState("")
 
+  const { authUser, setAuthUser, isLoggedIn, setIsLoggedIn } = useAuthContext()
   const navigate = useNavigate()
   /**
    * Validacion de los campos, en esta caso, se espera que se ingresen datos en los campos
@@ -78,7 +80,9 @@ export default function CrearActividad(){
            nombre_actividad: nombreActividad,
            cupos_disponibles: cantidadVoluntarios,
            horas_acreditadas: horasAcreditar,
-           descripcion: descripcion
+           descripcion: descripcion,
+           habilitada: true,
+           organizador: authUser.correo
           }
         ])
       }

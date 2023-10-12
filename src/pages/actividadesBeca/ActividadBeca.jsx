@@ -38,7 +38,8 @@ export default function ActividadBeca() {
       return prevDataActivity.filter(dataActi => dataActi.id !== id)
     })
   }
-  // Función para redirigir a la creación de una nueva actividad
+
+  // Función para redirigir  a la creación de una nueva actividad
   const handleCreateActivity = () => {
     navigate('/nuevaActividad')
   }
@@ -85,8 +86,6 @@ export default function ActividadBeca() {
 
               // Establecer los datos filtrados en el estado 'actividad'
               setDataActividad(filteredData)
-            
-
           }
         }
       } catch (error) {

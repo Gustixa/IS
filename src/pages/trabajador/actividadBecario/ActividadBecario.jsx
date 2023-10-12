@@ -80,7 +80,7 @@ export default function ActividadBecario() {
           .insert([
             {
               nombre_actividad: nombreActividad,
-              horas_acreditar: horasAcreditar,
+              horas_acreditadas: horasAcreditar,
               correo_estudiante: correoEstudiante,
               fecha: new Date()
             },

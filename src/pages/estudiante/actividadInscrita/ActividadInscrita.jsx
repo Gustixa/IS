@@ -28,7 +28,8 @@ export default function ActividadInscrita() {
         const { data: inscripcionData, error: errorInscripcionData } = await supabase
           .from("inscripcion_actividad")
           .select('*')
-          .eq("correo_estudiante", authUser.correo);
+          .eq("correo_estudiante", authUser.correo)
+          .eq("acreditado", false)
 
         if (errorInscripcionData) {
           console.log("Error fetching inscripcionData: ", errorInscripcionData);
@@ -58,7 +59,7 @@ export default function ActividadInscrita() {
       }
     }
     fetchActividad();
-  }, [filtroNombreActividad, authUser.correo]);
+  }, [filtroNombreActividad, authUser.correo])
 
   return (
     <>

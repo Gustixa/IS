@@ -18,6 +18,9 @@ import styles from './HistorialBeca.module.css'
 export default function HistorialBeca() {
   const [dataRegistro, setDataRegistro] = useState([])
   const [loading, setLoading] = useState(true) // Estado para indicar si la petición se está cargando
+  const [dataIncripcionActividad, setDataInscripcionActividad] = useState([])
+  const [dataActividadBeca, setDataActividadBeca] = useState([])
+  let combinedData= []
   // Obtener funciones y estado del contexto de autenticación
   const { authUser, setAuthUser, isLoggedIn, setIsLoggedIn } = useAuthContext()
 
@@ -33,6 +36,7 @@ export default function HistorialBeca() {
       } else {
         // Filtrar los datos para que coincidan con el correo del usuario actual
         const dataFiltrada = data.filter(item => item.correo_estudiante === authUser.correo)
+
         setDataRegistro(dataFiltrada)
       }
       setLoading(false) // Indicar que la petición ha terminado
@@ -42,10 +46,60 @@ export default function HistorialBeca() {
     }
   }
 
+  /**
+   * Obtencion de las actividades beca en las que el estudiante, usuario actual, se ha inscrito
+   * y estas han sido acreditadas.
+   */
+  const fetchInscripcionActividad = async () => {
+    try{
+      const { data: inscripcionActividad, error: errorInscripcionActividad } = await supabase
+      .from("inscripcion_actividad")
+      .select("*")
+      .eq("correo_estudiante", authUser.correo)
+      
+      if(inscripcionActividad){
+        const dataFiltrada = inscripcionActividad.filter(item => item.acreditado === true)
+        setDataInscripcionActividad(dataFiltrada)
+      }else{
+        console.log("Failed fetching data: ", errorInscripcionActividad)
+      }
+    }catch(error){
+      console.log("Failed fetchig data: ", error)
+    }
+  }
+
+  /**
+   * Obtencion de las actividades beca que han sido acreditadas
+   */
+  const fetchDataActividadBeca = async () => {
+    try{
+      const { data: actividadBeca, error: errorActividadBeca} = await supabase
+      .from("actividad_beca")
+      .select("*")
+      .eq("acreditada", true)
+
+      if(actividadBeca){
+        console.log(actividadBeca)
+        setDataActividadBeca(actividadBeca)
+      }else{
+        console.log("Failed fetching data: ", errorActividadBeca)
+      }
+      
+    }catch(error){
+      console.log("Failed fetching data: ", error)
+    }
+  }
   useEffect(() => {
     fetchDataRegistro()
+    fetchInscripcionActividad()
+    fetchDataActividadBeca()
   }, [])
 
+  if(dataActividadBeca.id === dataIncripcionActividad.actividad_id){
+    combinedData = [...dataRegistro, ...dataActividadBeca]
+    console.log("Data combinada: ",combinedData)
+  }
+  
   return (
     <>
       <SideBar />
@@ -66,12 +120,12 @@ export default function HistorialBeca() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {dataRegistro.length > 0 ? (
-                  dataRegistro.map((item) => (
+                {combinedData.length > 0 ? (
+                  combinedData.map((item) => (
                     <StyledTableRow key={item.id}>
                       <StyledTableCell align="center">{item.nombre_actividad}</StyledTableCell>
                       <StyledTableCell align="center">{item.fecha}</StyledTableCell>
-                      <StyledTableCell align="center">{item.horas_acreditar}</StyledTableCell>
+                      <StyledTableCell align="center">{item.horas_acreditadas}</StyledTableCell>
                       <StyledTableCell align="center">{item.correo_estudiante}</StyledTableCell>
                     </StyledTableRow>
                   ))

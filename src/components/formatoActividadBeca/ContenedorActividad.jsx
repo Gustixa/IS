@@ -20,7 +20,7 @@ import Paper from '@mui/material/Paper'
 import { supabase } from '@db-supabase/supabase.config'
 import { useAuthContext } from '@contexts/AuthContext'
 import styles from './ContenedorActividad.module.css'
-import {hoverButtons, adminDetailsButton, hoverCancelButton, hoverAcceditHours} from './muiStyles'
+import {hoverButtons, adminDetailsButton, hoverCancelButton} from './muiStyles'
 
 function PaperComponent(props){
   return (
@@ -32,6 +32,7 @@ export default function ContenedorActividad({ actividad, onDelete, inscrito, onS
   const [open, setOpen] = useState(false)
   const [isInscrito, setIsInscrito] = useState(inscrito) // Estado para controlar si el usuario está inscrito
   const [estudiantesInscritos, setEstudiantesInscritos] = useState([])
+  const [acreditandoHoras, setAcreditandoHoras] = useState(false) // Estado para controlar si se está acreditando horas
 
   const { 
     authUser,
@@ -110,6 +111,27 @@ export default function ContenedorActividad({ actividad, onDelete, inscrito, onS
     }
   }
 
+  const handleAcreditarHoras = async () => {
+    try{
+      const {acreditarHoras, setAcreditarHoras} = await supabase
+      .from("actividad_beca")
+      .update({acreditada: true, fecha: new Date()})
+      .eq("id", actividad.id)
+      .select()
+
+      const {inscripcionActividad, setInscripcionActividad} = await supabase
+      .from("inscripcion_actividad")
+      .update({acreditado: true})
+      .eq("actividad_id",actividad.id)
+      .select()
+      
+      // Actualizar el estado para indicar que el estudiante ya no está inscrito
+      setIsInscrito(false)
+    }catch(error){
+      console.log("Error updating data: ", error)
+    }
+  }
+
   const fetchEstudiantesInscritos = async () => {
     try {
       const { data, error } = await supabase
@@ -184,7 +206,11 @@ export default function ContenedorActividad({ actividad, onDelete, inscrito, onS
               <DialogActions>
                 <Button 
                   sx={hoverButtons}
-                  autoFocus onClick={handleClose}>
+                  autoFocus 
+                  onClick={() => {
+                    handleClose()
+                    handleAcreditarHoras()
+                  }}>
                   Acreditar horas
                 </Button>
                 <Button 
