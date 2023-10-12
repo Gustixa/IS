@@ -1,0 +1,44 @@
+config:
+  # testing utilizando artillery para beca4
+  target: "https://beca4.netlify.app"
+  # fases para comenzar el testing 
+  phases:
+    - duration: 60
+      arrivalRate: 1
+      rampTo: 5
+      name: Warm up phase
+    - duration: 60
+      arrivalRate: 5
+      rampTo: 10
+      name: Ramp up load
+    - duration: 30
+      arrivalRate: 10
+      rampTo: 30
+      name: Spike phase
+  # Plugins que pueden ser de utilidad
+  plugins:
+    ensure: {}
+    apdex: {}
+    metrics-by-endpoint: {}
+  apdex:
+    threshold: 100
+  ensure:
+      thresholds:
+        - http.response_time.p99: 100
+        - http.response_time.p95: 75
+# escenarios que se pienza testear
+scenarios: 
+  - name: User login then subscribe to activity
+  - flow:
+      - post: 
+          url: "/login"
+          json:
+            username: "arg211024@uvg.edu.gt"
+            password: "211024"
+        capture: 
+          - json: $.token 
+        - get: 
+            url: "/registoEstudiante"
+            - post: 
+                url: "/acitividadesInscritas"
+          
