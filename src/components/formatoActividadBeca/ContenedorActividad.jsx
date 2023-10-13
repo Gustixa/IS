@@ -115,7 +115,7 @@ export default function ContenedorActividad({ actividad, onDelete, inscrito, onS
     try{
       const {acreditarHoras, setAcreditarHoras} = await supabase
       .from("actividad_beca")
-      .update({acreditada: true, fecha: new Date()})
+      .update({acreditada: true, fecha: new Date(), habilitada: false})
       .eq("id", actividad.id)
       .select()
 

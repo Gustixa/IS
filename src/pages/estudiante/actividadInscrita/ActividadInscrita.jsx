@@ -29,7 +29,7 @@ export default function ActividadInscrita() {
           .from("inscripcion_actividad")
           .select('*')
           .eq("correo_estudiante", authUser.correo)
-          .eq("acreditado", false)
+          .eq("acreditada", false)
 
         if (errorInscripcionData) {
           console.log("Error fetching inscripcionData: ", errorInscripcionData);

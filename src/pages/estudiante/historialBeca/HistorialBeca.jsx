@@ -27,17 +27,16 @@ export default function HistorialBeca() {
   const fetchDataRegistro = async () => {
     try {
       // Obtención de todas las actividades
-      const { data, error } = await supabase
+      const { data: validacionManual, errorValidacionManual } = await supabase
         .from('validacion_manual_actividad')
         .select('*')
+        .eq("correo_estudiante", authUser.correo)
 
-      if (error) {
+      if (errorValidacionManual) {
         console.error('Error fetching data: ', error)
       } else {
         // Filtrar los datos para que coincidan con el correo del usuario actual
-        const dataFiltrada = data.filter(item => item.correo_estudiante === authUser.correo)
-
-        setDataRegistro(dataFiltrada)
+        setDataRegistro(validacionManual)
       }
       setLoading(false) // Indicar que la petición ha terminado
     } catch (error) {
@@ -56,10 +55,10 @@ export default function HistorialBeca() {
       .from("inscripcion_actividad")
       .select("*")
       .eq("correo_estudiante", authUser.correo)
+      .eq("acreditada", true)
       
       if(inscripcionActividad){
-        const dataFiltrada = inscripcionActividad.filter(item => item.acreditado === true)
-        setDataInscripcionActividad(dataFiltrada)
+        setDataInscripcionActividad(inscripcionActividad)
       }else{
         console.log("Failed fetching data: ", errorInscripcionActividad)
       }
@@ -79,7 +78,6 @@ export default function HistorialBeca() {
       .eq("acreditada", true)
 
       if(actividadBeca){
-        console.log(actividadBeca)
         setDataActividadBeca(actividadBeca)
       }else{
         console.log("Failed fetching data: ", errorActividadBeca)
@@ -94,12 +92,17 @@ export default function HistorialBeca() {
     fetchInscripcionActividad()
     fetchDataActividadBeca()
   }, [])
-
-  if(dataActividadBeca.id === dataIncripcionActividad.actividad_id && setDataInscripcionActividad.correo_estudiante === authUser.correo){
-    combinedData = [...dataRegistro, ...dataActividadBeca]
-    console.log("Data combinada: ",combinedData)
-  }
   
+
+  dataActividadBeca.forEach((actividadBeca) => {
+    dataIncripcionActividad.forEach((inscripcionActividades) => {
+      if (actividadBeca.id === inscripcionActividades.actividad_id) {
+        const combinedItem = { ...actividadBeca, ...dataRegistro }
+        combinedData.push(combinedItem)
+      }
+    })
+  })
+
   return (
     <>
       <SideBar />
