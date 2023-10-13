@@ -95,7 +95,7 @@ export default function HistorialBeca() {
     fetchDataActividadBeca()
   }, [])
 
-  if(dataActividadBeca.id === dataIncripcionActividad.actividad_id){
+  if(dataActividadBeca.id === dataIncripcionActividad.actividad_id && setDataInscripcionActividad.correo_estudiante === authUser.correo){
     combinedData = [...dataRegistro, ...dataActividadBeca]
     console.log("Data combinada: ",combinedData)
   }

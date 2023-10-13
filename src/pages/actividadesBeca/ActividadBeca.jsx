@@ -70,6 +70,7 @@ export default function ActividadBeca() {
             .from("actividad_beca")
             .select("*")
             .order('id')
+            .eq("acreditada",false)
           
           if (errorActividadData) {
             console.log("Error fetching actividadData: ", errorActividadData)
