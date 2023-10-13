@@ -86,7 +86,7 @@ export default function ContenedorActividad({ actividad, onDelete, inscrito, onS
         .insert([
           {
             actividad_id: actividad.id,
-            acreditado: false,
+            acreditada: false,
             correo_estudiante: authUser.correo
           }
         ])
@@ -121,7 +121,7 @@ export default function ContenedorActividad({ actividad, onDelete, inscrito, onS
 
       const {inscripcionActividad, setInscripcionActividad} = await supabase
       .from("inscripcion_actividad")
-      .update({acreditado: true})
+      .update({acreditada: true})
       .eq("actividad_id",actividad.id)
       .select()
       
