@@ -30,10 +30,10 @@ jobs:
         uses: borales/actions-yarn@v4
         with:
           cmd: build # will run `yarn build:prod` command
-      - name: Test the app
+      - name: Lint the app
         uses: borales/actions-yarn@v4
         with:
-          cmd: test # will run 'yarn test' command
+          cmd: lint # will run 'yarn test' command
 
       - name: Run test in sub-folder
         uses: borales/actions-yarn@v4
