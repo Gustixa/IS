@@ -34,10 +34,6 @@ export default function ContenedorActividad({
   deSuscribed, onDeSuscribe,
 }) {
   const [open, setOpen] = useState(false)
-  // Ventana de error para los datos
-  const [dialogTitle, setDialogTitle] = useState('');
-  const [dialogContent, setDialogContent] = useState(null);
-  const [dialogActions, setDialogActions] = useState(null);
   
   const [isInscrito, setIsInscrito] = useState(inscrito) // Estado para controlar si el usuario está inscrito
   const [estudiantesInscritos, setEstudiantesInscritos] = useState([])
@@ -58,9 +54,14 @@ export default function ContenedorActividad({
     setOpen(true)
   }
 
+  /**
+   * Dialog para que se muestre una venta del posible error que se puede experimentar
+   * @param {*} errorMessage 
+   * @returns 
+   */
   const handleDialogError = (errorMessage) => {
     setOpen(true); // Abre el Dialog
-
+    
     return (
       <div className={styles.container}>
       {/* Resto del componente... */}
@@ -85,7 +86,7 @@ export default function ContenedorActividad({
         </DialogActions>
       </Dialog>
     </div>
-  );
+  )
 }
 
   // Cerrar la ventana de detalles de la actividad
