@@ -60,20 +60,34 @@ export default function ContenedorActividad({
 
   const handleDialogError = (errorMessage) => {
     setOpen(true); // Abre el Dialog
-    setDialogContent(
-        <DialogContentText>
-            <strong>Error:</strong> {errorMessage}
-        </DialogContentText>
-    );
-    setDialogTitle('Error')
-    setDialogActions(
+
+    return (
+      <div className={styles.container}>
+      {/* Resto del componente... */}
+      <Dialog
+        open={dialogData.open}
+        onClose={handleClose}
+        PaperComponent={PaperComponent}
+        aria-labelledby="draggable-dialog-title"
+      >
+        <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+          {'Error'}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+              <strong>Error:</strong> {errorMessage}
+          </DialogContentText>
+        </DialogContent>
         <DialogActions>
             <Button autoFocus onClick={handleClose}>
                 OK
             </Button>
         </DialogActions>
-    )
-  }
+      </Dialog>
+    </div>
+  );
+}
+
   // Cerrar la ventana de detalles de la actividad
   const handleClose = () => {
     setOpen(false)
