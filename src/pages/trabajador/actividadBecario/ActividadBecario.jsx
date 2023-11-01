@@ -152,7 +152,7 @@ export default function ActividadBecario() {
             </Grid>
           </Grid>
         </Box>
-        <Box display="flex" justifyContent="flex-end" paddingRight={8}>
+        <Box display="flex" justifyContent="flex-end" px={8}>
           <Button
             size="medium"
             sx={{

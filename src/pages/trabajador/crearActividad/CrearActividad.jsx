@@ -168,7 +168,7 @@ export default function CrearActividad() {
             </Grid>
           </Grid>
         </Box>
-        <Box display="flex" justifyContent="flex-end" px={8}>
+        <Box display="flex" justifyContent="flex-end" px={8} sx={{marginBottom:'20px'}}>
           <Button
             size="medium"
             sx={{ ...hoverButtons, fontSize: '13px', padding: '12px 24px', width: '260px' }}

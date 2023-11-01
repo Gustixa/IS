@@ -3,7 +3,6 @@ export const hoverButtons = {
   color: 'white',
   whiteSpace: 'nowrap', // Evita saltos de línea
   width: 'auto', // Ancho automático para ajustar al contenido
-  marginBottom: '10px',
   '&:hover': {
     backgroundColor: 'white',
     color: '#028d34',

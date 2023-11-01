@@ -212,7 +212,7 @@ export default function ContenedorActividad({
                     handleAcreditarHoras()
                   }}
                 >
-                  Acreditar horas
+                  Acreditar
                 </Button>
                 <Button
                   sx={hoverCancelButton}

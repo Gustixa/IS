@@ -295,14 +295,14 @@ export default function NuevoEstudiante() {
           </Grid>
         </Grid>
       </Box>
-      <Box display="flex" justifyContent="flex-end" paddingRight={8}>
+      <Box display="flex" justifyContent="flex-end" px={8} sx={{marginBottom: '30px'}}>
         <Button 
           size="medium"
           sx={{...hoverButtons, 
             fontSize: '13px', // Aumenta el tamaño del texto dentro del botón
             padding: '12px 24px',
             width: '260px',
-            marginBottom: '30px'}}
+            }}
           type="submit"
           variant="outlined"
           onClick={(e) => handleAgregarEstudiante(e)}

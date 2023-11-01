@@ -137,7 +137,7 @@ export default function ActualizarActividad(){
       <div className={styles.container}>
         <Box px={8} pb={8}> {/* Agregamos el espaciado horizontal al contenedor  pb=horizontal, px=vertical*/}
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 label="Nombre actividad"
                 variant="outlined"
@@ -149,7 +149,7 @@ export default function ActualizarActividad(){
                 helperText={nombreActividadErrorMessage}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Cantidad voluntarios"
                 variant="outlined"
@@ -166,7 +166,7 @@ export default function ActualizarActividad(){
                 helperText={cantidadVoluntariosErrorMessage}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Horas a Acreditar"
                 variant="outlined"
@@ -199,13 +199,15 @@ export default function ActualizarActividad(){
             </Grid>
           </Grid>
         </Box>
-        <Box display="flex" justifyContent="flex-end" paddingRight={8}>
+        <Box display="flex" justifyContent="center" px={8} sx={{marginBottom: '20px'}}>
           <Button 
             size="medium"
             sx={{...hoverButtons, 
               fontSize: '13px', // Aumenta el tamaño del texto dentro del botón
               padding: '12px 24px',
-              width: '260px'}}
+              width: '260px',
+              minWidth: '120px'
+            }}
             type="submit"
             variant="outlined"
             onClick={(e) => handleActualizarActividad(e)}
@@ -218,7 +220,8 @@ export default function ActualizarActividad(){
               fontSize: '13px', // Aumenta el tamaño del texto dentro del botón
               padding: '12px 24px',
               width: '260px',
-              marginLeft: '20px'
+              marginLeft: '20px',
+              minWidth: '120px'
             }}
             type="submit"
             variant="outlined"
