@@ -40,7 +40,7 @@ export default function ActividadInscrita() {
             const { data: actividadData, error: errorActividadData } = await supabase
               .from("actividad_beca")
               .select("*")
-              .in("id", actividadIds);
+              .in("id", actividadIds)
 
             if (errorActividadData) {
               console.log("Error fetching actividadData: ", errorActividadData);

@@ -1,4 +1,4 @@
-import { defineConfig } from "cypress";
+import { defineConfig } from 'cypress'
 
 export default defineConfig({
   projectId: 'gx7jqe',
@@ -6,13 +6,13 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
-    baseUrl: "http://localhost:3000/",
+    baseUrl: 'http://localhost:3000/',
   },
 
   component: {
     devServer: {
-      framework: "react",
-      bundler: "vite",
+      framework: 'react',
+      bundler: 'vite',
     },
   },
-});
+})

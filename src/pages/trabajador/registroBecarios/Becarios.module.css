@@ -7,10 +7,13 @@
     gap: 20px;
 }
 
-.input{
-    margin: 10px;
-    width: 150px;
-}
+.inputContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Ajusta el ancho de las columnas según el espacio disponible */
+    gap: 10px; /* Espacio entre los campos */
+    margin: 10px; /* Margen alrededor de cada campo */
+    width: 100%;
+  }
 
 .filterButton{
     display: flex;

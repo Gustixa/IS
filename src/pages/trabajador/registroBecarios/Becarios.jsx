@@ -108,71 +108,72 @@ export default function Becarios() {
     <div>
       <SideBar />
       <Box component="form" className={styles.box}>
-        <TextField
-          className={styles.input}
-          label="Filtrar por año"
-          variant="outlined"
-          type="number"
-          onChange={handleChangeAnio}
-          inputProps={{ min: '0' }}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          sx={{ width: '150px' }}
-        />
-        <TextField
-          className={styles.input}
-          label="Filtrar por nombre"
-          variant="outlined"
-          onChange={handleChangeNombre}
-          sx={{ width: '200px' }}
-        />
-        <TextField
-          className={styles.input}
-          label="Filtrar por carnet"
-          variant="outlined"
-          type="number"
-          onChange={handleChangeCarnet}
-          inputProps={{ min: '0' }}
-          id="filterCarne"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-        <TextField
-          className={styles.input}
-          label="Filtrar por % beca"
-          variant="outlined"
-          type="number"
-          onChange={handleChangeBeca}
-          inputProps={{ min: '0' }}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-        <TextField
-          className={styles.input}
-          label="Filtrar por Facultad"
-          variant="outlined"
-          type="text"
-          onChange={handleChangeFiltroFacultad}
-          inputProps={{ min: '0' }}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-        <TextField
-          className={styles.input}
-          label="Filtrar por horas acumuladas"
-          variant="outlined"
-          type="number"
-          onChange={handleChangeHorasFaltantes}
-          inputProps={{ min: '0' }}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          sx={{ width: '200px' }}
-        />
+        <div className={styles.inputContainer}>
+          <TextField
+            className={styles.input}
+            label="Filtrar por año"
+            variant="outlined"
+            type="number"
+            onChange={handleChangeAnio}
+            inputProps={{ min: '0' }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            sx={{ width: '150px' }}
+          />
+          <TextField
+            className={styles.input}
+            label="Filtrar por nombre"
+            variant="outlined"
+            onChange={handleChangeNombre}
+          />
+          <TextField
+            className={styles.input}
+            label="Filtrar por carnet"
+            variant="outlined"
+            type="number"
+            onChange={handleChangeCarnet}
+            inputProps={{ min: '0' }}
+            id="filterCarne"
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <TextField
+            className={styles.input}
+            label="Filtrar por % beca"
+            variant="outlined"
+            type="number"
+            onChange={handleChangeBeca}
+            inputProps={{ min: '0' }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <TextField
+            className={styles.input}
+            label="Filtrar por Facultad"
+            variant="outlined"
+            type="text"
+            onChange={handleChangeFiltroFacultad}
+            inputProps={{ min: '0' }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <TextField
+            className={styles.input}
+            label="Filtrar por horas acumuladas"
+            variant="outlined"
+            type="number"
+            onChange={handleChangeHorasFaltantes}
+            inputProps={{ min: '0' }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            sx={{ width: '200px' }}
+          />
+        </div>
       </Box>
       <div className={styles.data}>
         <TableContainer component={Paper}>

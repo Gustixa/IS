@@ -1,9 +1,4 @@
 /**
- * Esta pagina funciona para ingresar la participacion de los estudiantes
- * en ciertas actividades de beca, de manera manual. Es decir, ingresar el nombre
- * del estudiante, la actividad a la que participo y las horas que se le acreditaran.
- */
-/**
  * Esta página funciona para ingresar la participación de los estudiantes
  * en ciertas actividades de beca, de manera manual. Es decir, ingresar el nombre
  * del estudiante, la actividad a la que participó y las horas que se le acreditarán.
@@ -105,7 +100,6 @@ export default function ActividadBecario() {
     setCorreoEstudiante('')
     */
   };
-
   return (
     <>
       <SideBar />
@@ -115,7 +109,7 @@ export default function ActividadBecario() {
       <div>
         <Box px={8} pb={8}>
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 label="Nombre actividad"
                 variant="outlined"
@@ -127,7 +121,7 @@ export default function ActividadBecario() {
                 helperText={nombreActividadErrorMessage}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Correo Estudiante"
                 variant="outlined"
@@ -139,7 +133,7 @@ export default function ActividadBecario() {
                 helperText={correoEstudianteErrorMessage}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Horas a Acreditar"
                 variant="outlined"

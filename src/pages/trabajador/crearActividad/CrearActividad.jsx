@@ -4,24 +4,23 @@ import styles from './CrearActividad.module.css'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@db-supabase/supabase.config'
 import { useAuthContext } from '@contexts/AuthContext'
-import {textFieldStyles, hoverButtons, hoverCancelButton} from './muiStyles'
+import { textFieldStyles, hoverButtons, hoverCancelButton } from './muiStyles'
 
+export default function CrearActividad() {
+  const [nombreActividad, setNombreActividad] = useState("")
+  const [descripcion, setDescripcion] = useState("")
+  const [cantidadVoluntarios, setCantidadVoluntarios] = useState("")
+  const [horasAcreditar, setHorasAcreditar] = useState("")
 
-export default function CrearActividad(){
-  const[nombreActividad, setNombreActividad] = useState("")
-  const[descripcion, setDescripcion] = useState("")
-  const[cantidadVoluntarios, setCantidadVoluntarios] = useState("")
-  const[horasAcreditar, setHorasAcreditar] = useState("")
+  const [nombreActividadValidation, setNombreActividadValidation] = useState(false)
+  const [descripcionValidation, setDescripcionValidation] = useState(false)
+  const [cantidadVoluntariosValidation, setCantidadVoluntariosValidations] = useState(false)
+  const [horasAcreditarValidation, setHorasAcreditarValidation] = useState(false)
 
-  const[nombreActividadValidation, setNombreActividadValidation] = useState(false)
-  const[descripcionValidation, setDescripcionValidation] = useState(false)
-  const[cantidadVoluntariosValidation, setCantidadVoluntariosValidations] = useState(false)
-  const[horasAcreditarValidation, setHorasAcreditarValidation] = useState(false)
-
-  const[nombreActividadErrorMessage, setNombreActividadErrorMessage] = useState("")
-  const[descripcionErrorMessage, setDescripcionErrorMessage] = useState("")
-  const[cantidadVoluntariosErrorMessage, setCantidadVoluntariosErrorMessage] = useState("")
-  const[horasAcreditarErrorMessage, setHorasAcreditarErrorMessage] = useState("")
+  const [nombreActividadErrorMessage, setNombreActividadErrorMessage] = useState("")
+  const [descripcionErrorMessage, setDescripcionErrorMessage] = useState("")
+  const [cantidadVoluntariosErrorMessage, setCantidadVoluntariosErrorMessage] = useState("")
+  const [horasAcreditarErrorMessage, setHorasAcreditarErrorMessage] = useState("")
 
   const { authUser, setAuthUser, isLoggedIn, setIsLoggedIn } = useAuthContext()
   const navigate = useNavigate()
@@ -31,35 +30,35 @@ export default function CrearActividad(){
   const validacionCampos = () => {
     let isValid = true
     // Nombre actividad
-    if(!nombreActividad){
+    if (!nombreActividad) {
       setNombreActividadValidation(true)
       setNombreActividadErrorMessage('Debe ingresar el nombre de la actividad')
       isValid = false
-    }else{
+    } else {
       setNombreActividadValidation(false)
       setNombreActividadErrorMessage('')
     }
     // Cantidad voluntarios
-    if(!cantidadVoluntarios){
+    if (!cantidadVoluntarios) {
       setCantidadVoluntariosValidations(true)
       setCantidadVoluntariosErrorMessage("Debe ingresar la cantidad de voluntarios para la actividad")
-    }else{
+    } else {
       setCantidadVoluntariosValidations(false)
       setCantidadVoluntariosErrorMessage("")
     }
     // Descripcion de la actividad
-    if(!descripcion){
+    if (!descripcion) {
       setDescripcionValidation(true)
       setDescripcionErrorMessage("Debe ingresar la descripcion de la actividad")
-    }else{
+    } else {
       setDescripcionValidation(false)
       setDescripcionErrorMessage("")
     }
     // Horas a acreditar para la actividad
-    if(!horasAcreditar){
+    if (!horasAcreditar) {
       setHorasAcreditarValidation(true)
       setHorasAcreditarErrorMessage("Debe ingresar las horas que acreditara")
-    }else{
+    } else {
       setHorasAcreditarValidation(false)
       setHorasAcreditarErrorMessage("")
     }
@@ -68,31 +67,31 @@ export default function CrearActividad(){
 
   const handleCreacionActividad = async (e) => {
     e.preventDefault()
-    try{
+    try {
       //validar que los campos no esten vacios
-      if(!validacionCampos()){
+      if (!validacionCampos()) {
         return
-      }else{
-        const{data, error} = await supabase
-        .from("actividad_beca")
-        .insert([
-          {
-           nombre_actividad: nombreActividad,
-           cupos_disponibles: cantidadVoluntarios,
-           horas_acreditadas: horasAcreditar,
-           descripcion: descripcion,
-           habilitada: true,
-           organizador: authUser.correo
-          }
-        ])
+      } else {
+        const { data, error } = await supabase
+          .from("actividad_beca")
+          .insert([
+            {
+              nombre_actividad: nombreActividad,
+              cupos_disponibles: cantidadVoluntarios,
+              horas_acreditadas: horasAcreditar,
+              descripcion: descripcion,
+              habilitada: true,
+              organizador: authUser.correo
+            }
+          ])
       }
 
       // Obtén la lista de direcciones de correo electrónico de estudiantes
       const { correos, error } = await supabase
-      .from("becado")
-      .select("correo")
+        .from("becado")
+        .select("correo")
 
-    }catch(error){
+    } catch (error) {
       console.log("Error al crear la actividad: ", error.message)
     }
     navigate("/actividadesBeca")
@@ -109,7 +108,7 @@ export default function CrearActividad(){
       <div className={styles.container}>
         <Box px={8} pb={8}> {/* Agregamos el espaciado horizontal al contenedor  pb=horizontal, px=vertical*/}
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 label="Nombre actividad"
                 variant="outlined"
@@ -121,7 +120,7 @@ export default function CrearActividad(){
                 helperText={nombreActividadErrorMessage}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Cantidad voluntarios"
                 variant="outlined"
@@ -129,7 +128,7 @@ export default function CrearActividad(){
                 type="number"
                 style={textFieldStyles}
                 onChange={(e) => setCantidadVoluntarios(e.target.value)}
-                inputProps={{min: '0'}}
+                inputProps={{ min: '0' }}
                 InputLabelProps={{
                   shrink: true
                 }}
@@ -137,7 +136,7 @@ export default function CrearActividad(){
                 helperText={cantidadVoluntariosErrorMessage}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Horas a Acreditar"
                 variant="outlined"
@@ -145,7 +144,7 @@ export default function CrearActividad(){
                 type="number"
                 style={textFieldStyles}
                 onChange={(e) => setHorasAcreditar(e.target.value)}
-                inputProps={{min: '0'}}
+                inputProps={{ min: '0' }}
                 InputLabelProps={{
                   shrink: true
                 }}
@@ -169,13 +168,10 @@ export default function CrearActividad(){
             </Grid>
           </Grid>
         </Box>
-        <Box display="flex" justifyContent="flex-end" paddingRight={8}>
-          <Button 
+        <Box display="flex" justifyContent="flex-end" px={8}>
+          <Button
             size="medium"
-            sx={{...hoverButtons, 
-              fontSize: '13px', // Aumenta el tamaño del texto dentro del botón
-              padding: '12px 24px',
-              width: '260px'}}
+            sx={{ ...hoverButtons, fontSize: '13px', padding: '12px 24px', width: '260px' }}
             type="submit"
             variant="outlined"
             onClick={(e) => handleCreacionActividad(e)}
@@ -184,12 +180,7 @@ export default function CrearActividad(){
           </Button>
           <Button
             size="medium"
-            sx={{...hoverCancelButton,
-              fontSize: '13px', // Aumenta el tamaño del texto dentro del botón
-              padding: '12px 24px',
-              width: '260px',
-              marginLeft: '20px'
-            }}
+            sx={{ ...hoverCancelButton, fontSize: '13px', padding: '12px 24px', width: '260px', marginLeft: '20px' }}
             type="submit"
             variant="outlined"
             onClick={(e) => handleCancelarProceso(e)}

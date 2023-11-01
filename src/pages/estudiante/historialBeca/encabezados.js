@@ -6,6 +6,6 @@ const encabezados = [
 ]
 
 const encabezado_seccion_principal = [
-    "Registro de actividades de horas realizadas"
+    "Registro de horas y actividades realizadas"
 ]
 export  {encabezados, encabezado_seccion_principal}

@@ -197,7 +197,7 @@ export default function NuevoEstudiante() {
     <div className={styles.container}>
       <Box px={8} pb={8}> {/* Agregamos el espaciado horizontal al contenedor  pb=horizontal, px=vertical*/}
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               label="Nombre del Estudiante"
               variant="outlined"
@@ -209,7 +209,7 @@ export default function NuevoEstudiante() {
               helperText={nameErrorMessage}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               label="Carrera"
               variant="outlined"
@@ -221,7 +221,7 @@ export default function NuevoEstudiante() {
               helperText={carreraErrorMessage}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               label="Departamento"
               variant="outlined"
@@ -233,7 +233,7 @@ export default function NuevoEstudiante() {
               helperText={deptoErrorMessage}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               label="Facultad"
               variant="outlined"
@@ -245,7 +245,7 @@ export default function NuevoEstudiante() {
               helperText={facultadCarreraErrorMessage}
             />
           </Grid>          
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               label="Cantidad de beca"
               variant="outlined"
@@ -257,7 +257,7 @@ export default function NuevoEstudiante() {
               helperText={cantidadBecaErrorMessage}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               label="Cantidad Horas a Realizar por el Estudiante"
               variant="outlined"
@@ -269,7 +269,7 @@ export default function NuevoEstudiante() {
               helperText={horasEstudianteErrorMessage}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               label="Correo"
               variant="outlined"
@@ -281,14 +281,14 @@ export default function NuevoEstudiante() {
               helperText={emailErrorMessage}
             />
           </Grid>          
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               label="Carnet"
               variant="outlined"
               fullWidth
               style={textFieldStyles}
               value={carnetEstudiante}
-              onChange={(e) => setcarnetEstudiante(e.target.value)}
+              onChange = {(e) => setcarnetEstudiante(e.target.value)}
               error={carnetEstudianteValidation}
               helperText={carnetEstudianteErrorMessage}
             />
@@ -301,7 +301,8 @@ export default function NuevoEstudiante() {
           sx={{...hoverButtons, 
             fontSize: '13px', // Aumenta el tamaño del texto dentro del botón
             padding: '12px 24px',
-            width: '260px'}}
+            width: '260px',
+            marginBottom: '30px'}}
           type="submit"
           variant="outlined"
           onClick={(e) => handleAgregarEstudiante(e)}

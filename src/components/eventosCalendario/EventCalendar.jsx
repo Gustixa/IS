@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
-import { TextField, Button, Box, Stack } from '@mui/material';
+import React, { useState } from 'react'
+import {
+  TextField, Button, Box, Stack,
+} from '@mui/material'
 import styles from './EventCalendar.module.css'
 
 // Estilo del boton
 const styleButtons = {
-  backgroundColor:'#028d34',
-  color:'white',
-  width:'175px',
-  marginLeft:'10px',
-  marginTop:'10px',
+  backgroundColor: '#028d34',
+  color: 'white',
+  width: '175px',
+  marginLeft: '10px',
+  marginTop: '10px',
   '&:hover': {
     backgroundColor: 'white',
     color: '#028d34',
     transition: '0.2s',
-    border:'1px solid #028d34'
+    border: '1px solid #028d34',
   },
 }
 
-const EventCalendar = ({ onAddEvent }) => {
+function EventCalendar({ onAddEvent }) {
   // Estado para el título del evento
   const [title, setTitle] = useState('')
   // Estado para la fecha de inicio
@@ -43,17 +45,17 @@ const EventCalendar = ({ onAddEvent }) => {
 
   // Controlador de cambio de fecha de finalización
   const handleEndDateChange = (e) => {
-    setEndDate(e.target.value);
-  };
+    setEndDate(e.target.value)
+  }
 
   // Controlador de cambio de hora de finalización
   const handleEndTimeChange = (e) => {
-    setEndTime(e.target.value);
-  };
+    setEndTime(e.target.value)
+  }
 
   // Controlador de envío del formulario
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     // Validaciones de los campos del formulario
 
@@ -65,73 +67,73 @@ const EventCalendar = ({ onAddEvent }) => {
         getMonth(startDate),
         getDay(startDate),
         getHours(startTime),
-        getMinutes(startTime)
+        getMinutes(startTime),
       ),
       end: new Date(
         getYear(endDate),
         getMonth(endDate),
         getDay(endDate),
         getHours(endTime),
-        getMinutes(endTime)
+        getMinutes(endTime),
       ),
       description, // descripcion del evento
     }
 
     // Llamada a la función onAddEvent para agregar el nuevo evento
-    onAddEvent(newEvent);
+    onAddEvent(newEvent)
 
     // Reinicio de los estados de los campos del formulario
-    setTitle('');
-    setStartDate('');
-    setStartTime('');
-    setEndDate('');
-    setEndTime('');
-  };
+    setTitle('')
+    setStartDate('')
+    setStartTime('')
+    setEndDate('')
+    setEndTime('')
+  }
 
   // Función auxiliar para obtener el año de una fecha
   const getYear = (date) => {
     if (date) {
-      const [year] = date.split('-');
-      return parseInt(year, 10);
+      const [year] = date.split('-')
+      return parseInt(year, 10)
     }
-    return new Date().getFullYear();
-  };
+    return new Date().getFullYear()
+  }
 
   // Función auxiliar para obtener el mes de una fecha
   const getMonth = (date) => {
     if (date) {
-      const [, month] = date.split('-');
-      return parseInt(month, 10) - 1;
+      const [, month] = date.split('-')
+      return parseInt(month, 10) - 1
     }
-    return new Date().getMonth();
-  };
+    return new Date().getMonth()
+  }
 
   // Función auxiliar para obtener el día de una fecha
   const getDay = (date) => {
     if (date) {
-      const [, , day] = date.split('-');
-      return parseInt(day, 10);
+      const [, , day] = date.split('-')
+      return parseInt(day, 10)
     }
-    return new Date().getDate();
-  };
+    return new Date().getDate()
+  }
 
   // Función auxiliar para obtener las horas de una hora
   const getHours = (time) => {
     if (time) {
-      const [hours] = time.split(':');
-      return parseInt(hours, 10);
+      const [hours] = time.split(':')
+      return parseInt(hours, 10)
     }
-    return 0;
-  };
+    return 0
+  }
 
   // Función auxiliar para obtener los minutos de una hora
   const getMinutes = (time) => {
     if (time) {
-      const [, minutes] = time.split(':');
-      return parseInt(minutes, 10);
+      const [, minutes] = time.split(':')
+      return parseInt(minutes, 10)
     }
-    return 0;
-  };
+    return 0
+  }
 
   return (
     <Box component="form" onSubmit={handleSubmit}>
@@ -185,7 +187,7 @@ const EventCalendar = ({ onAddEvent }) => {
         </Button>
       </Stack>
     </Box>
-  );
-};
+  )
+}
 
-export default EventCalendar;
+export default EventCalendar
