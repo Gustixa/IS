@@ -20,6 +20,7 @@ export default function HistorialBeca() {
   const [loading, setLoading] = useState(true) // Estado para indicar si la petición se está cargando
   const [dataIncripcionActividad, setDataInscripcionActividad] = useState([])
   const [dataActividadBeca, setDataActividadBeca] = useState([])
+  const [dataEstudianteBecado, setDataEstudianteBecado] = useState([])
   let combinedData= []
   // Obtener funciones y estado del contexto de autenticación
   const { authUser, setAuthUser, isLoggedIn, setIsLoggedIn } = useAuthContext()
@@ -87,19 +88,43 @@ export default function HistorialBeca() {
       console.log("Failed fetching data: ", error)
     }
   }
+
+  /**
+   * Obtencion de la informacion del estudiante que tiene sesion actual
+   * Esto ayuda para mostrarle las horas que debe hacer durante el año.
+   */
+  const fetchEstudiante = async () => {
+    try{
+      const { data: estudianteBecado, error: errorEstudianteBecado } = await supabase
+        .from("becado")
+        .select("*")
+        .eq("correo", authUser.correo)
+
+      if(estudianteBecado){
+        setDataEstudianteBecado(estudianteBecado)
+      }else{
+        console.log("No data becado table: ", errorEstudianteBecado)
+      }
+    }catch(error){
+      console.log("Failed fetching data from becado table: ", error)
+    }
+  }
   useEffect(() => {
     fetchDataRegistro()
     fetchInscripcionActividad()
     fetchDataActividadBeca()
+    fetchEstudiante()
   }, [])
   
 
   dataActividadBeca.forEach((actividadBeca) => {
     dataIncripcionActividad.forEach((inscripcionActividades) => {
-      if (actividadBeca.id === inscripcionActividades.actividad_id) {
-        const combinedItem = { ...actividadBeca, ...dataRegistro }
-        combinedData.push(combinedItem)
-      }
+      dataEstudianteBecado.forEach((estudiante) => {
+        if (actividadBeca.id === inscripcionActividades.actividad_id && estudiante.correo === inscripcionActividades.correo_estudiante) {
+          const combinedItem = { ...actividadBeca, ...dataRegistro, ...estudiante }
+          combinedData.push(combinedItem)
+        }
+      })
     })
   })
 
@@ -108,6 +133,13 @@ export default function HistorialBeca() {
       <SideBar />
       <Title titles={encabezado_seccion_principal} /> {/* Título de la página */}
       <div className={styles.data}>
+        <div className={styles.hoursInfo}>
+            {dataEstudianteBecado.length > 0 ? (
+              <p>
+                Horas requeridas: {dataEstudianteBecado[0].horas_realizar}
+              </p>
+            ) : null}
+          </div>
         {loading ? ( // Mostrar CircularProgress solo si la petición está en curso
           <CircularProgress />
         ) : (
@@ -129,7 +161,7 @@ export default function HistorialBeca() {
                       <StyledTableCell align="center">{item.nombre_actividad}</StyledTableCell>
                       <StyledTableCell align="center">{item.fecha}</StyledTableCell>
                       <StyledTableCell align="center">{item.horas_acreditadas}</StyledTableCell>
-                      <StyledTableCell align="center">{item.correo_estudiante}</StyledTableCell>
+                      <StyledTableCell align="center">{item.horas_realizar - item.horas_realizadas}</StyledTableCell>
                     </StyledTableRow>
                   ))
                 ) : (

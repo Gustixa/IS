@@ -3,7 +3,7 @@
  * pueden realizar los estudiantes. En si, es para presentar las actividades
  * creadas y a las que se pueden inscribir.
  */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import IconButton from '@mui/material/IconButton'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -29,12 +29,15 @@ function PaperComponent(props) {
 }
 
 export default function ContenedorActividad({
-  actividad, onDelete, inscrito, onSuscribe,
+  actividad, onDelete, inscrito, onSuscribe, acreditada, onAcreditar
 }) {
   const [open, setOpen] = useState(false)
   const [isInscrito, setIsInscrito] = useState(inscrito) // Estado para controlar si el usuario está inscrito
   const [estudiantesInscritos, setEstudiantesInscritos] = useState([])
-  const [acreditandoHoras, setAcreditandoHoras] = useState(false) // Estado para controlar si se está acreditando horas
+  const [isAcreditada, setIsAcreditada] = useState(acreditada)
+
+
+  let combinedData = []
 
   const {
     authUser,
@@ -97,6 +100,7 @@ export default function ContenedorActividad({
         onSuscribe(actividad.id)
         // Cambia el estado para indicar que el usuario está inscrito
         setIsInscrito(true)
+        setIsAcreditada(false)
         // Actuazliar los cupos disponibles de la actividad cuando se haga la inscripcion
         const updateCupos = cuposDisponibles - 1
         const { actualizarActividad, errorActualizarActividad } = await supabase
@@ -110,27 +114,86 @@ export default function ContenedorActividad({
     }
   }
 
+  /**
+   * Acreditar las horas a los estudiantes, asi como, cambiar el estado de la
+   * actividad, para no mostrarla, pues ya ha culminado la misma.
+   */
   const handleAcreditarHoras = async () => {
     try {
-      const { acreditarHoras, setAcreditarHoras } = await supabase
+      // Cambiar el estado de la actividad inscrita
+      const { acreditarHoras, errorAcreditarHoras } = await supabase
         .from('actividad_beca')
         .update({ acreditada: true, fecha: new Date(), habilitada: false })
         .eq('id', actividad.id)
         .select()
 
-      const { inscripcionActividad, setInscripcionActividad } = await supabase
+      // Cambiar el estado de la actividad inscrita
+      const { inscripcionActividad, errorInscripcionActividad } = await supabase
         .from('inscripcion_actividad')
         .update({ acreditada: true })
         .eq('actividad_id', actividad.id)
         .select()
+      
+      const {data: dataActividad, error: errorDataActividad } = await supabase
+      .from('actividad_beca')
+      .select('*')
+      .eq('id', actividad.id)
+      
+      if(dataActividad){
+        console.log("Actividades: ",dataActividad)
+      }else{
+        console.log("Failed fetching actividades beca data: ", errorDataActividad)
+      }
+      const correosEstudiantesInscritos = estudiantesInscritos.map((estudiante) => estudiante.correo_estudiante)
+      // Obtener los estudiantes de la tabla becado para efectura la acreditacion
+      const { data: dataEstudianteBecado, error: errorDataEstudianteBecado } = await supabase
+        .from('becado')
+        .select('*')
+        .in('correo', correosEstudiantesInscritos)
+      
+      if(dataEstudianteBecado){
+        console.log("Estudiantes: ", dataEstudianteBecado)
+      }else{
+       console.log("Failed, no data in becado table: ", errorDataEstudianteBecado) 
+      }  
 
-      // Actualizar el estado para indicar que el estudiante ya no está inscrito
+      // Realizar cálculos y actualizaciones en la tabla becado para cada estudiante
+      for (const estudiante of dataEstudianteBecado) {
+        // Encuentra la información de actividadesBeca correspondiente a esta actividad
+
+        if (dataActividad) {
+          // Calcula la suma de horas acreditadas y horas realizadas
+          const horasAcreditadas = dataActividad[0].horas_acreditadas
+          console.log("Horas acreditadas: ", horasAcreditadas)
+          const horasRealizadas = estudiante.horas_realizadas
+          console.log("Horas realizadas: ",horasRealizadas)
+          const horasTotales = horasAcreditadas + horasRealizadas
+          console.log("Horas totales: ", horasTotales)
+          // Actualiza la tabla becado con las horas totales
+          await supabase
+            .from('becado')
+            .update({ horas_realizadas: horasTotales })
+            .eq('id', estudiante.id)
+            .select()
+        }
+      }
+      
+      /**
+       * Actualizar el estado para indicar que el estudiante ya no está inscrito
+       * Sirve para que no se muestre la actividad al estudiante.
+       */ 
+      onAcreditar(actividad.id)
       setIsInscrito(false)
+      setIsAcreditada(true)
     } catch (error) {
       console.log('Error updating data: ', error)
     }
   }
 
+  /**
+   * Obtencion de los estudiantes que estan inscritos en la actividad en la
+   * que se desea saber quienes se han inscrito
+   */
   const fetchEstudiantesInscritos = async () => {
     try {
       const { data, error } = await supabase
@@ -141,13 +204,13 @@ export default function ContenedorActividad({
       if (data) {
         setEstudiantesInscritos(data)
       } else {
-        console.error('Error al recuperar los datos de los estudiantes inscritos:', error)
+        console.error('Error, no hay datos de los estudiantes inscritos:', error)
       }
     } catch (error) {
       console.error('Error al recuperar los datos de los estudiantes inscritos:', error.message)
     }
   }
-  console.log(estudiantesInscritos)
+
   return (
     <div className={styles.container}>
 
@@ -178,6 +241,7 @@ export default function ContenedorActividad({
               onClick={() => {
                 handleClickOpen()
                 fetchEstudiantesInscritos()
+                
               }}
             >
               Detalles

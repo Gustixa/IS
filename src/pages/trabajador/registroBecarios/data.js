@@ -9,7 +9,8 @@ const encabezados = [
     "Facultad",
     "Año",
     "Porcentaje de Beca",
-    "Horas a Ralizar Presente Ciclo",
+    "Horas a Realizar",
+    "Horas Realizadas",
     "Horas acumuladas"
 ]
 

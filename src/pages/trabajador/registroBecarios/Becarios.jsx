@@ -16,7 +16,7 @@ import SideBar from '@components/sideBar'
 import { supabase } from '@db-supabase/supabase.config'
 import styles from './Becarios.module.css'
 import encabezados from './data'
-import { StyledTableCell, StyledTableRow } from './muiStylesBecario'
+import { StyledTableCell, StyledTableRow, useStyles } from './muiStylesBecario'
 
 export default function Becarios() {
   const [studentsData, setStudentsData] = useState([])
@@ -26,6 +26,8 @@ export default function Becarios() {
   const [filtroBeca, setFiltroBeca] = useState('')
   const [filtroFacultad, setFiltroFacultad] = useState('')
   const [filtroHorasFaltantes, setFiltroHorasFaltantes] = useState('')
+
+  const classes = useStyles()
 
   const handleChangeAnio = (event) => {
     const inputValue = event.target.value;
@@ -181,7 +183,7 @@ export default function Becarios() {
             <TableHead>
               <TableRow>
                 {encabezados.map((encabezado) => (
-                  <StyledTableCell key={encabezado}>{encabezado}</StyledTableCell>
+                  <StyledTableCell align="center" key={encabezado}>{encabezado}</StyledTableCell>
                 ))}
                 <StyledTableCell align="right">Acciones</StyledTableCell>
               </TableRow>
@@ -190,16 +192,88 @@ export default function Becarios() {
               {studentsData.length > 0 ? (
                 studentsData.map((student) => (
                   <StyledTableRow key={student.id}>
-                    <StyledTableCell component="th" scope="row">
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      className={
+                        student.horas_realizadas >= student.horas_realizar
+                          ? classes.greenCell
+                          : classes.redCell
+                      }>
                       {student.nombre_estudiante}
                     </StyledTableCell>
-                    <StyledTableCell align="right">{student.carnet}</StyledTableCell>
-                    <StyledTableCell align="right">{student.carrera}</StyledTableCell>
-                    <StyledTableCell align="right">{student.facultad}</StyledTableCell>
-                    <StyledTableCell align="right">{student.anio}</StyledTableCell>
-                    <StyledTableCell align="right">{student.porcentaje_beca}</StyledTableCell>
-                    <StyledTableCell align="right">{student.horas_realizar}</StyledTableCell>
-                    <StyledTableCell align="right">{student.horas_acumuladas}</StyledTableCell>
+                    <StyledTableCell
+                      align="center"
+                      className={
+                        student.horas_realizadas >= student.horas_realizar
+                          ? classes.greenCell
+                          : classes.redCell
+                      }>
+                      {student.carnet}
+                    </StyledTableCell>
+                    <StyledTableCell
+                      align="center"
+                      className={
+                        student.horas_realizadas >= student.horas_realizar
+                          ? classes.greenCell
+                          : classes.redCell
+                      }>
+                      {student.carrera}
+                    </StyledTableCell>
+                    <StyledTableCell 
+                      align="center"
+                      className={
+                        student.horas_realizadas >= student.horas_realizar
+                          ? classes.greenCell
+                          : classes.redCell
+                      }>
+                        {student.facultad}
+                    </StyledTableCell>
+                    <StyledTableCell 
+                      align="center"
+                      className={
+                        student.horas_realizadas >= student.horas_realizar
+                          ? classes.greenCell
+                          : classes.redCell
+                      }>
+                        {student.anio}
+                      </StyledTableCell>
+                    <StyledTableCell 
+                      align="center"
+                      className={
+                        student.horas_realizadas >= student.horas_realizar
+                          ? classes.greenCell
+                          : classes.redCell
+                      }>
+                        {student.porcentaje_beca}
+                      </StyledTableCell>
+                    <StyledTableCell 
+                      align="center"
+                      className={
+                        student.horas_realizadas >= student.horas_realizar
+                          ? classes.greenCell
+                          : classes.redCell
+                      }>
+                        {student.horas_realizar}
+                      </StyledTableCell>
+                    <StyledTableCell 
+                      align="center"
+                      className={
+                        student.horas_realizadas >= student.horas_realizar
+                          ? classes.greenCell
+                          : classes.redCell
+                      }>
+                        {student.horas_realizadas}
+                      </StyledTableCell>
+                    <StyledTableCell 
+                      align="center"
+                      className={
+                        student.horas_realizadas >= student.horas_realizar
+                          ? classes.greenCell
+                          : classes.redCell
+                      }>
+                        {student.horas_acumuladas}
+                      </StyledTableCell>
                     <StyledTableCell align="right">
                       <Link to={'/actualizarEstudiante/' + student.id}>
                         <IconButton
