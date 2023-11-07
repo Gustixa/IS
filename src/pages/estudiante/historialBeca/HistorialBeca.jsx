@@ -12,7 +12,7 @@ import { useAuthContext } from '@contexts/AuthContext'
 import { StyledTableCell, StyledTableRow } from './muiStylesRegistro'
 import SideBar from '@components/sideBar'
 import Title from '@components/titles'
-import { encabezados, encabezado_seccion_principal } from './encabezados'
+import { encabezados, registro_horas, registro_actividades, encabezados_registro } from './encabezados'
 import styles from './HistorialBeca.module.css'
 
 export default function HistorialBeca() {
@@ -131,50 +131,68 @@ export default function HistorialBeca() {
   return (
     <>
       <SideBar />
-      <Title titles={encabezado_seccion_principal} /> {/* Título de la página */}
+      <Title titles={registro_horas} /> {/* Título de la página */}
       <div className={styles.data}>
         <div className={styles.hoursInfo}>
-            {dataEstudianteBecado.length > 0 ? (
-              <p>
-                Horas requeridas: {dataEstudianteBecado[0].horas_realizar}
-              </p>
+          {dataEstudianteBecado.length > 0 ? (  
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    {encabezados_registro.map((encabezadosResgitro) => (
+                      <StyledTableCell align='center' key={encabezadosResgitro}>{encabezadosResgitro}</StyledTableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <StyledTableRow>
+                    <StyledTableCell align='center'>{dataEstudianteBecado[0].horas_realizar}</StyledTableCell>
+                    <StyledTableCell align='center'>{dataEstudianteBecado[0].horas_realizadas}</StyledTableCell>
+                    <StyledTableCell align='center'>{dataEstudianteBecado[0].horas_realizar - dataEstudianteBecado[0].horas_realizadas}</StyledTableCell>
+                  </StyledTableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
             ) : null}
-          </div>
+        </div>
         {loading ? ( // Mostrar CircularProgress solo si la petición está en curso
           <CircularProgress />
         ) : (
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 700 }} aria-label="customized table">
-              <TableHead>
-                <TableRow>
-                  {encabezados.map((encabezado) => (
-                    <StyledTableCell align="center" key={encabezado}>
-                      {encabezado}
-                    </StyledTableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {combinedData.length > 0 ? (
-                  combinedData.map((item) => (
-                    <StyledTableRow key={item.id}>
-                      <StyledTableCell align="center">{item.nombre_actividad}</StyledTableCell>
-                      <StyledTableCell align="center">{item.fecha}</StyledTableCell>
-                      <StyledTableCell align="center">{item.horas_acreditadas}</StyledTableCell>
-                      <StyledTableCell align="center">{item.horas_realizar - item.horas_realizadas}</StyledTableCell>
+          <>
+            <Title titles={registro_actividades}/>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    {encabezados.map((encabezado) => (
+                      <StyledTableCell align="center" key={encabezado}>
+                        {encabezado}
+                      </StyledTableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {combinedData.length > 0 ? (
+                    combinedData.map((item) => (
+                      <StyledTableRow key={item.id}>
+                        <StyledTableCell align="center">{item.nombre_actividad}</StyledTableCell>
+                        <StyledTableCell align="center">{item.fecha}</StyledTableCell>
+                        <StyledTableCell align="center">{item.organizador}</StyledTableCell>
+                        <StyledTableCell align="center">{item.horas_acreditadas}</StyledTableCell>
+                      </StyledTableRow>
+                    ))
+                  ) : (
+                    // Mostrar mensaje de "No hay información" como una fila única
+                    <StyledTableRow>
+                      <StyledTableCell colSpan={encabezados.length} align="center">
+                        No hay información
+                      </StyledTableCell>
                     </StyledTableRow>
-                  ))
-                ) : (
-                  // Mostrar mensaje de "No hay información" como una fila única
-                  <StyledTableRow>
-                    <StyledTableCell colSpan={encabezados.length} align="center">
-                      No hay información
-                    </StyledTableCell>
-                  </StyledTableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </>
         )}
       </div>
     </>

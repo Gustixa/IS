@@ -22,6 +22,17 @@ export default function ActividadInscrita() {
     });
   }
 
+  /**
+   * Metodo para des inscribirse de la actividad beca.
+   * 
+   * @param {*} id 
+   */
+  const handleDeSuscribe = (id) => {
+    setDataActividad(prevDataActivity => {
+      return prevDataActivity.filter(dataActi => dataActi.id !== id)
+    })
+  }
+
   useEffect(() => {
     const fetchActividad = async () => {
       try {
@@ -81,6 +92,8 @@ export default function ActividadInscrita() {
               actividad={detalles}
               onDelete={handleDelete}
               inscrito={true}
+              deSuscribed={false}
+              onDeSuscribe={handleDeSuscribe}
             />
           ))
         ) : (

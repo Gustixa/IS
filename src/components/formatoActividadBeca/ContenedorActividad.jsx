@@ -29,13 +29,14 @@ function PaperComponent(props) {
 }
 
 export default function ContenedorActividad({
-  actividad, onDelete, inscrito, onSuscribe, acreditada, onAcreditar
+  actividad, onDelete, inscrito, onSuscribe, acreditada, onAcreditar,
+  deSuscribed, onDeSuscribe
 }) {
   const [open, setOpen] = useState(false)
   const [isInscrito, setIsInscrito] = useState(inscrito) // Estado para controlar si el usuario está inscrito
   const [estudiantesInscritos, setEstudiantesInscritos] = useState([])
   const [isAcreditada, setIsAcreditada] = useState(acreditada)
-
+  const [isDeSuscribed, setIsDeSuscribed] = useState(deSuscribed)
 
   let combinedData = []
 
@@ -111,6 +112,38 @@ export default function ContenedorActividad({
       }
     } catch (error) {
       console.log('Error: ', error.message)
+    }
+  }
+
+  /**
+   * Des inscribirse de la actividad beca inscrita en la cual no desean participar.
+   * 
+   * @param {*} e 
+   */
+  const handleDesInscripcion = async (e) => {
+    try{
+      const { error } = await supabase
+      .from('inscripcion_actividad')
+      .delete()
+      .eq('actividad_id', actividad.id)
+      .eq('correo_estudiante', authUser.correo)
+
+      const { data: actividadAtualizar, error: errorActividadActualizar} = await supabase
+        .from('actividad_beca')
+        .select('cupos_disponibles')
+        .eq('id', actividad.id)
+
+      const cupos_actualizados = actividadAtualizar[0].cupos_disponibles + 1
+      const { data: actividadBecaData, error: errorActividadBecaData } = await supabase
+        .from('actividad_beca')
+        .update({cupos_disponibles: cupos_actualizados})
+        .eq('id',actividad.id)
+        .select()
+      
+      setIsInscrito(false)
+      onDeSuscribe(actividad.id)
+    }catch(error){
+      console.log("Failed deleting de data: ", error)
     }
   }
 
@@ -304,19 +337,36 @@ export default function ContenedorActividad({
         )}
         <div className={styles.buttonsStudent}>
           {authUser.type === false && !inscrito && (
+          <>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ ...hoverButtons }}
+              onClick={(e) => handleInscripcion(e)}
+            >
+              Inscribirse
+            </Button>
 
-          <Button
+            <Button
             variant="contained"
             color="primary"
-            sx={{ ...hoverButtons }}
-            onClick={(e) => handleInscripcion(e)}
-          >
-            Inscribirse
-          </Button>
-
+            sx={{ ...hoverButtons, marginLeft: '10px' }}
+            onClick={handleClickOpen}
+            >
+            Detalles
+            </Button>
+          </>
           )}
-          {authUser.type === false && (
+          {authUser.type === false && inscrito && (
           <>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ ...hoverButtons, marginLeft: '10px' }}
+              onClick={handleDesInscripcion}
+            >
+              Des-inscribirse
+            </Button>
             <Button
               variant="contained"
               color="primary"

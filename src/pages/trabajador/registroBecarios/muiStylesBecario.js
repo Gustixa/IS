@@ -29,7 +29,7 @@ export const useStyles = makeStyles((theme) => ({
     color: 'white', // Cambia el color del texto si lo necesitas
   },
   redCell:{
-    backgroundColor: 'red',
+    backgroundColor: '#c22604',
     color: 'white'
   }
 }));
