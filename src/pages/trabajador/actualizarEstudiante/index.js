@@ -1,3 +1,3 @@
-import ActualizarEstudiante from "./ActualizarEstudiante"
+import ActualizarEstudiante from './ActualizarEstudiante'
 
 export default ActualizarEstudiante

@@ -1,29 +1,30 @@
-import React, { useState, useEffect } from 'react'
-import { Grid, Box, TextField, Button } from '@mui/material'
+import React, { useState } from 'react'
+import {
+  Grid, Box, TextField, Button,
+} from '@mui/material'
 import SideBar from '@components/sideBar'
-import styles from './NuevoEstudiante.module.css'
-import {textFieldStyles, hoverButtons} from './styles'
 import { supabase } from '@db-supabase/supabase.config'
+import styles from './NuevoEstudiante.module.css'
+import { textFieldStyles, hoverButtons } from './styles'
 
 export default function NuevoEstudiante() {
-  const [name, setName] = useState("")
-  const [carrera, setCarrera] = useState("")
-  const [cantidadBeca, setCantidadBeca] = useState("")
-  const [facultadCarrera, setfacultadCarrera] = useState("")
-  const [email, setEmail] = useState("")
-  const [depto, setDepto] = useState("")
-  const [carnetEstudiante, setcarnetEstudiante] = useState("")
-  const [horasEstudiante, setHorasEstudiante] = useState("")
+  const [name, setName] = useState('')
+  const [carrera, setCarrera] = useState('')
+  const [cantidadBeca, setCantidadBeca] = useState('')
+  const [facultadCarrera, setfacultadCarrera] = useState('')
+  const [email, setEmail] = useState('')
+  const [depto, setDepto] = useState('')
+  const [carnetEstudiante, setcarnetEstudiante] = useState('')
+  const [horasEstudiante, setHorasEstudiante] = useState('')
 
-
-  const [nameErrorMessage, setNameErrorMessage] = useState("")
-  const [carreraErrorMessage, setCarreraErrorMessage] = useState("")
-  const [cantidadBecaErrorMessage, setCantidadBecaErrorMessage] = useState("")
-  const [facultadCarreraErrorMessage, setfacultadCarreraErrorMessage] = useState("")
-  const [emailErrorMessage, setEmailErrorMessage] = useState("")
-  const [deptoErrorMessage, setDeptoErrorMessage] = useState("")
-  const [carnetEstudianteErrorMessage, setcarnetEstudianteErrorMessage] = useState("")
-  const [horasEstudianteErrorMessage, setHorasEstudianteErrorMessage] = useState("")
+  const [nameErrorMessage, setNameErrorMessage] = useState('')
+  const [carreraErrorMessage, setCarreraErrorMessage] = useState('')
+  const [cantidadBecaErrorMessage, setCantidadBecaErrorMessage] = useState('')
+  const [facultadCarreraErrorMessage, setfacultadCarreraErrorMessage] = useState('')
+  const [emailErrorMessage, setEmailErrorMessage] = useState('')
+  const [deptoErrorMessage, setDeptoErrorMessage] = useState('')
+  const [carnetEstudianteErrorMessage, setcarnetEstudianteErrorMessage] = useState('')
+  const [horasEstudianteErrorMessage, setHorasEstudianteErrorMessage] = useState('')
 
   const [nameValidation, setNameValidation] = useState(false)
   const [carreraValidation, setCarreraValidation] = useState(false)
@@ -38,86 +39,86 @@ export default function NuevoEstudiante() {
    * Verificacion de los campos, que son datos requeridos para almacenar en la db
    */
   const validacionCampos = () => {
-    let isValid = true;
+    let isValid = true
     // nombre estudiante
-    if(!name){
+    if (!name) {
       setNameValidation(true)
       setNameErrorMessage('Debe ingresar el nombre del estudiante')
       isValid = false
-    }else{
+    } else {
       setNameValidation(false)
       setNameErrorMessage('')
     }
     // carrera estudiante
-    if(!carrera){
+    if (!carrera) {
       setCarreraValidation(true)
-      setCarreraErrorMessage("Debe ingresar la carrera del estudiante")
+      setCarreraErrorMessage('Debe ingresar la carrera del estudiante')
       isValid = false
-    }else{
+    } else {
       setCarreraValidation(false)
-      setCarreraErrorMessage("")
+      setCarreraErrorMessage('')
     }
     // cantidad beca estudiante
-    if(!cantidadBeca){
+    if (!cantidadBeca) {
       setCantidadBecaValidation(true)
-      setCantidadBecaErrorMessage("Debe ingresar la cantidad de beca que posee el estudiante, aun si es 0")
-    }else{
+      setCantidadBecaErrorMessage('Debe ingresar la cantidad de beca que posee el estudiante, aun si es 0')
+    } else {
       setCantidadBecaValidation(false)
-      setCantidadBecaErrorMessage("")
+      setCantidadBecaErrorMessage('')
     }
     // Horas que el estudiante debe realizar por ciclo
-    if(!horasEstudiante){
+    if (!horasEstudiante) {
       setHorasEstudianteValidation(true)
-      setHorasEstudianteErrorMessage("Debe ingresar la cantidad de horas que debe realizar el estudiante")
+      setHorasEstudianteErrorMessage('Debe ingresar la cantidad de horas que debe realizar el estudiante')
       isValid = false
-    }else{
+    } else {
       setHorasEstudianteValidation(false)
-      setHorasEstudianteErrorMessage("")
+      setHorasEstudianteErrorMessage('')
     }
     // facultad a la que pertenece la carrera
-    if(!facultadCarrera){
+    if (!facultadCarrera) {
       setfacultadCarreraValidation(true)
-      setfacultadCarreraErrorMessage("Debe ingresar la facultad a la que pertenece el estudiante")
+      setfacultadCarreraErrorMessage('Debe ingresar la facultad a la que pertenece el estudiante')
       isValid = false
-    }else{
+    } else {
       setfacultadCarreraValidation(false)
-      setfacultadCarreraErrorMessage("")
+      setfacultadCarreraErrorMessage('')
     }
     // correo de estudiante
-    if(!email){
+    if (!email) {
       setEmailValidation(true)
-      setEmailErrorMessage("Debe ingresar el correo del estudiante.")
+      setEmailErrorMessage('Debe ingresar el correo del estudiante.')
       isValid = false
-    }else{
+    } else {
       setEmailValidation(false)
-      setEmailErrorMessage("")
+      setEmailErrorMessage('')
     }
     // contrasenia para ingresar al sistema y ver su registro de hroas beca
-    if(!depto){
+    if (!depto) {
       setDeptoValidation(true)
-      setDeptoErrorMessage("Debe ingresar la contraseña para el estudiante, esto para que use el sistema")
+      setDeptoErrorMessage('Debe ingresar la contraseña para el estudiante, esto para que use el sistema')
       isValid = false
-    }else{
+    } else {
       setDeptoValidation(false)
-      setDeptoErrorMessage("")
+      setDeptoErrorMessage('')
     }
     // carnet del estudiante
-    if(!carnetEstudiante){
+    if (!carnetEstudiante) {
       setcarnetEstudianteValidation(true)
-      setcarnetEstudianteErrorMessage("Debe ingresar el carnet del estudiante.")
-      isValid = false      
-    }else{
+      setcarnetEstudianteErrorMessage('Debe ingresar el carnet del estudiante.')
+      isValid = false
+    } else {
       setcarnetEstudianteValidation(false)
-      setcarnetEstudianteErrorMessage("")
+      setcarnetEstudianteErrorMessage('')
     }
     // validacion de las horas a realizar
-    if(!horasEstudiante){
+    if (!horasEstudiante) {
       setHorasEstudianteValidation(true)
-      setHorasEstudianteErrorMessage("Debe ingresar un valor para las horas que debe realizar el estudiante")
+      setHorasEstudianteErrorMessage('Debe ingresar un valor para las horas que debe realizar el estudiante')
       isValid = false
-    }else{
+    } else {
       setHorasEstudianteValidation(false)
-      setHorasEstudianteErrorMessage("")
+      setHorasEstudianteErrorMessage('')
     }
     return isValid
   }
@@ -127,191 +128,193 @@ export default function NuevoEstudiante() {
 
   // Llamar a la función para obtener el año actual
   const anioActual = obtenerAnioActual()
-  
+
   const handleAgregarEstudiante = async (e) => {
     e.preventDefault()
-    
-    try{
+
+    try {
       // Validar que esten llenos los campos requeridos
-      if(!validacionCampos()){
-        return      
-      }else{
-        // Realizar la inserción en la tabla "becado" con los datos del estudiante
-        const { data, error} = await supabase
+      if (!validacionCampos()) {
+        return
+      }
+      // Realizar la inserción en la tabla "becado" con los datos del estudiante
+      const { data, error } = await supabase
         .from('becado')
         .insert([
           {
-            porcentaje_beca:cantidadBeca,
+            porcentaje_beca: cantidadBeca,
             horas_realizar: horasEstudiante,
-            carrera: carrera,        
+            carrera,
             facultad: facultadCarrera,
             anio: anioActual,
-            horas_acumuladas:"0",
-            nombre_estudiante:name,
+            horas_acumuladas: '0',
+            nombre_estudiante: name,
             carnet: carnetEstudiante,
             correo: email,
-            departamento:depto
-          }
+            departamento: depto,
+          },
         ])
-      }
-      
-    }catch(error){
+    } catch (error) {
       console.error('Error al agregar estudiante:', error.message)
     }
 
-    try{
+    try {
       // Insertar al estudiante en la tabla "usuario"
       const { dataUser, errorUser } = await supabase
         .from('usuario')
         .insert([
           {
-            correo:email,
+            correo: email,
             password: carnetEstudiante,
             admin: false,
-          }
+          },
         ])
-  
-      if(dataUser){
-        console.log(data)
+
+      /*
+      if (dataUser) {
+        console.log(dataUser)
       }
-    }catch(error){
-      console.log("Error: ", error.message)
+      */
+    } catch (error) {
+      console.log('Error: ', error.message)
     }
-    setName("")
-    setCarrera("")
-    setCantidadBeca("")
-    setHorasEstudiante("")
-    setfacultadCarrera("")
-    setEmail("")
-    setDepto("")
-    setcarnetEstudiante("")
-    
+    setName('')
+    setCarrera('')
+    setCantidadBeca('')
+    setHorasEstudiante('')
+    setfacultadCarrera('')
+    setEmail('')
+    setDepto('')
+    setcarnetEstudiante('')
   }
 
   return (
     <>
-    <SideBar/>
-    <div className={styles.title}>
-      <h1>Apartado para agregar un nuevo estudiante</h1>
-    </div>
-    <div className={styles.container}>
-      <Box px={8} pb={8}> {/* Agregamos el espaciado horizontal al contenedor  pb=horizontal, px=vertical*/}
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Nombre del Estudiante"
-              variant="outlined"
-              fullWidth
-              style={textFieldStyles}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              error={nameValidation}
-              helperText={nameErrorMessage}
-            />
+      <SideBar />
+      <div className={styles.title}>
+        <h1>Apartado para agregar un nuevo estudiante</h1>
+      </div>
+      <div className={styles.container}>
+        <Box px={8} pb={8}>
+          {' '}
+          {/* Agregamos el espaciado horizontal al contenedor  pb=horizontal, px=vertical */}
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Nombre del Estudiante"
+                variant="outlined"
+                fullWidth
+                style={textFieldStyles}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                error={nameValidation}
+                helperText={nameErrorMessage}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Carrera"
+                variant="outlined"
+                fullWidth
+                style={textFieldStyles}
+                value={carrera}
+                onChange={(e) => setCarrera(e.target.value)}
+                error={carreraValidation}
+                helperText={carreraErrorMessage}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Departamento"
+                variant="outlined"
+                fullWidth
+                style={textFieldStyles}
+                value={depto}
+                onChange={(e) => setDepto(e.target.value)}
+                error={deptoValidation}
+                helperText={deptoErrorMessage}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Facultad"
+                variant="outlined"
+                fullWidth
+                style={textFieldStyles}
+                value={facultadCarrera}
+                onChange={(e) => setfacultadCarrera(e.target.value)}
+                error={facultadCarreraValidation}
+                helperText={facultadCarreraErrorMessage}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Cantidad de beca"
+                variant="outlined"
+                fullWidth
+                style={textFieldStyles}
+                value={cantidadBeca}
+                onChange={(e) => setCantidadBeca(e.target.value)}
+                error={cantidadBecaValidation}
+                helperText={cantidadBecaErrorMessage}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Cantidad Horas a Realizar por el Estudiante"
+                variant="outlined"
+                fullWidth
+                style={textFieldStyles}
+                value={horasEstudiante}
+                onChange={(e) => setHorasEstudiante(e.target.value)}
+                error={horasEstudianteValidation}
+                helperText={horasEstudianteErrorMessage}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Correo"
+                variant="outlined"
+                fullWidth
+                style={textFieldStyles}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                error={emailValidation}
+                helperText={emailErrorMessage}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Carnet"
+                variant="outlined"
+                fullWidth
+                style={textFieldStyles}
+                value={carnetEstudiante}
+                onChange={(e) => setcarnetEstudiante(e.target.value)}
+                error={carnetEstudianteValidation}
+                helperText={carnetEstudianteErrorMessage}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Carrera"
-              variant="outlined"
-              fullWidth
-              style={textFieldStyles}
-              value={carrera}
-              onChange={(e) => setCarrera(e.target.value)}
-              error={carreraValidation}
-              helperText={carreraErrorMessage}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Departamento"
-              variant="outlined"
-              fullWidth
-              style={textFieldStyles}
-              value={depto}
-              onChange={(e) => setDepto(e.target.value)}
-              error={deptoValidation}
-              helperText={deptoErrorMessage}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Facultad"
-              variant="outlined"
-              fullWidth
-              style={textFieldStyles}
-              value={facultadCarrera}
-              onChange={(e) => setfacultadCarrera(e.target.value)}
-              error={facultadCarreraValidation}
-              helperText={facultadCarreraErrorMessage}
-            />
-          </Grid>          
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Cantidad de beca"
-              variant="outlined"
-              fullWidth
-              style={textFieldStyles}
-              value={cantidadBeca}
-              onChange={(e) => setCantidadBeca(e.target.value)}
-              error={cantidadBecaValidation}
-              helperText={cantidadBecaErrorMessage}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Cantidad Horas a Realizar por el Estudiante"
-              variant="outlined"
-              fullWidth
-              style={textFieldStyles}
-              value={horasEstudiante}
-              onChange={(e) => setHorasEstudiante(e.target.value)}
-              error={horasEstudianteValidation}
-              helperText={horasEstudianteErrorMessage}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Correo"
-              variant="outlined"
-              fullWidth
-              style={textFieldStyles}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={emailValidation}
-              helperText={emailErrorMessage}
-            />
-          </Grid>          
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Carnet"
-              variant="outlined"
-              fullWidth
-              style={textFieldStyles}
-              value={carnetEstudiante}
-              onChange = {(e) => setcarnetEstudiante(e.target.value)}
-              error={carnetEstudianteValidation}
-              helperText={carnetEstudianteErrorMessage}
-            />
-          </Grid>
-        </Grid>
-      </Box>
-      <Box display="flex" justifyContent="flex-end" px={8} sx={{marginBottom: '30px'}}>
-        <Button 
-          size="medium"
-          sx={{...hoverButtons, 
-            fontSize: '13px', // Aumenta el tamaño del texto dentro del botón
-            padding: '12px 24px',
-            width: '260px',
+        </Box>
+        <Box display="flex" justifyContent="flex-end" px={8} sx={{ marginBottom: '30px' }}>
+          <Button
+            size="medium"
+            sx={{
+              ...hoverButtons,
+              fontSize: '13px', // Aumenta el tamaño del texto dentro del botón
+              padding: '12px 24px',
+              width: '260px',
             }}
-          type="submit"
-          variant="outlined"
-          onClick={(e) => handleAgregarEstudiante(e)}
-        >
-          Agregar estudiante
-        </Button>
-      </Box>
-      
-    </div>
+            type="submit"
+            variant="outlined"
+            onClick={(e) => handleAgregarEstudiante(e)}
+          >
+            Agregar estudiante
+          </Button>
+        </Box>
+
+      </div>
     </>
   )
 }

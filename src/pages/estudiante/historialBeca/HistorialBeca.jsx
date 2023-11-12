@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import CircularProgress from '@mui/material/CircularProgress'
-import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableContainer from '@mui/material/TableContainer'
@@ -9,10 +8,12 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import { supabase } from '@db-supabase/supabase.config'
 import { useAuthContext } from '@contexts/AuthContext'
-import { StyledTableCell, StyledTableRow } from './muiStylesRegistro'
 import SideBar from '@components/sideBar'
 import Title from '@components/titles'
-import { encabezados, registro_horas, registro_actividades, encabezados_registro } from './encabezados'
+import { StyledTableCell, StyledTableRow } from './muiStylesRegistro'
+import {
+  encabezados, registroHoras, registroActividades, encabezadosRegistro,
+} from './encabezados'
 import styles from './HistorialBeca.module.css'
 
 export default function HistorialBeca() {
@@ -21,9 +22,11 @@ export default function HistorialBeca() {
   const [dataIncripcionActividad, setDataInscripcionActividad] = useState([])
   const [dataActividadBeca, setDataActividadBeca] = useState([])
   const [dataEstudianteBecado, setDataEstudianteBecado] = useState([])
-  let combinedData= []
+  const combinedData = []
   // Obtener funciones y estado del contexto de autenticación
-  const { authUser, setAuthUser, isLoggedIn, setIsLoggedIn } = useAuthContext()
+  const {
+    authUser, setAuthUser, isLoggedIn, setIsLoggedIn,
+  } = useAuthContext()
 
   const fetchDataRegistro = async () => {
     try {
@@ -31,7 +34,7 @@ export default function HistorialBeca() {
       const { data: validacionManual, errorValidacionManual } = await supabase
         .from('validacion_manual_actividad')
         .select('*')
-        .eq("correo_estudiante", authUser.correo)
+        .eq('correo_estudiante', authUser.correo)
 
       if (errorValidacionManual) {
         console.error('Error fetching data: ', error)
@@ -51,20 +54,20 @@ export default function HistorialBeca() {
    * y estas han sido acreditadas.
    */
   const fetchInscripcionActividad = async () => {
-    try{
+    try {
       const { data: inscripcionActividad, error: errorInscripcionActividad } = await supabase
-      .from("inscripcion_actividad")
-      .select("*")
-      .eq("correo_estudiante", authUser.correo)
-      .eq("acreditada", true)
-      
-      if(inscripcionActividad){
+        .from('inscripcion_actividad')
+        .select('*')
+        .eq('correo_estudiante', authUser.correo)
+        .eq('acreditada', true)
+
+      if (inscripcionActividad) {
         setDataInscripcionActividad(inscripcionActividad)
-      }else{
-        console.log("Failed fetching data: ", errorInscripcionActividad)
+      } else {
+        console.log('Failed fetching data: ', errorInscripcionActividad)
       }
-    }catch(error){
-      console.log("Failed fetchig data: ", error)
+    } catch (error) {
+      console.log('Failed fetchig data: ', error)
     }
   }
 
@@ -72,20 +75,19 @@ export default function HistorialBeca() {
    * Obtencion de las actividades beca que han sido acreditadas
    */
   const fetchDataActividadBeca = async () => {
-    try{
-      const { data: actividadBeca, error: errorActividadBeca} = await supabase
-      .from("actividad_beca")
-      .select("*")
-      .eq("acreditada", true)
+    try {
+      const { data: actividadBeca, error: errorActividadBeca } = await supabase
+        .from('actividad_beca')
+        .select('*')
+        .eq('acreditada', true)
 
-      if(actividadBeca){
+      if (actividadBeca) {
         setDataActividadBeca(actividadBeca)
-      }else{
-        console.log("Failed fetching data: ", errorActividadBeca)
+      } else {
+        console.log('Failed fetching data: ', errorActividadBeca)
       }
-      
-    }catch(error){
-      console.log("Failed fetching data: ", error)
+    } catch (error) {
+      console.log('Failed fetching data: ', error)
     }
   }
 
@@ -94,19 +96,19 @@ export default function HistorialBeca() {
    * Esto ayuda para mostrarle las horas que debe hacer durante el año.
    */
   const fetchEstudiante = async () => {
-    try{
+    try {
       const { data: estudianteBecado, error: errorEstudianteBecado } = await supabase
-        .from("becado")
-        .select("*")
-        .eq("correo", authUser.correo)
+        .from('becado')
+        .select('*')
+        .eq('correo', authUser.correo)
 
-      if(estudianteBecado){
+      if (estudianteBecado) {
         setDataEstudianteBecado(estudianteBecado)
-      }else{
-        console.log("No data becado table: ", errorEstudianteBecado)
+      } else {
+        console.log('No data becado table: ', errorEstudianteBecado)
       }
-    }catch(error){
-      console.log("Failed fetching data from becado table: ", error)
+    } catch (error) {
+      console.log('Failed fetching data from becado table: ', error)
     }
   }
   useEffect(() => {
@@ -115,12 +117,12 @@ export default function HistorialBeca() {
     fetchDataActividadBeca()
     fetchEstudiante()
   }, [])
-  
 
   dataActividadBeca.forEach((actividadBeca) => {
     dataIncripcionActividad.forEach((inscripcionActividades) => {
       dataEstudianteBecado.forEach((estudiante) => {
-        if (actividadBeca.id === inscripcionActividades.actividad_id && estudiante.correo === inscripcionActividades.correo_estudiante) {
+        if (actividadBeca.id === inscripcionActividades.actividad_id
+          && estudiante.correo === inscripcionActividades.correo_estudiante) {
           const combinedItem = { ...actividadBeca, ...dataRegistro, ...estudiante }
           combinedData.push(combinedItem)
         }
@@ -131,35 +133,41 @@ export default function HistorialBeca() {
   return (
     <>
       <SideBar />
-      <Title titles={registro_horas} /> {/* Título de la página */}
+      <Title titles={registroHoras} />
+      {' '}
+      {/* Título de la página */}
       <div className={styles.data}>
         <div className={styles.hoursInfo}>
-          {dataEstudianteBecado.length > 0 ? (  
+          {dataEstudianteBecado.length > 0 ? (
             <TableContainer component={Paper}>
               <Table>
                 <TableHead>
                   <TableRow>
-                    {encabezados_registro.map((encabezadosResgitro) => (
-                      <StyledTableCell align='center' key={encabezadosResgitro}>{encabezadosResgitro}</StyledTableCell>
+                    {encabezadosRegistro.map((encabezadoResgitro) => (
+                      <StyledTableCell align="center" key={encabezadoResgitro}>{encabezadoResgitro}</StyledTableCell>
                     ))}
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   <StyledTableRow>
-                    <StyledTableCell align='center'>{dataEstudianteBecado[0].horas_realizar}</StyledTableCell>
-                    <StyledTableCell align='center'>{dataEstudianteBecado[0].horas_realizadas}</StyledTableCell>
-                    <StyledTableCell align='center'>{dataEstudianteBecado[0].horas_realizar - dataEstudianteBecado[0].horas_realizadas}</StyledTableCell>
+                    <StyledTableCell align="center">{dataEstudianteBecado[0].horas_realizar}</StyledTableCell>
+                    <StyledTableCell align="center">
+                      {dataEstudianteBecado[0].horas_realizadas}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {dataEstudianteBecado[0].horas_realizar - dataEstudianteBecado[0].horas_realizadas}
+                    </StyledTableCell>
                   </StyledTableRow>
                 </TableBody>
               </Table>
             </TableContainer>
-            ) : null}
+          ) : null}
         </div>
         {loading ? ( // Mostrar CircularProgress solo si la petición está en curso
           <CircularProgress />
         ) : (
           <>
-            <Title titles={registro_actividades}/>
+            <Title titles={registroActividades} />
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
