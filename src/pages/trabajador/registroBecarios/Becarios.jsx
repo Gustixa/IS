@@ -9,7 +9,6 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
-import DeleteIcon from '@mui/icons-material/Delete'
 import { Link } from 'react-router-dom'
 import EditIcon from '@mui/icons-material/Edit'
 import SideBar from '@components/sideBar'
@@ -30,81 +29,79 @@ export default function Becarios() {
   const classes = useStyles()
 
   const handleChangeAnio = (event) => {
-    const inputValue = event.target.value;
+    const inputValue = event.target.value
     if (inputValue >= 0 || inputValue === '') {
-      setFiltroAnio(inputValue);
+      setFiltroAnio(inputValue)
     }
-  };
+  }
 
   const handleChangeNombre = (event) => {
-    setFiltroNombre(event.target.value);
-  };
+    setFiltroNombre(event.target.value)
+  }
 
   const handleChangeCarnet = (event) => {
-    const inputValue = event.target.value;
+    const inputValue = event.target.value
     if (inputValue >= 0 || inputValue === '') {
-      setFiltroCarnet(inputValue);
+      setFiltroCarnet(inputValue)
     }
-  };
+  }
 
   const handleChangeBeca = (event) => {
-    const inputValue = event.target.value;
+    const inputValue = event.target.value
     if (inputValue >= 0 || inputValue === '') {
-      setFiltroBeca(inputValue);
+      setFiltroBeca(inputValue)
     }
-  };
+  }
 
   const handleChangeFiltroFacultad = (event) => {
-    setFiltroFacultad(event.target.value);
-  };
+    setFiltroFacultad(event.target.value)
+  }
 
   const handleChangeHorasFaltantes = (event) => {
-    const inputValue = event.target.value;
+    const inputValue = event.target.value
     if (inputValue >= 0 || inputValue === '') {
-      setFiltroHorasFaltantes(inputValue);
+      setFiltroHorasFaltantes(inputValue)
     }
-  };
+  }
 
   const handleDelete = async (studentId) => {
     try {
-      const { error } = await supabase.from('becado').delete().eq('id', studentId);
+      const { error } = await supabase.from('becado').delete().eq('id', studentId)
 
       if (error) {
-        console.error('Error al eliminar el estudiante:', error);
+        console.error('Error al eliminar el estudiante:', error)
       } else {
-        setStudentsData((prevData) => prevData.filter((student) => student.id !== studentId));
+        setStudentsData((prevData) => prevData.filter((student) => student.id !== studentId))
       }
     } catch (error) {
-      console.error('Error al eliminar el estudiante:', error);
+      console.error('Error al eliminar el estudiante:', error)
     }
-  };
+  }
 
   useEffect(() => {
     async function fetchStudentsData() {
       try {
-        const { data, error } = await supabase.from('becado').select('*');
+        const { data, error } = await supabase.from('becado').select('*')
 
         if (error) {
-          console.log('Error fetching data: ', error);
+          console.log('Error fetching data: ', error)
         } else {
-          const filteredData = data.filter((student) => {
-            return (
-              student.anio.includes(filtroAnio) &&
-              student.nombre_estudiante.toLowerCase().includes(filtroNombre.toLowerCase()) &&
-              student.carnet.includes(filtroCarnet) &&
-              (filtroBeca === '' || student.porcentaje_beca.toString().includes(filtroBeca)) &&
-              (filtroFacultad === '' || student.facultad.toLowerCase().includes(filtroFacultad.toLowerCase())) &&
-              (filtroHorasFaltantes === '' || student.horas_acumuladas >= parseInt(filtroHorasFaltantes))
-            );
-          });
-          setStudentsData(filteredData);
+          const filteredData = data.filter((student) => (
+            student.anio.includes(filtroAnio)
+              && student.nombre_estudiante.toLowerCase().includes(filtroNombre.toLowerCase())
+              && student.carnet.includes(filtroCarnet)
+              && (filtroBeca === '' || student.porcentaje_beca.toString().includes(filtroBeca))
+              && (filtroFacultad === '' || student.facultad.toLowerCase().includes(filtroFacultad.toLowerCase()))
+              && (filtroHorasFaltantes === '' || student.horas_acumuladas >= parseInt(filtroHorasFaltantes, 10))
+          ))
+          setStudentsData(filteredData)
         }
       } catch (error) {
-        console.error('Error fetching data: ', error);
+        console.error('Error fetching data: ', error)
       }
     }
-    fetchStudentsData();
-  }, [filtroAnio, filtroNombre, filtroCarnet, filtroBeca, filtroFacultad, filtroHorasFaltantes]);
+    fetchStudentsData()
+  }, [filtroAnio, filtroNombre, filtroCarnet, filtroBeca, filtroFacultad, filtroHorasFaltantes])
 
   return (
     <div>
@@ -199,7 +196,8 @@ export default function Becarios() {
                         student.horas_realizadas >= student.horas_realizar
                           ? classes.greenCell
                           : classes.redCell
-                      }>
+                      }
+                    >
                       {student.nombre_estudiante}
                     </StyledTableCell>
                     <StyledTableCell
@@ -208,7 +206,8 @@ export default function Becarios() {
                         student.horas_realizadas >= student.horas_realizar
                           ? classes.greenCell
                           : classes.redCell
-                      }>
+                      }
+                    >
                       {student.carnet}
                     </StyledTableCell>
                     <StyledTableCell
@@ -217,70 +216,77 @@ export default function Becarios() {
                         student.horas_realizadas >= student.horas_realizar
                           ? classes.greenCell
                           : classes.redCell
-                      }>
+                      }
+                    >
                       {student.carrera}
                     </StyledTableCell>
-                    <StyledTableCell 
+                    <StyledTableCell
                       align="center"
                       className={
                         student.horas_realizadas >= student.horas_realizar
                           ? classes.greenCell
                           : classes.redCell
-                      }>
-                        {student.facultad}
+                      }
+                    >
+                      {student.facultad}
                     </StyledTableCell>
-                    <StyledTableCell 
+                    <StyledTableCell
                       align="center"
                       className={
                         student.horas_realizadas >= student.horas_realizar
                           ? classes.greenCell
                           : classes.redCell
-                      }>
-                        {student.anio}
-                      </StyledTableCell>
-                    <StyledTableCell 
+                      }
+                    >
+                      {student.anio}
+                    </StyledTableCell>
+                    <StyledTableCell
                       align="center"
                       className={
                         student.horas_realizadas >= student.horas_realizar
                           ? classes.greenCell
                           : classes.redCell
-                      }>
-                        {student.porcentaje_beca}
-                      </StyledTableCell>
-                    <StyledTableCell 
+                      }
+                    >
+                      {student.porcentaje_beca}
+                    </StyledTableCell>
+                    <StyledTableCell
                       align="center"
                       className={
                         student.horas_realizadas >= student.horas_realizar
                           ? classes.greenCell
                           : classes.redCell
-                      }>
-                        {student.horas_realizar}
-                      </StyledTableCell>
-                    <StyledTableCell 
+                      }
+                    >
+                      {student.horas_realizar}
+                    </StyledTableCell>
+                    <StyledTableCell
                       align="center"
                       className={
                         student.horas_realizadas >= student.horas_realizar
                           ? classes.greenCell
                           : classes.redCell
-                      }>
-                        {student.horas_realizadas}
-                      </StyledTableCell>
-                    <StyledTableCell 
+                      }
+                    >
+                      {student.horas_realizadas}
+                    </StyledTableCell>
+                    <StyledTableCell
                       align="center"
                       className={
                         student.horas_realizadas >= student.horas_realizar
                           ? classes.greenCell
                           : classes.redCell
-                      }>
-                        {student.horas_acumuladas}
-                      </StyledTableCell>
+                      }
+                    >
+                      {student.horas_acumuladas}
+                    </StyledTableCell>
                     <StyledTableCell align="right">
-                      <Link to={'/actualizarEstudiante/' + student.id}>
+                      <Link to={`/actualizarEstudiante/${student.id}`}>
                         <IconButton
                           color="primary"
                           aria-label="Eliminar estudiante"
                         >
-                          <EditIcon/>
+                          <EditIcon />
                         </IconButton>
                       </Link>
                     </StyledTableCell>

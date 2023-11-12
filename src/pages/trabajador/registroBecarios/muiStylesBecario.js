@@ -12,7 +12,7 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: 14,
   },
 }))
-  
+
 export const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
@@ -23,15 +23,13 @@ export const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }))
 
-export const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles(() => ({
   greenCell: {
     backgroundColor: 'green',
     color: 'white', // Cambia el color del texto si lo necesitas
   },
-  redCell:{
+  redCell: {
     backgroundColor: '#c22604',
-    color: 'white'
-  }
-}));
-
-
+    color: 'white',
+  },
+}))
