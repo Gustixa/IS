@@ -5,17 +5,17 @@ const encabezados = [
     "Horas Acreditadas",
 ]
 
-const registro_horas = [
+const registroHoras = [
     "Registro de horas"
 ]
 
-const registro_actividades = [
+const registroActividades = [
     "Registro de actividades"
 ]
 
-const encabezados_registro = [
+const encabezadosRegistro = [
     "Horas requeridas",
     "Horas realizadas",
     "Horas faltantes"
 ]
-export  {encabezados, registro_horas, registro_actividades, encabezados_registro}
+export  {encabezados, registroHoras, registroActividades, encabezadosRegistro}
