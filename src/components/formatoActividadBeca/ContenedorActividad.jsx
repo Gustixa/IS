@@ -3,13 +3,14 @@
  * pueden realizar los estudiantes. En si, es para presentar las actividades
  * creadas y a las que se pueden inscribir.
  */
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import IconButton from '@mui/material/IconButton'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Link } from 'react-router-dom'
 import { Button } from '@mui/material'
 
+import PropTypes from 'prop-types'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
@@ -30,7 +31,7 @@ function PaperComponent(props) {
 
 export default function ContenedorActividad({
   actividad, onDelete, inscrito, onSuscribe, acreditada, onAcreditar,
-  deSuscribed, onDeSuscribe
+  deSuscribed, onDeSuscribe,
 }) {
   const [open, setOpen] = useState(false)
   const [isInscrito, setIsInscrito] = useState(inscrito) // Estado para controlar si el usuario está inscrito
@@ -38,7 +39,7 @@ export default function ContenedorActividad({
   const [isAcreditada, setIsAcreditada] = useState(acreditada)
   const [isDeSuscribed, setIsDeSuscribed] = useState(deSuscribed)
 
-  let combinedData = []
+  const combinedData = []
 
   const {
     authUser,
@@ -117,33 +118,33 @@ export default function ContenedorActividad({
 
   /**
    * Des inscribirse de la actividad beca inscrita en la cual no desean participar.
-   * 
-   * @param {*} e 
+   *
+   * @param {*} e
    */
   const handleDesInscripcion = async (e) => {
-    try{
+    try {
       const { error } = await supabase
-      .from('inscripcion_actividad')
-      .delete()
-      .eq('actividad_id', actividad.id)
-      .eq('correo_estudiante', authUser.correo)
+        .from('inscripcion_actividad')
+        .delete()
+        .eq('actividad_id', actividad.id)
+        .eq('correo_estudiante', authUser.correo)
 
-      const { data: actividadAtualizar, error: errorActividadActualizar} = await supabase
+      const { data: actividadAtualizar, error: errorActividadActualizar } = await supabase
         .from('actividad_beca')
         .select('cupos_disponibles')
         .eq('id', actividad.id)
 
-      const cupos_actualizados = actividadAtualizar[0].cupos_disponibles + 1
+      const cuposActualizados = actividadAtualizar[0].cupos_disponibles + 1
       const { data: actividadBecaData, error: errorActividadBecaData } = await supabase
         .from('actividad_beca')
-        .update({cupos_disponibles: cupos_actualizados})
-        .eq('id',actividad.id)
+        .update({ cupos_disponibles: cuposActualizados })
+        .eq('id', actividad.id)
         .select()
-      
+
       setIsInscrito(false)
       onDeSuscribe(actividad.id)
-    }catch(error){
-      console.log("Failed deleting de data: ", error)
+    } catch (error) {
+      console.log('Failed deleting de data: ', error)
     }
   }
 
@@ -166,16 +167,16 @@ export default function ContenedorActividad({
         .update({ acreditada: true })
         .eq('actividad_id', actividad.id)
         .select()
-      
-      const {data: dataActividad, error: errorDataActividad } = await supabase
-      .from('actividad_beca')
-      .select('*')
-      .eq('id', actividad.id)
-      
-      if(dataActividad){
-        console.log("Actividades: ",dataActividad)
-      }else{
-        console.log("Failed fetching actividades beca data: ", errorDataActividad)
+
+      const { data: dataActividad, error: errorDataActividad } = await supabase
+        .from('actividad_beca')
+        .select('*')
+        .eq('id', actividad.id)
+
+      if (dataActividad) {
+        console.log('Actividades: ', dataActividad)
+      } else {
+        console.log('Failed fetching actividades beca data: ', errorDataActividad)
       }
       const correosEstudiantesInscritos = estudiantesInscritos.map((estudiante) => estudiante.correo_estudiante)
       // Obtener los estudiantes de la tabla becado para efectura la acreditacion
@@ -183,25 +184,24 @@ export default function ContenedorActividad({
         .from('becado')
         .select('*')
         .in('correo', correosEstudiantesInscritos)
-      
-      if(dataEstudianteBecado){
-        console.log("Estudiantes: ", dataEstudianteBecado)
-      }else{
-       console.log("Failed, no data in becado table: ", errorDataEstudianteBecado) 
-      }  
+
+      if (dataEstudianteBecado) {
+        console.log('Estudiantes: ', dataEstudianteBecado)
+      } else {
+        console.log('Failed, no data in becado table: ', errorDataEstudianteBecado)
+      }
 
       // Realizar cálculos y actualizaciones en la tabla becado para cada estudiante
-      for (const estudiante of dataEstudianteBecado) {
+      dataEstudianteBecado.forEach(async (estudiante) => {
         // Encuentra la información de actividadesBeca correspondiente a esta actividad
-
         if (dataActividad) {
           // Calcula la suma de horas acreditadas y horas realizadas
           const horasAcreditadas = dataActividad[0].horas_acreditadas
-          console.log("Horas acreditadas: ", horasAcreditadas)
+          // console.log('Horas acreditadas: ', horasAcreditadas)
           const horasRealizadas = estudiante.horas_realizadas
-          console.log("Horas realizadas: ",horasRealizadas)
+          // console.log('Horas realizadas: ', horasRealizadas)
           const horasTotales = horasAcreditadas + horasRealizadas
-          console.log("Horas totales: ", horasTotales)
+          // console.log('Horas totales: ', horasTotales)
           // Actualiza la tabla becado con las horas totales
           await supabase
             .from('becado')
@@ -209,12 +209,12 @@ export default function ContenedorActividad({
             .eq('id', estudiante.id)
             .select()
         }
-      }
-      
+      })
+
       /**
        * Actualizar el estado para indicar que el estudiante ya no está inscrito
        * Sirve para que no se muestre la actividad al estudiante.
-       */ 
+       */
       onAcreditar(actividad.id)
       setIsInscrito(false)
       setIsAcreditada(true)
@@ -274,7 +274,6 @@ export default function ContenedorActividad({
               onClick={() => {
                 handleClickOpen()
                 fetchEstudiantesInscritos()
-                
               }}
             >
               Detalles
@@ -337,85 +336,151 @@ export default function ContenedorActividad({
         )}
         <div className={styles.buttonsStudent}>
           {authUser.type === false && !inscrito && (
-          <>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ ...hoverButtons }}
-              onClick={(e) => handleInscripcion(e)}
-            >
-              Inscribirse
-            </Button>
+            <>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ ...hoverButtons }}
+                onClick={(e) => handleInscripcion(e)}
+              >
+                Inscribirse
+              </Button>
 
-            <Button
-            variant="contained"
-            color="primary"
-            sx={{ ...hoverButtons, marginLeft: '10px' }}
-            onClick={handleClickOpen}
-            >
-            Detalles
-            </Button>
-          </>
-          )}
-          {authUser.type === false && inscrito && (
-          <>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ ...hoverButtons, marginLeft: '10px' }}
-              onClick={handleDesInscripcion}
-            >
-              Des-inscribirse
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ ...hoverButtons, marginLeft: '10px' }}
-              onClick={handleClickOpen}
-            >
-              Detalles
-            </Button>
-            <Dialog
-              open={open}
-              onClose={handleClose}
-              PaperComponent={PaperComponent}
-              aria-labelledby="draggable-dialog-title"
-            >
-              <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-                {actividad.nombre_actividad}
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  <div>
-                    <div className={styles.scrollableText}>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ ...hoverButtons, marginLeft: '10px' }}
+                onClick={handleClickOpen}
+              >
+                Detalles
+              </Button>
+              <Dialog
+                open={open}
+                onClose={handleClose}
+                PaperComponent={PaperComponent}
+                aria-labelledby="draggable-dialog-title"
+              >
+                <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+                  {actividad.nombre_actividad}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    <div>
+                      <strong>Descripción:</strong>
+                      <div className={styles.scrollableText}>
+                        <p>
+                          {actividad.descripcion}
+                        </p>
+                      </div>
                       <p>
-                        <strong>Descripción:</strong>
-                        {actividad.descripcion}
+                        <strong>Cupos Disponibles:</strong>
+                        {' '}
+                        {actividad.cupos_disponibles}
+                      </p>
+                      <p>
+                        <strong>Horas Acreditadas:</strong>
+                        {' '}
+                        {actividad.horas_acreditadas}
                       </p>
                     </div>
-                    <p>
-                      <strong>Cupos Disponibles:</strong>
-                      {' '}
-                      {actividad.cupos_disponibles}
-                    </p>
-                    <p>
-                      <strong>Horas Acreditadas:</strong>
-                      {' '}
-                      {actividad.horas_acreditadas}
-                    </p>
-                  </div>
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button autoFocus onClick={handleClose}>
-                  Cancel
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </>
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button autoFocus onClick={handleClose}>
+                    Cancel
+                  </Button>
+                </DialogActions>
+              </Dialog>
+
+            </>
+          )}
+          {authUser.type === false && inscrito && (
+            <>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ ...hoverButtons, marginLeft: '10px' }}
+                onClick={handleDesInscripcion}
+              >
+                Des-inscribirse
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ ...hoverButtons, marginLeft: '10px' }}
+                onClick={handleClickOpen}
+              >
+                Detalles
+              </Button>
+              <Dialog
+                open={open}
+                onClose={handleClose}
+                PaperComponent={PaperComponent}
+                aria-labelledby="draggable-dialog-title"
+              >
+                <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+                  {actividad.nombre_actividad}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    <div>
+                      <strong>Descripción:</strong>
+                      <div className={styles.scrollableText}>
+                        <p>
+                          {actividad.descripcion}
+                        </p>
+                      </div>
+                      <p>
+                        <strong>Cupos Disponibles:</strong>
+                        {' '}
+                        {actividad.cupos_disponibles}
+                      </p>
+                      <p>
+                        <strong>Horas Acreditadas:</strong>
+                        {' '}
+                        {actividad.horas_acreditadas}
+                      </p>
+                    </div>
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button autoFocus onClick={handleClose}>
+                    Cancel
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </>
           )}
         </div>
       </div>
     </div>
   )
+}
+
+ContenedorActividad.propTypes = {
+  actividad: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    nombre_actividad: PropTypes.string.isRequired,
+    descripcion: PropTypes.string.isRequired,
+    cupos_disponibles: PropTypes.number.isRequired,
+    horas_acreditadas: PropTypes.number.isRequired,
+    // Agrega otras propiedades según sea necesario
+  }).isRequired,
+  onDelete: PropTypes.func,
+  inscrito: PropTypes.bool,
+  onSuscribe: PropTypes.func,
+  acreditada: PropTypes.bool,
+  onAcreditar: PropTypes.func,
+  deSuscribed: PropTypes.bool,
+  onDeSuscribe: PropTypes.func,
+}
+
+ContenedorActividad.defaultProps = {
+  onDelete: () => {},
+  inscrito: false,
+  onSuscribe: () => {},
+  acreditada: false,
+  onAcreditar: () => {},
+  deSuscribed: false,
+  onDeSuscribe: () => {},
 }

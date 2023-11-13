@@ -16,34 +16,28 @@ export default function ActividadBeca() {
   const [dataActividad, setDataActividad] = useState(null) // Estado para almacenar datos de actividades generales
   const [filtroNombreActividad, setFiltroNombreActividad] = useState('') // Estado para el filtro de nombre de actividad
 
-  const { 
+  const {
     authUser,
     setAuthUser,
     isLoggedIn,
-    setIsLoggedIn
+    setIsLoggedIn,
   } = useAuthContext() // Obtiene el contexto de autenticación del usuario
 
   const navigate = useNavigate() // Permite la navegación entre rutas
 
   // Función para manejar la eliminación de actividades
   const handleDelete = (id) => {
-    setDataActividad(prevDataActivity => {
-      return prevDataActivity.filter(dataActi => dataActi.id !== id)
-    })
+    setDataActividad((prevDataActivity) => prevDataActivity.filter((dataActi) => dataActi.id !== id))
   }
 
   // Funcion para manejar la inscripcion en las actividades.
   const handleSuscribe = (id) => {
-    setDataActividad(prevDataActivity => {
-      return prevDataActivity.filter(dataActi => dataActi.id !== id)
-    })
+    setDataActividad((prevDataActivity) => prevDataActivity.filter((dataActi) => dataActi.id !== id))
   }
 
   // Funcion para manejar las actividades que se han acreditado
   const handleAcreditar = (id) => {
-    setDataActividad(prevDataActivity => {
-      return prevDataActivity.filter(dataActi => dataActi.id !== id)
-    })
+    setDataActividad((prevDataActivity) => prevDataActivity.filter((dataActi) => dataActi.id !== id))
   }
   // Función para redirigir  a la creación de una nueva actividad
   const handleCreateActivity = () => {
@@ -61,38 +55,38 @@ export default function ActividadBeca() {
       try {
         // Obtener los IDs de las actividades en las que el usuario está inscrito
         const { data: inscripcionData, error: errorInscripcionData } = await supabase
-          .from("inscripcion_actividad")
-          .select("actividad_id")
-          .eq("correo_estudiante", authUser.correo)
+          .from('inscripcion_actividad')
+          .select('actividad_id')
+          .eq('correo_estudiante', authUser.correo)
 
         if (errorInscripcionData) {
-          console.log("Error fetching inscripcionData: ", errorInscripcionData)
+          console.log('Error fetching inscripcionData: ', errorInscripcionData)
         } else {
           // Obtener una lista de IDs de actividades inscritas
           const actividadIdsInscritas = inscripcionData.map((inscripcion) => inscripcion.actividad_id)
 
           // Obtener todas las actividades generales
           const { data: actividadData, error: errorActividadData } = await supabase
-            .from("actividad_beca")
-            .select("*")
+            .from('actividad_beca')
+            .select('*')
             .order('id')
-            .eq("acreditada",false)
-          
+            .eq('acreditada', false)
+
           if (errorActividadData) {
-            console.log("Error fetching actividadData: ", errorActividadData)
+            console.log('Error fetching actividadData: ', errorActividadData)
           } else {
             // Filtrar las actividades generales para excluir las inscritas
-              const actividadesGenerales = actividadData.filter((actividad) =>
-                !actividadIdsInscritas.includes(actividad.id)
-              )
+            const actividadesGenerales = actividadData.filter(
+              (actividad) => !actividadIdsInscritas.includes(actividad.id),
+            )
 
-              // Filtrar las actividades generales por nombre
-              const filteredData = actividadesGenerales.filter((detalles) =>
-                detalles.nombre_actividad.toLowerCase().includes(filtroNombreActividad.toLowerCase())
-              )
+            // Filtrar las actividades generales por nombre
+            const filteredData = actividadesGenerales.filter(
+              (detalles) => detalles.nombre_actividad.toLowerCase().includes(filtroNombreActividad.toLowerCase()),
+            )
 
-              // Establecer los datos filtrados en el estado 'actividad'
-              setDataActividad(filteredData)
+            // Establecer los datos filtrados en el estado 'actividad'
+            setDataActividad(filteredData)
           }
         }
       } catch (error) {
@@ -105,8 +99,12 @@ export default function ActividadBeca() {
 
   return (
     <>
-      <SideBar /> {/* Barra lateral */}
-      <Title titles={encabezado} /> {/* Título de la página */}
+      <SideBar />
+      {' '}
+      {/* Barra lateral */}
+      <Title titles={encabezado} />
+      {' '}
+      {/* Título de la página */}
       <div className={styles.buttonContainer}>
         {/* Campo de filtro de nombre de actividad */}
         <TextField
@@ -147,7 +145,7 @@ export default function ActividadBeca() {
           <CircularProgress />
         )}
       </div>
-      <div className={styles.finalBlock}></div>
+      <div className={styles.finalBlock} />
     </>
   )
 }
