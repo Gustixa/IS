@@ -1,3 +1,3 @@
-const encabezado = ["Actividades Horas de Beca"]
+const encabezado = ['Actividades Horas de Beca']
 
 export default encabezado
