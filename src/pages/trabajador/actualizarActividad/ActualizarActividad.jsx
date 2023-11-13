@@ -1,42 +1,44 @@
-import React, { useEffect, useState} from 'react'
-import { Grid, Box, TextField, Button } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import {
+  Grid, Box, TextField, Button,
+} from '@mui/material'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '@db-supabase/supabase.config'
 import styles from './ActualizarActividad.module.css'
-import {textFieldStyles, hoverButtons, hoverCancelButton} from './muiStyles'
+import { textFieldStyles, hoverButtons, hoverCancelButton } from './muiStyles'
 
-export default function ActualizarActividad(){
+export default function ActualizarActividad() {
   // Obteniendo el id de la actividad a actualizar
   const { id } = useParams()
   const navigate = useNavigate()
 
-  const[nombreActividad, setNombreActividad] = useState("")
-  const[descripcion, setDescripcion] = useState("")
-  const[cantidadVoluntarios, setCantidadVoluntarios] = useState("")
-  const[horasAcreditar, setHorasAcreditar] = useState("")
+  const [nombreActividad, setNombreActividad] = useState('')
+  const [descripcion, setDescripcion] = useState('')
+  const [cantidadVoluntarios, setCantidadVoluntarios] = useState('')
+  const [horasAcreditar, setHorasAcreditar] = useState('')
 
-  const[nombreActividadValidation, setNombreActividadValidation] = useState(false)
-  const[descripcionValidation, setDescripcionValidation] = useState(false)
-  const[cantidadVoluntariosValidation, setCantidadVoluntariosValidations] = useState(false)
-  const[horasAcreditarValidation, setHorasAcreditarValidation] = useState(false)
+  const [nombreActividadValidation, setNombreActividadValidation] = useState(false)
+  const [descripcionValidation, setDescripcionValidation] = useState(false)
+  const [cantidadVoluntariosValidation, setCantidadVoluntariosValidations] = useState(false)
+  const [horasAcreditarValidation, setHorasAcreditarValidation] = useState(false)
 
-  const[nombreActividadErrorMessage, setNombreActividadErrorMessage] = useState("")
-  const[descripcionErrorMessage, setDescripcionErrorMessage] = useState("")
-  const[cantidadVoluntariosErrorMessage, setCantidadVoluntariosErrorMessage] = useState("")
-  const[horasAcreditarErrorMessage, setHorasAcreditarErrorMessage] = useState("")
+  const [nombreActividadErrorMessage, setNombreActividadErrorMessage] = useState('')
+  const [descripcionErrorMessage, setDescripcionErrorMessage] = useState('')
+  const [cantidadVoluntariosErrorMessage, setCantidadVoluntariosErrorMessage] = useState('')
+  const [horasAcreditarErrorMessage, setHorasAcreditarErrorMessage] = useState('')
 
   useEffect(() => {
     const fetchActivityDetails = async () => {
       const { data, error } = await supabase
-      .from("actividad_beca")
-      .select()
-      .eq("id",id)
-      .single()
+        .from('actividad_beca')
+        .select()
+        .eq('id', id)
+        .single()
 
-      if(error){
-        navigate("/actividadesBeca", {replace:true})
+      if (error) {
+        navigate('/actividadesBeca', { replace: true })
       }
-      if(data){
+      if (data) {
         setNombreActividad(data.nombre_actividad)
         setCantidadVoluntarios(data.cupos_disponibles)
         setHorasAcreditar(data.horas_acreditadas)
@@ -44,7 +46,7 @@ export default function ActualizarActividad(){
       }
     }
     fetchActivityDetails()
-  },[id, navigate])
+  }, [id, navigate])
 
   /**
    * Validacion de los campos, en esta caso, se espera que se ingresen datos en los campos
@@ -52,74 +54,76 @@ export default function ActualizarActividad(){
   const validacionCampos = () => {
     let isValid = true
     // Nombre actividad
-    if(!nombreActividad){
+    if (!nombreActividad) {
       setNombreActividadValidation(true)
       setNombreActividadErrorMessage('Debe ingresar el nombre de la actividad')
       isValid = false
-    }else{
+    } else {
       setNombreActividadValidation(false)
       setNombreActividadErrorMessage('')
     }
     // Cantidad voluntarios
-    if(!cantidadVoluntarios){
+    if (!cantidadVoluntarios) {
       setCantidadVoluntariosValidations(true)
-      setCantidadVoluntariosErrorMessage("Debe ingresar la cantidad de voluntarios para la actividad")
-    }else{
+      setCantidadVoluntariosErrorMessage('Debe ingresar la cantidad de voluntarios para la actividad')
+    } else {
       setCantidadVoluntariosValidations(false)
-      setCantidadVoluntariosErrorMessage("")
+      setCantidadVoluntariosErrorMessage('')
     }
     // Descripcion de la actividad
-    if(!descripcion){
+    if (!descripcion) {
       setDescripcionValidation(true)
-      setDescripcionErrorMessage("Debe ingresar la descripcion de la actividad")
-    }else{
+      setDescripcionErrorMessage('Debe ingresar la descripcion de la actividad')
+    } else {
       setDescripcionValidation(false)
-      setDescripcionErrorMessage("")
+      setDescripcionErrorMessage('')
     }
     // Horas a acreditar para la actividad
-    if(!horasAcreditar){
+    if (!horasAcreditar) {
       setHorasAcreditarValidation(true)
-      setHorasAcreditarErrorMessage("Debe ingresar las horas que acreditara")
-    }else{
+      setHorasAcreditarErrorMessage('Debe ingresar las horas que acreditara')
+    } else {
       setHorasAcreditarValidation(false)
-      setHorasAcreditarErrorMessage("")
+      setHorasAcreditarErrorMessage('')
     }
     return isValid
   }
 
   /**
-   * 
-   * @param {*} e 
+   *
+   * @param {*} e
    */
   const handleActualizarActividad = async (e) => {
     e.preventDefault()
-    try{
-      if(!validacionCampos){
+    try {
+      if (!validacionCampos) {
         return
-      }else{
-        const { data, error} = await supabase
-          .from("actividad_beca")
-          .update(
-            {
-              nombre_actividad:nombreActividad,
-              cupos_disponibles:cantidadVoluntarios,
-              horas_acreditadas:horasAcreditar,
-              descripcion:descripcion})
-          .eq("id",id)
-          .select()
-        if(data){
-          console.log("data: ", data)
-        }
-        if(error){
-          console.log("NO FUNCIONO")
-        }
       }
-      
-    }catch(error){
-      console.log("Algo salio mal")
+      const { data, error } = await supabase
+        .from('actividad_beca')
+        .update(
+          {
+            nombre_actividad: nombreActividad,
+            cupos_disponibles: cantidadVoluntarios,
+            horas_acreditadas: horasAcreditar,
+            descripcion,
+          },
+        )
+        .eq('id', id)
+        .select()
+      /*
+      if (data) {
+        console.log('data: ', data)
+      }
+      if (error) {
+        console.log('NO FUNCIONO')
+      }
+      */
+    } catch (error) {
+      console.log('Algo salio mal')
     }
 
-    navigate("/actividadesBeca")
+    navigate('/actividadesBeca')
   }
 
   /**
@@ -127,17 +131,19 @@ export default function ActualizarActividad(){
    * en caso de no desar realizar cambios
    */
   const handleCancelarProceso = () => {
-    navigate("/actividadesBeca")
+    navigate('/actividadesBeca')
   }
-  return(
+  return (
     <>
       <div className={styles.title}>
         <h1>ACTULIZAR DETALLES PARA LA ACTIVIDAD DE HORAS BECA</h1>
       </div>
       <div className={styles.container}>
-        <Box px={8} pb={8}> {/* Agregamos el espaciado horizontal al contenedor  pb=horizontal, px=vertical*/}
+        <Box px={8} pb={8}>
+          {' '}
+          {/* Agregamos el espaciado horizontal al contenedor  pb=horizontal, px=vertical */}
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 label="Nombre actividad"
                 variant="outlined"
@@ -149,7 +155,7 @@ export default function ActualizarActividad(){
                 helperText={nombreActividadErrorMessage}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Cantidad voluntarios"
                 variant="outlined"
@@ -158,15 +164,15 @@ export default function ActualizarActividad(){
                 style={textFieldStyles}
                 value={cantidadVoluntarios}
                 onChange={(e) => setCantidadVoluntarios(e.target.value)}
-                inputProps={{min: '0'}}
+                inputProps={{ min: '0' }}
                 InputLabelProps={{
-                  shrink: true
+                  shrink: true,
                 }}
                 error={cantidadVoluntariosValidation}
                 helperText={cantidadVoluntariosErrorMessage}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Horas a Acreditar"
                 variant="outlined"
@@ -175,9 +181,9 @@ export default function ActualizarActividad(){
                 value={horasAcreditar}
                 style={textFieldStyles}
                 onChange={(e) => setHorasAcreditar(e.target.value)}
-                inputProps={{min: '0'}}
+                inputProps={{ min: '0' }}
                 InputLabelProps={{
-                  shrink: true
+                  shrink: true,
                 }}
                 error={horasAcreditarValidation}
                 helperText={horasAcreditarErrorMessage}
@@ -199,13 +205,16 @@ export default function ActualizarActividad(){
             </Grid>
           </Grid>
         </Box>
-        <Box display="flex" justifyContent="flex-end" paddingRight={8}>
-          <Button 
+        <Box display="flex" justifyContent="center" px={8} sx={{ marginBottom: '20px' }}>
+          <Button
             size="medium"
-            sx={{...hoverButtons, 
+            sx={{
+              ...hoverButtons,
               fontSize: '13px', // Aumenta el tamaño del texto dentro del botón
               padding: '12px 24px',
-              width: '260px'}}
+              width: '260px',
+              minWidth: '120px',
+            }}
             type="submit"
             variant="outlined"
             onClick={(e) => handleActualizarActividad(e)}
@@ -214,11 +223,13 @@ export default function ActualizarActividad(){
           </Button>
           <Button
             size="medium"
-            sx={{...hoverCancelButton,
+            sx={{
+              ...hoverCancelButton,
               fontSize: '13px', // Aumenta el tamaño del texto dentro del botón
               padding: '12px 24px',
               width: '260px',
-              marginLeft: '20px'
+              marginLeft: '20px',
+              minWidth: '120px',
             }}
             type="submit"
             variant="outlined"

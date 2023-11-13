@@ -4,24 +4,39 @@ on:
   push:
     branches:
       - "main"
+  pull_request:
+    branches:
+      - "main"
 
 jobs:
-  deploy:
-    runs-on: windows-2019
+  build:
+    name: Test
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
+      - name: Set Node.js 16.x
+        uses: actions/setup-node@v3
         with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v2
+          node-version: 16.x
+      - name: Run install
+        uses: borales/actions-yarn@v4
         with:
-          node-version: '14'
-      
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Lint
-        run: yarn lint
-      - name: E2E tests
-        uses: cypress-io/github-action@v2
+          cmd: install # will run 'yarn install' command
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # if needed
+      - name: Build production bundle
+        uses: borales/actions-yarn@v4
         with:
-          command: yarn cypress:open
-          wait-on: https://localhost:3000
+          cmd: build # will run `yarn build:prod` command
+      - name: Lint the app
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: lint # will run 'yarn test' command
+
+      - name: Run test in sub-folder
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: test
+          dir: 'cypress' # will run 'yarn test' in cypress sub folder

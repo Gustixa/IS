@@ -1,11 +1,23 @@
 const encabezados = [
-    "Actividad realizada",
-    "Fecha",
-    "Horas Acreditadas",
-    "Horas Faltantes Durante la Carrera",
+  'Actividad realizada',
+  'Fecha Acreditación',
+  'Acreditador',
+  'Horas Acreditadas',
 ]
 
-const encabezado_seccion_principal = [
-    "Registro de actividades de horas realizadas"
+const registroHoras = [
+  'Registro de horas',
 ]
-export  {encabezados, encabezado_seccion_principal}
+
+const registroActividades = [
+  'Registro de actividades',
+]
+
+const encabezadosRegistro = [
+  'Horas requeridas',
+  'Horas realizadas',
+  'Horas faltantes',
+]
+export {
+  encabezados, registroHoras, registroActividades, encabezadosRegistro,
+}

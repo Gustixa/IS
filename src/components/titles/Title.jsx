@@ -3,6 +3,7 @@ import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles'
+import styles from './Title.module.css'
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -11,32 +12,30 @@ const Item = styled(Paper)(({ theme }) => ({
   height: 60,
   lineHeight: '60px',
   fontSize: '20px',
-  fontWeight: 'bold'
+  fontWeight: 'bold',
+  overflow: 'hidden', // Oculta el texto que se desborda del contenedor
 }))
 
 const lightTheme = createTheme({ palette: { mode: 'light' } })
 
-/* Este archivo sirve para poder mostrar los titulos de cada seccion de una manera mas llamativa */
 export default function Title({ titles }) {
   const columnSize = `repeat(${titles.length}, 1fr)` // Calcular la cantidad de columnas
+
   return (
-    <>
-    {[lightTheme].map((theme, index) => (
-        <Grid item xs={6} key={index}>
+    <div className={styles.container}>
+      {[lightTheme].map((theme, index) => (
+        <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
           <ThemeProvider theme={theme}>
             <Box
               sx={{
                 p: 2,
                 bgcolor: 'background.default',
                 display: 'grid',
-                gridTemplateColumns: columnSize, // Establecer el espacio de las columnas, segun su cantidad
+                gridTemplateColumns: columnSize,
                 gap: 2,
               }}
             >
-              {/* el 6 representa el tipo de elevacion. 
-                La escala es 0,1,2,3,4,6,8,12,16,24
-               */}
-              {titles.map((element,index) => (
+              {titles.map((element, index) => (
                 <Item key={index} elevation={6}>
                   {element}
                 </Item>
@@ -45,6 +44,6 @@ export default function Title({ titles }) {
           </ThemeProvider>
         </Grid>
       ))}
-    </>
+    </div>
   )
 }

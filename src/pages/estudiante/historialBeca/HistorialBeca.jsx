@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import CircularProgress from '@mui/material/CircularProgress'
-import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableContainer from '@mui/material/TableContainer'
@@ -9,10 +8,12 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import { supabase } from '@db-supabase/supabase.config'
 import { useAuthContext } from '@contexts/AuthContext'
-import { StyledTableCell, StyledTableRow } from './muiStylesRegistro'
 import SideBar from '@components/sideBar'
 import Title from '@components/titles'
-import { encabezados, encabezado_seccion_principal } from './encabezados'
+import { StyledTableCell, StyledTableRow } from './muiStylesRegistro'
+import {
+  encabezados, registroHoras, registroActividades, encabezadosRegistro,
+} from './encabezados'
 import styles from './HistorialBeca.module.css'
 
 export default function HistorialBeca() {
@@ -20,24 +21,26 @@ export default function HistorialBeca() {
   const [loading, setLoading] = useState(true) // Estado para indicar si la petición se está cargando
   const [dataIncripcionActividad, setDataInscripcionActividad] = useState([])
   const [dataActividadBeca, setDataActividadBeca] = useState([])
-  let combinedData= []
+  const [dataEstudianteBecado, setDataEstudianteBecado] = useState([])
+  const combinedData = []
   // Obtener funciones y estado del contexto de autenticación
-  const { authUser, setAuthUser, isLoggedIn, setIsLoggedIn } = useAuthContext()
+  const {
+    authUser, setAuthUser, isLoggedIn, setIsLoggedIn,
+  } = useAuthContext()
 
   const fetchDataRegistro = async () => {
     try {
       // Obtención de todas las actividades
-      const { data, error } = await supabase
+      const { data: validacionManual, errorValidacionManual } = await supabase
         .from('validacion_manual_actividad')
         .select('*')
+        .eq('correo_estudiante', authUser.correo)
 
-      if (error) {
+      if (errorValidacionManual) {
         console.error('Error fetching data: ', error)
       } else {
         // Filtrar los datos para que coincidan con el correo del usuario actual
-        const dataFiltrada = data.filter(item => item.correo_estudiante === authUser.correo)
-
-        setDataRegistro(dataFiltrada)
+        setDataRegistro(validacionManual)
       }
       setLoading(false) // Indicar que la petición ha terminado
     } catch (error) {
@@ -51,20 +54,20 @@ export default function HistorialBeca() {
    * y estas han sido acreditadas.
    */
   const fetchInscripcionActividad = async () => {
-    try{
+    try {
       const { data: inscripcionActividad, error: errorInscripcionActividad } = await supabase
-      .from("inscripcion_actividad")
-      .select("*")
-      .eq("correo_estudiante", authUser.correo)
-      
-      if(inscripcionActividad){
-        const dataFiltrada = inscripcionActividad.filter(item => item.acreditado === true)
-        setDataInscripcionActividad(dataFiltrada)
-      }else{
-        console.log("Failed fetching data: ", errorInscripcionActividad)
+        .from('inscripcion_actividad')
+        .select('*')
+        .eq('correo_estudiante', authUser.correo)
+        .eq('acreditada', true)
+
+      if (inscripcionActividad) {
+        setDataInscripcionActividad(inscripcionActividad)
+      } else {
+        console.log('Failed fetching data: ', errorInscripcionActividad)
       }
-    }catch(error){
-      console.log("Failed fetchig data: ", error)
+    } catch (error) {
+      console.log('Failed fetchig data: ', error)
     }
   }
 
@@ -72,74 +75,132 @@ export default function HistorialBeca() {
    * Obtencion de las actividades beca que han sido acreditadas
    */
   const fetchDataActividadBeca = async () => {
-    try{
-      const { data: actividadBeca, error: errorActividadBeca} = await supabase
-      .from("actividad_beca")
-      .select("*")
-      .eq("acreditada", true)
+    try {
+      const { data: actividadBeca, error: errorActividadBeca } = await supabase
+        .from('actividad_beca')
+        .select('*')
+        .eq('acreditada', true)
 
-      if(actividadBeca){
-        console.log(actividadBeca)
+      if (actividadBeca) {
         setDataActividadBeca(actividadBeca)
-      }else{
-        console.log("Failed fetching data: ", errorActividadBeca)
+      } else {
+        console.log('Failed fetching data: ', errorActividadBeca)
       }
-      
-    }catch(error){
-      console.log("Failed fetching data: ", error)
+    } catch (error) {
+      console.log('Failed fetching data: ', error)
+    }
+  }
+
+  /**
+   * Obtencion de la informacion del estudiante que tiene sesion actual
+   * Esto ayuda para mostrarle las horas que debe hacer durante el año.
+   */
+  const fetchEstudiante = async () => {
+    try {
+      const { data: estudianteBecado, error: errorEstudianteBecado } = await supabase
+        .from('becado')
+        .select('*')
+        .eq('correo', authUser.correo)
+
+      if (estudianteBecado) {
+        setDataEstudianteBecado(estudianteBecado)
+      } else {
+        console.log('No data becado table: ', errorEstudianteBecado)
+      }
+    } catch (error) {
+      console.log('Failed fetching data from becado table: ', error)
     }
   }
   useEffect(() => {
     fetchDataRegistro()
     fetchInscripcionActividad()
     fetchDataActividadBeca()
+    fetchEstudiante()
   }, [])
 
-  if(dataActividadBeca.id === dataIncripcionActividad.actividad_id){
-    combinedData = [...dataRegistro, ...dataActividadBeca]
-    console.log("Data combinada: ",combinedData)
-  }
-  
+  dataActividadBeca.forEach((actividadBeca) => {
+    dataIncripcionActividad.forEach((inscripcionActividades) => {
+      dataEstudianteBecado.forEach((estudiante) => {
+        if (actividadBeca.id === inscripcionActividades.actividad_id
+          && estudiante.correo === inscripcionActividades.correo_estudiante) {
+          const combinedItem = { ...actividadBeca, ...dataRegistro, ...estudiante }
+          combinedData.push(combinedItem)
+        }
+      })
+    })
+  })
+
   return (
     <>
       <SideBar />
-      <Title titles={encabezado_seccion_principal} /> {/* Título de la página */}
+      <Title titles={registroHoras} />
+      {' '}
+      {/* Título de la página */}
       <div className={styles.data}>
+        <div className={styles.hoursInfo}>
+          {dataEstudianteBecado.length > 0 ? (
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    {encabezadosRegistro.map((encabezadoResgitro) => (
+                      <StyledTableCell align="center" key={encabezadoResgitro}>{encabezadoResgitro}</StyledTableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <StyledTableRow>
+                    <StyledTableCell align="center">{dataEstudianteBecado[0].horas_realizar}</StyledTableCell>
+                    <StyledTableCell align="center">
+                      {dataEstudianteBecado[0].horas_realizadas}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {dataEstudianteBecado[0].horas_realizar - dataEstudianteBecado[0].horas_realizadas}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ) : null}
+        </div>
         {loading ? ( // Mostrar CircularProgress solo si la petición está en curso
           <CircularProgress />
         ) : (
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 700 }} aria-label="customized table">
-              <TableHead>
-                <TableRow>
-                  {encabezados.map((encabezado) => (
-                    <StyledTableCell align="center" key={encabezado}>
-                      {encabezado}
-                    </StyledTableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {combinedData.length > 0 ? (
-                  combinedData.map((item) => (
-                    <StyledTableRow key={item.id}>
-                      <StyledTableCell align="center">{item.nombre_actividad}</StyledTableCell>
-                      <StyledTableCell align="center">{item.fecha}</StyledTableCell>
-                      <StyledTableCell align="center">{item.horas_acreditadas}</StyledTableCell>
-                      <StyledTableCell align="center">{item.correo_estudiante}</StyledTableCell>
+          <>
+            <Title titles={registroActividades} />
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    {encabezados.map((encabezado) => (
+                      <StyledTableCell align="center" key={encabezado}>
+                        {encabezado}
+                      </StyledTableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {combinedData.length > 0 ? (
+                    combinedData.map((item) => (
+                      <StyledTableRow key={item.id}>
+                        <StyledTableCell align="center">{item.nombre_actividad}</StyledTableCell>
+                        <StyledTableCell align="center">{item.fecha}</StyledTableCell>
+                        <StyledTableCell align="center">{item.organizador}</StyledTableCell>
+                        <StyledTableCell align="center">{item.horas_acreditadas}</StyledTableCell>
+                      </StyledTableRow>
+                    ))
+                  ) : (
+                    // Mostrar mensaje de "No hay información" como una fila única
+                    <StyledTableRow>
+                      <StyledTableCell colSpan={encabezados.length} align="center">
+                        No hay información
+                      </StyledTableCell>
                     </StyledTableRow>
-                  ))
-                ) : (
-                  // Mostrar mensaje de "No hay información" como una fila única
-                  <StyledTableRow>
-                    <StyledTableCell colSpan={encabezados.length} align="center">
-                      No hay información
-                    </StyledTableCell>
-                  </StyledTableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </>
         )}
       </div>
     </>

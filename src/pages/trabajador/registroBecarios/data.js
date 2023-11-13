@@ -3,14 +3,15 @@
  * los trabajadores
  */
 const encabezados = [
-    "Nombre",
-    "Carnet",
-    "Carrera",
-    "Facultad",
-    "Año",
-    "Porcentaje de Beca",
-    "Horas a Ralizar Presente Ciclo",
-    "Horas acumuladas"
+  'Nombre',
+  'Carnet',
+  'Carrera',
+  'Facultad',
+  'Año',
+  'Porcentaje de Beca',
+  'Horas a Realizar',
+  'Horas Realizadas',
+  'Horas acumuladas',
 ]
 
 export default encabezados

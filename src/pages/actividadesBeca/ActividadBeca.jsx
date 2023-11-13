@@ -39,6 +39,12 @@ export default function ActividadBeca() {
     })
   }
 
+  // Funcion para manejar las actividades que se han acreditado
+  const handleAcreditar = (id) => {
+    setDataActividad(prevDataActivity => {
+      return prevDataActivity.filter(dataActi => dataActi.id !== id)
+    })
+  }
   // Función para redirigir  a la creación de una nueva actividad
   const handleCreateActivity = () => {
     navigate('/nuevaActividad')
@@ -70,6 +76,7 @@ export default function ActividadBeca() {
             .from("actividad_beca")
             .select("*")
             .order('id')
+            .eq("acreditada",false)
           
           if (errorActividadData) {
             console.log("Error fetching actividadData: ", errorActividadData)
@@ -131,6 +138,8 @@ export default function ActividadBeca() {
                 onDelete={handleDelete}
                 inscrito={false} // Todas las actividades son generales
                 onSuscribe={handleSuscribe}
+                acreditada={false}
+                onAcreditar={handleAcreditar}
               />
             ) : null
           ))
