@@ -54,41 +54,6 @@ export default function ContenedorActividad({
     setOpen(true)
   }
 
-  /**
-   * Dialog para que se muestre una venta del posible error que se puede experimentar
-   * @param {*} errorMessage 
-   * @returns 
-   */
-  const handleDialogError = (errorMessage) => {
-    setOpen(true); // Abre el Dialog
-    
-    return (
-      <div className={styles.container}>
-      {/* Resto del componente... */}
-      <Dialog
-        open={dialogData.open}
-        onClose={handleClose}
-        PaperComponent={PaperComponent}
-        aria-labelledby="draggable-dialog-title"
-      >
-        <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-          {'Error'}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-              <strong>Error:</strong> {errorMessage}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-            <Button autoFocus onClick={handleClose}>
-                OK
-            </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  )
-}
-
   // Cerrar la ventana de detalles de la actividad
   const handleClose = () => {
     setOpen(false)
@@ -103,17 +68,17 @@ export default function ContenedorActividad({
   const handleDelete = async (e) => {
     try {
       const { data, error } = await supabase
-        .from('actividad_be')
+        .from('actividad_beca')
         .delete()
         .eq('id', actividad.id)
       
       if (error) {
-        handleDialogError('Failed fetching actividades beca data: ' + error.message)
+        console.log('Failed fetching actividades beca data: ', error.message)
       }else{
         onDelete(actividad.id)
       }
     } catch (error) {
-      handleDialogError('Failed fetching actividades beca data: ' + error.message)
+      console.log('Failed fetching actividades beca data: ', error.message)
     }
   }
 
@@ -225,9 +190,7 @@ export default function ContenedorActividad({
 
       if (dataEstudianteBecado) {
         console.log('Estudiantes: ', dataEstudianteBecado)
-      } else {
-        handleDialogError('Failed fetching actividades beca data: ' + errorDataEstudianteBecado)
-      }
+      } 
 
       // Realizar cálculos y actualizaciones en la tabla becado para cada estudiante
       dataEstudianteBecado.forEach(async (estudiante) => {
