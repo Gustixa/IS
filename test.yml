@@ -1,6 +1,6 @@
 config:
   # testing utilizando artillery para beca4
-  target: "https://beca4.netlify.app"
+  target: "https://beca6.netlify.app"
   # fases para comenzar el testing 
   phases:
     - duration: 60
@@ -11,10 +11,10 @@ config:
       arrivalRate: 5
       rampTo: 10
       name: Ramp up load
-    - duration: 30
+    - duration: 60
       arrivalRate: 10
-      rampTo: 30
-      name: Spike phase
+      rampTo: 25
+      name: Peak phase
   # Plugins que pueden ser de utilidad
   plugins:
     ensure: {}
@@ -28,15 +28,41 @@ config:
         - http.response_time.p95: 75
 # escenarios que se pienza testear
 scenarios: 
-  - name: User login then subscribe to activity
-  - flow:
+    # escenario de login
+  - name: User login 
+    flow:
       - post: 
           url: "/login"
           json:
             username: "arg211024@uvg.edu.gt"
             password: "211024"
-        capture: 
-          - json: $.token 
-        - get: 
-            url: "/registoEstudiante"
-          
+      - think: 2
+    # escenario de deslizar para ver actividades finalizadas
+  - name: Scroll through finished activities
+    flow: 
+      - get: 
+          url: "/registroEstudiante"
+      - think: 1
+      - js:
+          script: scrollToBottom();
+      - think: 2
+
+    # escenario para buscar asignarse actividades
+  - name: Search Activities
+    flow: 
+      - get:
+          url: "/actividadesBeca" 
+          params:
+            name: "activityToAssign"
+      - think: 3
+
+    # escenario de buscar actividades asignadas
+  - name: Search assigned beca activity
+    flow:
+      - get:
+          url: "/actividadesInscritas"
+          params:
+            name: "activitySubscribed"
+      - think: 3
+
+
