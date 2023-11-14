@@ -8,6 +8,8 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import IconButton from '@mui/material/IconButton'
 import { Link } from 'react-router-dom'
 import EditIcon from '@mui/icons-material/Edit'
@@ -25,9 +27,17 @@ export default function Becarios() {
   const [filtroBeca, setFiltroBeca] = useState('')
   const [filtroFacultad, setFiltroFacultad] = useState('')
   const [filtroHorasFaltantes, setFiltroHorasFaltantes] = useState('')
+  const [filtroHorasCompletadas, setFiltroHorasCompletadas] = useState(null);
+  const [filtroHorasSinCompletar, setFiltroHorasSinCompletar] = useState(false)
+
+  const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
   const classes = useStyles()
 
+  /**
+   * Filtro para el año
+   * @param {*} event 
+   */
   const handleChangeAnio = (event) => {
     const inputValue = event.target.value
     if (inputValue >= 0 || inputValue === '') {
@@ -35,10 +45,18 @@ export default function Becarios() {
     }
   }
 
+  /**
+   * Filtro para el nombre
+   * @param {*} event 
+   */
   const handleChangeNombre = (event) => {
     setFiltroNombre(event.target.value)
   }
 
+  /**
+   * Filtro por carnet
+   * @param {*} event 
+   */
   const handleChangeCarnet = (event) => {
     const inputValue = event.target.value
     if (inputValue >= 0 || inputValue === '') {
@@ -46,6 +64,10 @@ export default function Becarios() {
     }
   }
 
+  /**
+   * Filtro por porcentaje de beca
+   * @param {*} event 
+   */
   const handleChangeBeca = (event) => {
     const inputValue = event.target.value
     if (inputValue >= 0 || inputValue === '') {
@@ -53,10 +75,18 @@ export default function Becarios() {
     }
   }
 
+  /**
+   * Filtro de la facultad de la carrera
+   * @param {*} event 
+   */
   const handleChangeFiltroFacultad = (event) => {
     setFiltroFacultad(event.target.value)
   }
 
+  /**
+   * 
+   * @param {*} event 
+   */
   const handleChangeHorasFaltantes = (event) => {
     const inputValue = event.target.value
     if (inputValue >= 0 || inputValue === '') {
@@ -64,18 +94,17 @@ export default function Becarios() {
     }
   }
 
-  const handleDelete = async (studentId) => {
-    try {
-      const { error } = await supabase.from('becado').delete().eq('id', studentId)
-
-      if (error) {
-        console.error('Error al eliminar el estudiante:', error)
-      } else {
-        setStudentsData((prevData) => prevData.filter((student) => student.id !== studentId))
-      }
-    } catch (error) {
-      console.error('Error al eliminar el estudiante:', error)
-    }
+  const handleChangeHorasCompletadas = (event) => {
+    setFiltroHorasCompletadas(event.target.checked)
+    // Limpia el filtro de horas faltantes cuando se marca "Horas Completadas"
+    setFiltroHorasFaltantes('')
+  }
+  
+  const handleChangeHorasSinCompletar = (event) => {
+    // Invierte el valor del estado de "Horas Completadas"
+    setFiltroHorasSinCompletar(event.target.checked)
+    // Limpia el filtro de horas faltantes cuando se marca "Horas Sin Completar"
+    setFiltroHorasFaltantes('')
   }
 
   useEffect(() => {
@@ -86,14 +115,20 @@ export default function Becarios() {
         if (error) {
           console.log('Error fetching data: ', error)
         } else {
-          const filteredData = data.filter((student) => (
-            student.anio.includes(filtroAnio)
-              && student.nombre_estudiante.toLowerCase().includes(filtroNombre.toLowerCase())
-              && student.carnet.includes(filtroCarnet)
-              && (filtroBeca === '' || student.porcentaje_beca.toString().includes(filtroBeca))
-              && (filtroFacultad === '' || student.facultad.toLowerCase().includes(filtroFacultad.toLowerCase()))
-              && (filtroHorasFaltantes === '' || student.horas_acumuladas >= parseInt(filtroHorasFaltantes, 10))
-          ))
+          let filteredData = data
+          if (filtroHorasCompletadas !== null){
+            filteredData = data.filter((student) => (
+              student.anio.includes(filtroAnio)
+                && student.nombre_estudiante.toLowerCase().includes(filtroNombre.toLowerCase())
+                && student.carnet.includes(filtroCarnet)
+                && (filtroBeca === '' || student.porcentaje_beca.toString().includes(filtroBeca))
+                && (filtroFacultad === '' || student.facultad.toLowerCase().includes(filtroFacultad.toLowerCase()))
+                && (filtroHorasFaltantes === '' || student.horas_acumuladas >= parseInt(filtroHorasFaltantes, 10))
+                && (!filtroHorasCompletadas || (student.horas_realizadas >= student.horas_realizar))
+                && (!filtroHorasSinCompletar || (student.horas_realizadas < student.horas_realizar))
+            ))
+          }
+            
           setStudentsData(filteredData)
         }
       } catch (error) {
@@ -101,7 +136,14 @@ export default function Becarios() {
       }
     }
     fetchStudentsData()
-  }, [filtroAnio, filtroNombre, filtroCarnet, filtroBeca, filtroFacultad, filtroHorasFaltantes])
+  }, [filtroAnio,
+    filtroNombre, 
+    filtroCarnet, 
+    filtroBeca, 
+    filtroFacultad, 
+    filtroHorasFaltantes, 
+    filtroHorasCompletadas, 
+    filtroHorasSinCompletar])
 
   return (
     <div>
@@ -171,6 +213,18 @@ export default function Becarios() {
               shrink: true,
             }}
             sx={{ width: '200px' }}
+          />
+          <FormControlLabel 
+            control={<Checkbox checked={filtroHorasCompletadas} />} 
+            label="Horas completadas"
+            onChange={handleChangeHorasCompletadas}
+            sx={{ marginLeft: '40px' }}
+          />
+          <FormControlLabel 
+            control={<Checkbox checked={filtroHorasSinCompletar}/>} 
+            label="Horas sin completar"
+            onChange={handleChangeHorasSinCompletar} 
+            sx={{ marginLeft: '40px' }}
           />
         </div>
       </Box>
