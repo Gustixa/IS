@@ -202,11 +202,16 @@ export default function ContenedorActividad({
           const horasRealizadas = estudiante.horas_realizadas
           // console.log('Horas realizadas: ', horasRealizadas)
           const horasTotales = horasAcreditadas + horasRealizadas
+          const horasRealizar = estudiante.horas_realizar
+          let horasAcumuladas = estudiante.horas_acumuladas
+          if(horasRealizar - horasTotales < 0){
+            horasAcumuladas += Math.abs(horasRealizar - horasTotales)
+          }
           // console.log('Horas totales: ', horasTotales)
           // Actualiza la tabla becado con las horas totales
           await supabase
             .from('becado')
-            .update({ horas_realizadas: horasTotales })
+            .update({ horas_realizadas: horasTotales, horas_acumuladas: horasAcumuladas })
             .eq('id', estudiante.id)
             .select()
         }

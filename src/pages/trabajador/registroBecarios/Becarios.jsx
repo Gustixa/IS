@@ -332,6 +332,16 @@ export default function Becarios() {
                           : classes.redCell
                       }
                     >
+                      {student.horas_realizar - student.horas_realizadas}
+                    </StyledTableCell>
+                    <StyledTableCell
+                      align="center"
+                      className={
+                        student.horas_realizadas >= student.horas_realizar
+                          ? classes.greenCell
+                          : classes.redCell
+                      }
+                    >
                       {student.horas_acumuladas}
                     </StyledTableCell>
                     <StyledTableCell align="right">
