@@ -36,6 +36,7 @@ export default function ContenedorActividad({
   const [open, setOpen] = useState(false)
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false)
   const [openConfirmacionAcreditacion, setConfirmacionAcreditacion] = useState(false)
+  const [openDesinscripcion, setDesincripcion] = useState(false)
   
   const [isInscrito, setIsInscrito] = useState(inscrito) // Estado para controlar si el usuario está inscrito
   const [estudiantesInscritos, setEstudiantesInscritos] = useState([])
@@ -90,6 +91,14 @@ export default function ContenedorActividad({
    */
   const handleConfirmarAcreditacionClose = () => {
     setConfirmacionAcreditacion(false)
+  }
+
+  const handleOpenDesinscripcion = () => {
+    setDesincripcion(true)
+  }
+
+  const handleCloseDesincripcion = () => {
+    setDesincripcion(false)
   }
   /**
    * Eliminar una actividad. Esto solo es para los administradores.
@@ -558,10 +567,45 @@ export default function ContenedorActividad({
                 variant="contained"
                 color="primary"
                 sx={{ ...hoverButtons, marginLeft: '10px' }}
-                onClick={handleDesInscripcion}
+                onClick={handleOpenDesinscripcion}
               >
                 Des-inscribirse
               </Button>
+                <Dialog
+                  open={openDesinscripcion}
+                  onClose={handleCloseDesincripcion}
+                  PaperComponent={PaperComponent}
+                  aria-labelledby="draggable-dialog-title"
+                >
+                  <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+                    Confirmar Des inscricpción de actividad
+                  </DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      ¿Deseas desinscribirte de la actividad?
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      sx={hoverButtons}
+                      autoFocus
+                      onClick={() => {
+                        handleDesInscripcion()
+                        handleCloseDesincripcion()
+                      }}
+                    >
+                      Confirmar
+                    </Button>
+                    <Button
+                      sx={hoverCancelButton}
+                      autoFocus
+                      onClick={handleCloseDesincripcion}
+                    >
+                      Cancelar
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+
               <Button
                 variant="contained"
                 color="primary"
