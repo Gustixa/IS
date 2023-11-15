@@ -400,7 +400,8 @@ export default function ContenedorActividad({
                                 quitar a este estuiante de la actividad?
 
                                 ESTO SOLO DEBE HACERLO CUANDO HAYA CULMINADO LA ACTIVIDAD, Y QUE EL
-                                ESTUDIANTE NO HAYA PARTICIPADO, AÚN HABIENDO ESTADO INSCRITO.
+                                ESTUDIANTE NO HAYA PARTICIPADO, AÚN HABIENDO ESTADO INSCRITO. ESTO SE
+                                DEBE, PUES AL HACERLO SE PERDERA UN CUPO DE LA ACTIVIDAD.
                               </DialogContentText>
                             </DialogContent>
                             <DialogActions>

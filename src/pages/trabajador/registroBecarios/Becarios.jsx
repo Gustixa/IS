@@ -344,7 +344,7 @@ export default function Becarios() {
                     >
                       {student.horas_acumuladas}
                     </StyledTableCell>
-                    <StyledTableCell align="right">
+                    <StyledTableCell align="center">
                       <Link to={`/actualizarEstudiante/${student.id}`}>
                         <IconButton
                           color="primary"
