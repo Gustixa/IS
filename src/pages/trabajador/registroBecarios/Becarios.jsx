@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import { CSVLink } from 'react-csv'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
+import { Button } from '@mui/material'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableContainer from '@mui/material/TableContainer'
@@ -226,6 +228,17 @@ export default function Becarios() {
             onChange={handleChangeHorasSinCompletar} 
             sx={{ marginLeft: '40px' }}
           />
+          <Button
+            
+          >
+            <CSVLink
+                data={studentsData}
+                filename={'becarios.csv'}
+                className={styles.exportButton}
+              >
+                Exportar a CSV
+              </CSVLink>
+            </Button>
         </div>
       </Box>
       <div className={styles.data}>
