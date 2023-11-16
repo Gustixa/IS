@@ -2,6 +2,7 @@ import React from 'react'
 import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
+import PropTypes from 'prop-types'
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles'
 import styles from './Title.module.css'
 
@@ -24,6 +25,7 @@ export default function Title({ titles }) {
   return (
     <div className={styles.container}>
       {[lightTheme].map((theme, index) => (
+        // eslint-disable-next-line react/no-array-index-key
         <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
           <ThemeProvider theme={theme}>
             <Box
@@ -35,8 +37,9 @@ export default function Title({ titles }) {
                 gap: 2,
               }}
             >
-              {titles.map((element, index) => (
-                <Item key={index} elevation={6}>
+              {titles.map((element, mapIndex) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Item key={mapIndex} elevation={6}>
                   {element}
                 </Item>
               ))}
@@ -46,4 +49,8 @@ export default function Title({ titles }) {
       ))}
     </div>
   )
+}
+
+Title.propTypes = {
+  titles: PropTypes.arrayOf(PropTypes.string).isRequired,
 }

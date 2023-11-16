@@ -34,6 +34,10 @@ export default function ContenedorActividad({
   deSuscribed, onDeSuscribe,
 }) {
   const [open, setOpen] = useState(false)
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false)
+  const [openConfirmacionAcreditacion, setConfirmacionAcreditacion] = useState(false)
+  const [openDesinscripcion, setDesincripcion] = useState(false)
+  
   const [isInscrito, setIsInscrito] = useState(inscrito) // Estado para controlar si el usuario está inscrito
   const [estudiantesInscritos, setEstudiantesInscritos] = useState([])
   const [isAcreditada, setIsAcreditada] = useState(acreditada)
@@ -59,6 +63,44 @@ export default function ContenedorActividad({
   }
 
   /**
+   * Dialogo de confirmacion
+   */
+  const handleQuitarClick = () => {
+    setOpenConfirmationDialog(true);
+  }
+
+  const handleDialogOpen = () => {
+    setOpenConfirmationDialog(true);
+  }
+  
+  const handleDialogClose = () => {
+    setOpenConfirmationDialog(false);
+  }
+
+  /**
+   * Abrir la ventana de dialogo de la confirmacion
+   * para la acreditacion de las horas.
+   */
+  const handleConfirmarAcreditacionOpen = () =>{
+    setConfirmacionAcreditacion(true)
+  }
+
+  /**
+   * Cerrar la ventana de dialogo de la confirmacion para 
+   * la acreditacion de las horas.
+   */
+  const handleConfirmarAcreditacionClose = () => {
+    setConfirmacionAcreditacion(false)
+  }
+
+  const handleOpenDesinscripcion = () => {
+    setDesincripcion(true)
+  }
+
+  const handleCloseDesincripcion = () => {
+    setDesincripcion(false)
+  }
+  /**
    * Eliminar una actividad. Esto solo es para los administradores.
    * En este caso, sirve para poder quitar de la pantalla, sin tener
    * que refrescar para poder ver el resultado de la eliminación.
@@ -70,12 +112,14 @@ export default function ContenedorActividad({
         .from('actividad_beca')
         .delete()
         .eq('id', actividad.id)
-      onDelete(actividad.id)
-      if (data) {
-        console.log(data)
+      
+      if (error) {
+        console.log('Failed fetching actividades beca data: ', error.message)
+      }else{
+        onDelete(actividad.id)
       }
     } catch (error) {
-      console.log('Fallo en la eliminiacion de actividades: ', error.message)
+      console.log('Failed fetching actividades beca data: ', error.message)
     }
   }
 
@@ -149,11 +193,45 @@ export default function ContenedorActividad({
   }
 
   /**
+   * 
+   * @param {*} e 
+   */
+  const handleEliminarEstudianteInscrito = async (correoEstudiante) => {
+    try{
+      // Eliminar estudiante
+      const { error: errorEliminarEstudiante } = await supabase
+        .from('inscripcion_actividad')
+        .delete()
+        .eq('actividad_id', actividad.id)
+        .eq('correo_estudiante', correoEstudiante)
+
+      if(errorEliminarEstudiante){
+        console.log('Error al eliminar estudiante inscrito:', errorEliminarEstudiante)
+        return
+      }
+      // Actualizar el estado local eliminando el estudiante de la lista
+      setEstudiantesInscritos((prevEstudiantes) =>
+        prevEstudiantes.filter((estudiante) => estudiante.correo_estudiante !== correoEstudiante)
+      )
+    }catch(error){
+      console.error('Error al procesar la eliminación del estudiante:', error.message);
+    }
+  }
+
+  /**
    * Acreditar las horas a los estudiantes, asi como, cambiar el estado de la
    * actividad, para no mostrarla, pues ya ha culminado la misma.
    */
   const handleAcreditarHoras = async () => {
     try {
+      // Obtener los estudiantes inscritos
+      await fetchEstudiantesInscritos()
+
+      if (estudiantesInscritos.length === 0) {
+        // Mostrar cuadro de diálogo indicando que no hay estudiantes inscritos
+        alert("No hay estudiantes inscritos para acreditar horas.");
+        return;
+      }
       // Cambiar el estado de la actividad inscrita
       const { acreditarHoras, errorAcreditarHoras } = await supabase
         .from('actividad_beca')
@@ -187,9 +265,7 @@ export default function ContenedorActividad({
 
       if (dataEstudianteBecado) {
         console.log('Estudiantes: ', dataEstudianteBecado)
-      } else {
-        console.log('Failed, no data in becado table: ', errorDataEstudianteBecado)
-      }
+      } 
 
       // Realizar cálculos y actualizaciones en la tabla becado para cada estudiante
       dataEstudianteBecado.forEach(async (estudiante) => {
@@ -201,11 +277,16 @@ export default function ContenedorActividad({
           const horasRealizadas = estudiante.horas_realizadas
           // console.log('Horas realizadas: ', horasRealizadas)
           const horasTotales = horasAcreditadas + horasRealizadas
+          const horasRealizar = estudiante.horas_realizar
+          let horasAcumuladas = estudiante.horas_acumuladas
+          if(horasRealizar - horasTotales < 0){
+            horasAcumuladas += Math.abs(horasRealizar - horasTotales)
+          }
           // console.log('Horas totales: ', horasTotales)
           // Actualiza la tabla becado con las horas totales
           await supabase
             .from('becado')
-            .update({ horas_realizadas: horasTotales })
+            .update({ horas_realizadas: horasTotales, horas_acumuladas: horasAcumuladas })
             .eq('id', estudiante.id)
             .select()
         }
@@ -243,7 +324,6 @@ export default function ContenedorActividad({
       console.error('Error al recuperar los datos de los estudiantes inscritos:', error.message)
     }
   }
-
   return (
     <div className={styles.container}>
 
@@ -266,7 +346,7 @@ export default function ContenedorActividad({
       </div>
 
       <div className={styles.buttons}>
-        {/* Conditionally render the buttons based on authUser.type */}
+        
         {authUser.type === true && (
           <>
             <Button
@@ -278,6 +358,7 @@ export default function ContenedorActividad({
             >
               Detalles
             </Button>
+            {/*Obtener los detalles de los estudiantes que se han inscrito*/}
             <Dialog
               open={open}
               onClose={handleClose}
@@ -293,7 +374,57 @@ export default function ContenedorActividad({
                     <strong>Estudiantes Inscritos:</strong>
                     <ul>
                       {estudiantesInscritos.map((estudiante) => (
-                        <li key={estudiante.id}>{estudiante.correo_estudiante}</li>
+                        
+                        <li key={estudiante.id} className={styles.listado}>
+                          {estudiante.correo_estudiante}
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            sx={{marginLeft:'20px', ...hoverCancelButton}}
+                            onClick={handleQuitarClick}
+                          >
+                            Quitar
+                          </Button>
+                          <Dialog
+                            open={openConfirmationDialog}
+                            onClose={handleDialogClose}
+                            PaperComponent={PaperComponent}
+                            aria-labelledby="draggable-dialog-title"
+                          >
+                            <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+                              Confirmar eliminación
+                            </DialogTitle>
+                            <DialogContent>
+                              <DialogContentText>
+                                ¿Estás seguro de que deseas 
+                                quitar a este estuiante de la actividad?
+
+                                ESTO SOLO DEBE HACERLO CUANDO HAYA CULMINADO LA ACTIVIDAD, Y QUE EL
+                                ESTUDIANTE NO HAYA PARTICIPADO, AÚN HABIENDO ESTADO INSCRITO. ESTO SE
+                                DEBE, PUES AL HACERLO SE PERDERA UN CUPO DE LA ACTIVIDAD.
+                              </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                              <Button
+                                sx={hoverButtons}
+                                autoFocus
+                                onClick={() => {
+                                  handleDialogClose()
+                                  handleEliminarEstudianteInscrito(estudiante.correo_estudiante);
+                                }}
+                              >
+                                Confirmar
+                              </Button>
+                              <Button
+                                sx={hoverCancelButton}
+                                autoFocus
+                                onClick={handleDialogClose}
+                              >
+                                Cancelar
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+                        </li>
                       ))}
                     </ul>
                   </div>
@@ -304,12 +435,49 @@ export default function ContenedorActividad({
                   sx={hoverButtons}
                   autoFocus
                   onClick={() => {
-                    handleClose()
-                    handleAcreditarHoras()
+                    handleConfirmarAcreditacionOpen()
                   }}
                 >
-                  Acreditar
+                  Acreditar a Todos
                 </Button>
+                <Dialog
+                    open={openConfirmacionAcreditacion}
+                    onClose={handleConfirmarAcreditacionClose}
+                    PaperComponent={PaperComponent}
+                    aria-labelledby="draggable-dialog-title"
+                  >
+                    <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+                      Confirmar acreditación
+                    </DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        ¿Desea acreditar a todos los estudiantes inscritos 
+                        las horas de la actividad?
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button
+                        sx={hoverButtons}
+                        autoFocus
+                        onClick={() => {
+                          handleConfirmarAcreditacionClose()
+                          handleClose()
+                          handleAcreditarHoras()
+                          
+                        }}
+                      >
+                        Confirmar
+                      </Button>
+                      <Button
+                        sx={hoverCancelButton}
+                        autoFocus
+                        onClick={handleConfirmarAcreditacionClose}
+                      >
+                        Cancelar
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+                {/*------*/}
                 <Button
                   sx={hoverCancelButton}
                   autoFocus
@@ -400,10 +568,45 @@ export default function ContenedorActividad({
                 variant="contained"
                 color="primary"
                 sx={{ ...hoverButtons, marginLeft: '10px' }}
-                onClick={handleDesInscripcion}
+                onClick={handleOpenDesinscripcion}
               >
                 Des-inscribirse
               </Button>
+                <Dialog
+                  open={openDesinscripcion}
+                  onClose={handleCloseDesincripcion}
+                  PaperComponent={PaperComponent}
+                  aria-labelledby="draggable-dialog-title"
+                >
+                  <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+                    Confirmar Des inscricpción de actividad
+                  </DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      ¿Deseas desinscribirte de la actividad?
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      sx={hoverButtons}
+                      autoFocus
+                      onClick={() => {
+                        handleDesInscripcion()
+                        handleCloseDesincripcion()
+                      }}
+                    >
+                      Confirmar
+                    </Button>
+                    <Button
+                      sx={hoverCancelButton}
+                      autoFocus
+                      onClick={handleCloseDesincripcion}
+                    >
+                      Cancelar
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+
               <Button
                 variant="contained"
                 color="primary"
