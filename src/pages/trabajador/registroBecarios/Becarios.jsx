@@ -187,15 +187,19 @@ export default function Becarios() {
       .select("*")
 
       for (const student of studentData) {
-        const { horas_realizadas, horas_realizar } = student;
+        const { horas_realizadas, horas_realizar, horas_faltantes, horas_acumuladas } = student;
   
         // Calcular el excedente de horas
         const excedenteHoras = Math.max(horas_realizadas - horas_realizar, 0);
-  
+        const horasIncompletas = horas_faltantes + Math.max( horas_realizar - horas_realizadas, 0);
+        const horasRealizarSiguienteCiclo = horas_realizar - excedenteHoras + horasIncompletas
         // Actualizar la columna horas_acumuladas
         await supabase
           .from("becado")
-          .update({ horas_acumuladas: excedenteHoras, horas_realizadas: 0 })
+          .update({ acumulado_anual: excedenteHoras, horas_realizadas: 0, 
+            horas_faltantes: horasIncompletas, 
+            horas_realizar: horasRealizarSiguienteCiclo,
+            horas_acumuladas: 0 })
           .eq("id", student.id);
       }
   }
@@ -504,7 +508,7 @@ export default function Becarios() {
                           : classes.redCell
                       }
                     >
-                      {student.horas_realizar - student.horas_realizadas}
+                      {student.horas_realizar - student.horas_realizadas - student.horas_acumuladas}
                     </StyledTableCell>
                     <StyledTableCell
                       align="center"

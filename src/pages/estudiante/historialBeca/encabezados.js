@@ -14,8 +14,10 @@ const registroActividades = [
 ]
 
 const encabezadosRegistro = [
-  'Horas acumuladas',
-  'Horas requeridas',
+  'Horas a favor',
+  'Horas en contra',
+  'Acumulado presente ciclo',
+  'Horas requeridas presente año',
   'Horas realizadas',
   'Horas faltantes',
 ]

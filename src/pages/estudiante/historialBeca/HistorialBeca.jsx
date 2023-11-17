@@ -150,13 +150,17 @@ export default function HistorialBeca() {
                 </TableHead>
                 <TableBody>
                   <StyledTableRow>
+                    <StyledTableCell align="center">{Math.abs(dataEstudianteBecado[0].acumulado_anual)}</StyledTableCell>
+                    <StyledTableCell align="center">{Math.abs(dataEstudianteBecado[0].horas_faltantes)}</StyledTableCell>
                     <StyledTableCell align="center">{Math.abs(dataEstudianteBecado[0].horas_acumuladas)}</StyledTableCell>
                     <StyledTableCell align="center">{dataEstudianteBecado[0].horas_realizar}</StyledTableCell>
                     <StyledTableCell align="center">
                       {dataEstudianteBecado[0].horas_realizadas}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {dataEstudianteBecado[0].horas_realizar - dataEstudianteBecado[0].horas_realizadas}
+                      {dataEstudianteBecado[0].horas_realizar - dataEstudianteBecado[0].horas_realizadas + dataEstudianteBecado[0].horas_faltantes > 0
+                        ? dataEstudianteBecado[0].horas_realizar - dataEstudianteBecado[0].horas_realizadas + dataEstudianteBecado[0].horas_faltantes
+                        : 0}
                     </StyledTableCell>
                   </StyledTableRow>
                 </TableBody>
