@@ -178,6 +178,28 @@ export default function Becarios() {
     .eq("acreditada", true)
   }
 
+  /**
+   * 
+   */
+  const handleUpdateStudentData = async () => {
+    const { data: studentData, error: errorStudentData } = await supabase
+      .from("becado")
+      .select("*")
+
+      for (const student of studentData) {
+        const { horas_realizadas, horas_realizar } = student;
+  
+        // Calcular el excedente de horas
+        const excedenteHoras = Math.max(horas_realizadas - horas_realizar, 0);
+  
+        // Actualizar la columna horas_acumuladas
+        await supabase
+          .from("becado")
+          .update({ horas_acumuladas: excedenteHoras, horas_realizadas: 0 })
+          .eq("id", student.id);
+      }
+  }
+
   useEffect(() => {
     async function fetchStudentsData() {
       try {
@@ -361,6 +383,7 @@ export default function Becarios() {
                 onClick={() => {
                   handleCloseDialog()
                   handleDeleteData()
+                  handleUpdateStudentData()
                 }}
               >
                 Confirmar
