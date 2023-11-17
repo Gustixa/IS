@@ -117,3 +117,8 @@
   max-width: 100%;
   width: 100%; /* Asegura que los elementos se expandan para ocupar el espacio disponible */
 }
+
+
+.listado{
+  margin-top: 20px;
+}

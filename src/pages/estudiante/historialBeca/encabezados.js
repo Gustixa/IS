@@ -14,6 +14,7 @@ const registroActividades = [
 ]
 
 const encabezadosRegistro = [
+  'Horas acumuladas',
   'Horas requeridas',
   'Horas realizadas',
   'Horas faltantes',

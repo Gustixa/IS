@@ -128,8 +128,10 @@ export default function ActividadBeca() {
         {/* Muestra las actividades generales con cupos disponibles */}
         {dataActividad !== null ? (
           dataActividad.map((detalles) => (
-            // Verifica si el usuario autenticado es un administrador
-            authUser.type === true || detalles.cupos_disponibles > 0 ? (
+            // Verifica si el usuario autenticado es un administrador y si la actividad ha sido creada por él
+            (authUser.type && detalles.organizador === authUser.correo) || 
+            // O si el usuario es un estudiante (no administrador), muestra todas las actividades generales
+            (!authUser.type && detalles.cupos_disponibles > 0) ? (
               <ContenedorActividad
                 key={detalles.id}
                 actividad={detalles}
@@ -144,6 +146,7 @@ export default function ActividadBeca() {
         ) : (
           <CircularProgress />
         )}
+
       </div>
       <div className={styles.finalBlock} />
     </>

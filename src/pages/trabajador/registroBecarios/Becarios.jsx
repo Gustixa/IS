@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import { CSVLink } from 'react-csv'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
+import { Button } from '@mui/material'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableContainer from '@mui/material/TableContainer'
@@ -8,6 +10,15 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
+
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
+
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import IconButton from '@mui/material/IconButton'
 import { Link } from 'react-router-dom'
 import EditIcon from '@mui/icons-material/Edit'
@@ -15,7 +26,18 @@ import SideBar from '@components/sideBar'
 import { supabase } from '@db-supabase/supabase.config'
 import styles from './Becarios.module.css'
 import encabezados from './data'
-import { StyledTableCell, StyledTableRow, useStyles } from './muiStylesBecario'
+import { StyledTableCell, 
+    StyledTableRow, 
+    useStyles, 
+    hoverButtons, 
+    hoverCancelButton } from './muiStylesBecario'
+
+
+function PaperComponent(props) {
+  return (
+    <Paper {...props} />
+  )
+}
 
 export default function Becarios() {
   const [studentsData, setStudentsData] = useState([])
@@ -25,9 +47,30 @@ export default function Becarios() {
   const [filtroBeca, setFiltroBeca] = useState('')
   const [filtroFacultad, setFiltroFacultad] = useState('')
   const [filtroHorasFaltantes, setFiltroHorasFaltantes] = useState('')
+  const [filtroHorasCompletadas, setFiltroHorasCompletadas] = useState(null);
+  const [filtroHorasSinCompletar, setFiltroHorasSinCompletar] = useState(false)
+
+  const [actividadesBeca, setActividadesBeca] = useState([])
+  const [inscripcionesActividades, setInscripcionesActividades] = useState([])
+
+  const [openDialog, setOpenDialog] = useState(false)
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true)
+  }
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false)
+  }
+
+  const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
   const classes = useStyles()
 
+  /**
+   * Filtro para el año
+   * @param {*} event 
+   */
   const handleChangeAnio = (event) => {
     const inputValue = event.target.value
     if (inputValue >= 0 || inputValue === '') {
@@ -35,10 +78,18 @@ export default function Becarios() {
     }
   }
 
+  /**
+   * Filtro para el nombre
+   * @param {*} event 
+   */
   const handleChangeNombre = (event) => {
     setFiltroNombre(event.target.value)
   }
 
+  /**
+   * Filtro por carnet
+   * @param {*} event 
+   */
   const handleChangeCarnet = (event) => {
     const inputValue = event.target.value
     if (inputValue >= 0 || inputValue === '') {
@@ -46,6 +97,10 @@ export default function Becarios() {
     }
   }
 
+  /**
+   * Filtro por porcentaje de beca
+   * @param {*} event 
+   */
   const handleChangeBeca = (event) => {
     const inputValue = event.target.value
     if (inputValue >= 0 || inputValue === '') {
@@ -53,10 +108,18 @@ export default function Becarios() {
     }
   }
 
+  /**
+   * Filtro de la facultad de la carrera
+   * @param {*} event 
+   */
   const handleChangeFiltroFacultad = (event) => {
     setFiltroFacultad(event.target.value)
   }
 
+  /**
+   * 
+   * @param {*} event 
+   */
   const handleChangeHorasFaltantes = (event) => {
     const inputValue = event.target.value
     if (inputValue >= 0 || inputValue === '') {
@@ -64,18 +127,77 @@ export default function Becarios() {
     }
   }
 
-  const handleDelete = async (studentId) => {
-    try {
-      const { error } = await supabase.from('becado').delete().eq('id', studentId)
+  const handleChangeHorasCompletadas = (event) => {
+    setFiltroHorasCompletadas(event.target.checked)
+    // Limpia el filtro de horas faltantes cuando se marca "Horas Completadas"
+    setFiltroHorasFaltantes('')
+  }
+  
+  const handleChangeHorasSinCompletar = (event) => {
+    // Invierte el valor del estado de "Horas Completadas"
+    setFiltroHorasSinCompletar(event.target.checked)
+    // Limpia el filtro de horas faltantes cuando se marca "Horas Sin Completar"
+    setFiltroHorasFaltantes('')
+  }
 
-      if (error) {
-        console.error('Error al eliminar el estudiante:', error)
-      } else {
-        setStudentsData((prevData) => prevData.filter((student) => student.id !== studentId))
+  /**
+   * Obtencion de la informacion de la tabla actividad_beca, para poder descargarla
+   */
+  const handleActivityData = async () => {
+    const {data: obtencionActividades, error: errorObtencionActividades} = await supabase
+      .from('actividad_beca')
+      .select('*')
+    
+    setActividadesBeca(obtencionActividades)
+  }
+
+  /**
+   * Obtencion de las inscripciones del año, esto con el fin de poder 
+   * descargar la informacion
+   */
+  const handleInscripcionesData = async () => {
+    const {data: obtencionInscripciones, error: errorObtencionInscripciones } = await supabase
+      .from('inscripcion_actividad')
+      .select('*')
+    setInscripcionesActividades(obtencionInscripciones)    
+  }
+
+  /**
+   * Eliminacion de las actividades e inscripciones que ya han sido acreditadasS
+   */
+  const handleDeleteData = async () => {
+
+    const {data: actividadesBeca, error: errorActividadesBeca } = await supabase
+    .from('actividad_beca')
+    .delete()
+    .eq("acreditada", true)
+
+  const {data: inscripcionesActividades, error: errorInscripcionesActividades} = await supabase
+    .from('inscripcion_actividad')
+    .delete()
+    .eq("acreditada", true)
+  }
+
+  /**
+   * 
+   */
+  const handleUpdateStudentData = async () => {
+    const { data: studentData, error: errorStudentData } = await supabase
+      .from("becado")
+      .select("*")
+
+      for (const student of studentData) {
+        const { horas_realizadas, horas_realizar } = student;
+  
+        // Calcular el excedente de horas
+        const excedenteHoras = Math.max(horas_realizadas - horas_realizar, 0);
+  
+        // Actualizar la columna horas_acumuladas
+        await supabase
+          .from("becado")
+          .update({ horas_acumuladas: excedenteHoras, horas_realizadas: 0 })
+          .eq("id", student.id);
       }
-    } catch (error) {
-      console.error('Error al eliminar el estudiante:', error)
-    }
   }
 
   useEffect(() => {
@@ -86,14 +208,20 @@ export default function Becarios() {
         if (error) {
           console.log('Error fetching data: ', error)
         } else {
-          const filteredData = data.filter((student) => (
-            student.anio.includes(filtroAnio)
-              && student.nombre_estudiante.toLowerCase().includes(filtroNombre.toLowerCase())
-              && student.carnet.includes(filtroCarnet)
-              && (filtroBeca === '' || student.porcentaje_beca.toString().includes(filtroBeca))
-              && (filtroFacultad === '' || student.facultad.toLowerCase().includes(filtroFacultad.toLowerCase()))
-              && (filtroHorasFaltantes === '' || student.horas_acumuladas >= parseInt(filtroHorasFaltantes, 10))
-          ))
+          let filteredData = data
+          if (filtroHorasCompletadas !== null){
+            filteredData = data.filter((student) => (
+              student.anio.includes(filtroAnio)
+                && student.nombre_estudiante.toLowerCase().includes(filtroNombre.toLowerCase())
+                && student.carnet.includes(filtroCarnet)
+                && (filtroBeca === '' || student.porcentaje_beca.toString().includes(filtroBeca))
+                && (filtroFacultad === '' || student.facultad.toLowerCase().includes(filtroFacultad.toLowerCase()))
+                && (filtroHorasFaltantes === '' || student.horas_acumuladas >= parseInt(filtroHorasFaltantes, 10))
+                && (!filtroHorasCompletadas || (student.horas_realizadas >= student.horas_realizar))
+                && (!filtroHorasSinCompletar || (student.horas_realizadas < student.horas_realizar))
+            ))
+          }
+            
           setStudentsData(filteredData)
         }
       } catch (error) {
@@ -101,7 +229,14 @@ export default function Becarios() {
       }
     }
     fetchStudentsData()
-  }, [filtroAnio, filtroNombre, filtroCarnet, filtroBeca, filtroFacultad, filtroHorasFaltantes])
+  }, [filtroAnio,
+    filtroNombre, 
+    filtroCarnet, 
+    filtroBeca, 
+    filtroFacultad, 
+    filtroHorasFaltantes, 
+    filtroHorasCompletadas, 
+    filtroHorasSinCompletar])
 
   return (
     <div>
@@ -172,6 +307,97 @@ export default function Becarios() {
             }}
             sx={{ width: '200px' }}
           />
+          <FormControlLabel 
+            control={<Checkbox checked={filtroHorasCompletadas} />} 
+            label="Horas completadas"
+            onChange={handleChangeHorasCompletadas}
+            sx={{ marginLeft: '40px' }}
+          />
+          <FormControlLabel 
+            control={<Checkbox checked={filtroHorasSinCompletar}/>} 
+            label="Horas sin completar"
+            onChange={handleChangeHorasSinCompletar} 
+            sx={{ marginLeft: '40px' }}
+          />
+          <Button
+            onClick={() => handleOpenDialog()}
+            sx={{...hoverButtons}}
+          >
+            Finalizar Año
+          </Button>
+          <Dialog
+            open={openDialog}
+            onClose={handleCloseDialog}
+            PaperComponent={PaperComponent}
+            aria-labelledby="draggable-dialog-title"
+          >
+            <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+              Confirmar finalización de ciclo.
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                ¿Estás seguro de que desea
+                Finalizar este ciclo estudiantil?
+
+                Esta accion depurara la tabla de actividades e inscripciones que se han 
+                acreditado, para liberar espacio. SE RECOMIENDA DESCARGAR LOS SIGUIENTES
+                ARCHIVOS, estos poseen la informacion de las tablas, segun la etiqueta
+                de cada boton.
+              </DialogContentText>
+              <div className={styles.descargas}>
+                <div>
+                  <CSVLink
+                    data={studentsData}
+                    filename={'becarios.csv'}
+                    className={styles.exportButton}
+                  >
+                    Estudiantes
+                  </CSVLink>  
+                </div>
+                <div>
+                  <CSVLink
+                    data={actividadesBeca}
+                    onClick={() => handleActivityData()}
+                    filename={'actividades.csv'}
+                    className={styles.exportButton}
+                  > 
+                    Actividades
+                  </CSVLink>
+                </div>
+                <div>
+                  <CSVLink
+                    data={inscripcionesActividades}
+                    onClick={() => handleInscripcionesData()}
+                    filename={'inscripciones.csv'}
+                    className={styles.exportButton}
+                  >
+                    Inscripciones
+                  </CSVLink>
+                </div>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                autoFocus
+                sx={{...hoverButtons}}
+                onClick={() => {
+                  handleCloseDialog()
+                  handleDeleteData()
+                  handleUpdateStudentData()
+                }}
+              >
+                Confirmar
+              </Button>
+              <Button
+                sx={hoverCancelButton}
+                autoFocus
+                onClick={handleCloseDialog}
+              >
+                Cancelar
+              </Button>
+            </DialogActions>
+          </Dialog>
+
         </div>
       </Box>
       <div className={styles.data}>
@@ -278,9 +504,19 @@ export default function Becarios() {
                           : classes.redCell
                       }
                     >
+                      {student.horas_realizar - student.horas_realizadas}
+                    </StyledTableCell>
+                    <StyledTableCell
+                      align="center"
+                      className={
+                        student.horas_realizadas >= student.horas_realizar
+                          ? classes.greenCell
+                          : classes.redCell
+                      }
+                    >
                       {student.horas_acumuladas}
                     </StyledTableCell>
-                    <StyledTableCell align="right">
+                    <StyledTableCell align="center">
                       <Link to={`/actualizarEstudiante/${student.id}`}>
                         <IconButton
                           color="primary"

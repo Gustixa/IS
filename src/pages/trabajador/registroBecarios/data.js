@@ -11,6 +11,7 @@ const encabezados = [
   'Porcentaje de Beca',
   'Horas a Realizar',
   'Horas Realizadas',
+  'Horas faltantes',
   'Horas acumuladas',
 ]
 

@@ -71,8 +71,8 @@ export default function ActividadBecario() {
       if (!validacionCampos()) {
 
       } else {
-        // Agregar un nuevo registro en la tabla 'validacion_manuela_actividad'
-        const { dataInscripcion, errorInscripcion } = await supabase
+        // Agregar un nuevo registro en la tabla 'validacion_manual_actividad'
+        const { data: dataInscripcion, error: errorInscripcion } = await supabase
           .from('validacion_manual_actividad')
           .insert([
             {
@@ -83,10 +83,19 @@ export default function ActividadBecario() {
             },
           ])
 
-        const { dataBecado, errorDataBecado } = await supabase
+        const { data: obtencionDataBecado, error: errorObtencionDataBecado} = await supabase
           .from('becado')
           .select('*')
           .eq('correo', correoEstudiante)
+
+
+
+          
+        const { data: dataBecado, error: errorDataBecado } = await supabase
+          .from('becado')
+          .update({})
+          .eq('correo', correoEstudiante)
+          .select()
 
       }
     } catch (error) {
