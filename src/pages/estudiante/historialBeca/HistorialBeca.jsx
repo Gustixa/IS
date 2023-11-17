@@ -150,6 +150,7 @@ export default function HistorialBeca() {
                 </TableHead>
                 <TableBody>
                   <StyledTableRow>
+                    <StyledTableCell align="center">{Math.abs(dataEstudianteBecado[0].horas_acumuladas)}</StyledTableCell>
                     <StyledTableCell align="center">{dataEstudianteBecado[0].horas_realizar}</StyledTableCell>
                     <StyledTableCell align="center">
                       {dataEstudianteBecado[0].horas_realizadas}
