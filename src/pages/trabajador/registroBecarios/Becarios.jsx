@@ -10,6 +10,13 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
+
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
+
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import IconButton from '@mui/material/IconButton'
@@ -19,7 +26,18 @@ import SideBar from '@components/sideBar'
 import { supabase } from '@db-supabase/supabase.config'
 import styles from './Becarios.module.css'
 import encabezados from './data'
-import { StyledTableCell, StyledTableRow, useStyles } from './muiStylesBecario'
+import { StyledTableCell, 
+    StyledTableRow, 
+    useStyles, 
+    hoverButtons, 
+    hoverCancelButton } from './muiStylesBecario'
+
+
+function PaperComponent(props) {
+  return (
+    <Paper {...props} />
+  )
+}
 
 export default function Becarios() {
   const [studentsData, setStudentsData] = useState([])
@@ -31,6 +49,19 @@ export default function Becarios() {
   const [filtroHorasFaltantes, setFiltroHorasFaltantes] = useState('')
   const [filtroHorasCompletadas, setFiltroHorasCompletadas] = useState(null);
   const [filtroHorasSinCompletar, setFiltroHorasSinCompletar] = useState(false)
+
+  const [actividadesBeca, setActividadesBeca] = useState([])
+  const [inscripcionesActividades, setInscripcionesActividades] = useState([])
+
+  const [openDialog, setOpenDialog] = useState(false)
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true)
+  }
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false)
+  }
 
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
@@ -107,6 +138,66 @@ export default function Becarios() {
     setFiltroHorasSinCompletar(event.target.checked)
     // Limpia el filtro de horas faltantes cuando se marca "Horas Sin Completar"
     setFiltroHorasFaltantes('')
+  }
+
+  /**
+   * Obtencion de la informacion de la tabla actividad_beca, para poder descargarla
+   */
+  const handleActivityData = async () => {
+    const {data: obtencionActividades, error: errorObtencionActividades} = await supabase
+      .from('actividad_beca')
+      .select('*')
+    
+    setActividadesBeca(obtencionActividades)
+  }
+
+  /**
+   * Obtencion de las inscripciones del año, esto con el fin de poder 
+   * descargar la informacion
+   */
+  const handleInscripcionesData = async () => {
+    const {data: obtencionInscripciones, error: errorObtencionInscripciones } = await supabase
+      .from('inscripcion_actividad')
+      .select('*')
+    setInscripcionesActividades(obtencionInscripciones)    
+  }
+
+  /**
+   * Eliminacion de las actividades e inscripciones que ya han sido acreditadasS
+   */
+  const handleDeleteData = async () => {
+
+    const {data: actividadesBeca, error: errorActividadesBeca } = await supabase
+    .from('actividad_beca')
+    .delete()
+    .eq("acreditada", true)
+
+  const {data: inscripcionesActividades, error: errorInscripcionesActividades} = await supabase
+    .from('inscripcion_actividad')
+    .delete()
+    .eq("acreditada", true)
+  }
+
+  /**
+   * 
+   */
+  const handleUpdateStudentData = async () => {
+    const { data: studentData, error: errorStudentData } = await supabase
+      .from("becado")
+      .select("*")
+
+      for (const student of studentData) {
+        const { horas_realizadas, horas_realizar } = student;
+  
+        // Calcular el excedente de horas
+        const excedenteHoras = Math.max(horas_realizadas - horas_realizar, 0);
+  
+        // Actualizar la columna horas_acumuladas
+        await supabase
+          .from("becado")
+          .update({ horas_acumuladas: excedenteHoras, horas_realizadas: 0 })
+          .eq("id", student.id);
+      }
   }
 
   useEffect(() => {
@@ -229,16 +320,84 @@ export default function Becarios() {
             sx={{ marginLeft: '40px' }}
           />
           <Button
-            
+            onClick={() => handleOpenDialog()}
+            sx={{...hoverButtons}}
           >
-            <CSVLink
-                data={studentsData}
-                filename={'becarios.csv'}
-                className={styles.exportButton}
+            Finalizar Año
+          </Button>
+          <Dialog
+            open={openDialog}
+            onClose={handleCloseDialog}
+            PaperComponent={PaperComponent}
+            aria-labelledby="draggable-dialog-title"
+          >
+            <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+              Confirmar finalización de ciclo.
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                ¿Estás seguro de que desea
+                Finalizar este ciclo estudiantil?
+
+                Esta accion depurara la tabla de actividades e inscripciones que se han 
+                acreditado, para liberar espacio. SE RECOMIENDA DESCARGAR LOS SIGUIENTES
+                ARCHIVOS, estos poseen la informacion de las tablas, segun la etiqueta
+                de cada boton.
+              </DialogContentText>
+              <div className={styles.descargas}>
+                <div>
+                  <CSVLink
+                    data={studentsData}
+                    filename={'becarios.csv'}
+                    className={styles.exportButton}
+                  >
+                    Estudiantes
+                  </CSVLink>  
+                </div>
+                <div>
+                  <CSVLink
+                    data={actividadesBeca}
+                    onClick={() => handleActivityData()}
+                    filename={'actividades.csv'}
+                    className={styles.exportButton}
+                  > 
+                    Actividades
+                  </CSVLink>
+                </div>
+                <div>
+                  <CSVLink
+                    data={inscripcionesActividades}
+                    onClick={() => handleInscripcionesData()}
+                    filename={'inscripciones.csv'}
+                    className={styles.exportButton}
+                  >
+                    Inscripciones
+                  </CSVLink>
+                </div>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                autoFocus
+                sx={{...hoverButtons}}
+                onClick={() => {
+                  handleCloseDialog()
+                  handleDeleteData()
+                  handleUpdateStudentData()
+                }}
               >
-                Exportar a CSV
-              </CSVLink>
-            </Button>
+                Confirmar
+              </Button>
+              <Button
+                sx={hoverCancelButton}
+                autoFocus
+                onClick={handleCloseDialog}
+              >
+                Cancelar
+              </Button>
+            </DialogActions>
+          </Dialog>
+
         </div>
       </Box>
       <div className={styles.data}>
