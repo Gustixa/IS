@@ -158,8 +158,8 @@ export default function HistorialBeca() {
                       {dataEstudianteBecado[0].horas_realizadas}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {dataEstudianteBecado[0].horas_realizar - dataEstudianteBecado[0].horas_realizadas + dataEstudianteBecado[0].horas_faltantes > 0
-                        ? dataEstudianteBecado[0].horas_realizar - dataEstudianteBecado[0].horas_realizadas + dataEstudianteBecado[0].horas_faltantes
+                      {dataEstudianteBecado[0].horas_realizar - dataEstudianteBecado[0].horas_realizadas > 0
+                        ? dataEstudianteBecado[0].horas_realizar - dataEstudianteBecado[0].horas_realizadas 
                         : 0}
                     </StyledTableCell>
                   </StyledTableRow>

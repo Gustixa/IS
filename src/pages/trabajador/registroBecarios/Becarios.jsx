@@ -190,16 +190,17 @@ export default function Becarios() {
         const { horas_realizadas, horas_realizar, horas_faltantes, horas_acumuladas } = student;
   
         // Calcular el excedente de horas
-        const excedenteHoras = Math.max(horas_realizadas - horas_realizar, 0);
+        const excedenteHoras = horas_acumuladas + Math.max(horas_realizadas - horas_realizar, 0);
         const horasIncompletas = horas_faltantes + Math.max( horas_realizar - horas_realizadas, 0);
-        const horasRealizarSiguienteCiclo = horas_realizar - excedenteHoras + horasIncompletas
+        const horasRealizarSiguienteCiclo = horas_realizar
+        
         // Actualizar la columna horas_acumuladas
         await supabase
           .from("becado")
           .update({ acumulado_anual: excedenteHoras, horas_realizadas: 0, 
             horas_faltantes: horasIncompletas, 
             horas_realizar: horasRealizarSiguienteCiclo,
-            horas_acumuladas: 0 })
+            horas_acumuladas: excedenteHoras })
           .eq("id", student.id);
       }
   }
