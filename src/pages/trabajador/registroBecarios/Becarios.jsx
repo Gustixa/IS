@@ -1,3 +1,11 @@
+/**
+ * Este pagina, sirve para mostrarle la tabla de los estudiantes a los
+ * administradores, en este caso, se presenta el tema de tener los estudiantes
+ * con horas completadas e incompletas. Poder hacer filtro por nombre, carnet, carrera
+ * etc. Asi mismo, se da la posibilidad de finalizar el ciclo de estudio, Esto con
+ * el fin de llevar el registro automaticamente.
+ */
+
 import React, { useState, useEffect } from 'react'
 import { CSVLink } from 'react-csv'
 import CircularProgress from '@mui/material/CircularProgress'
