@@ -186,7 +186,8 @@ export default function Becarios() {
       .from('becado')
       .select('*')
 
-    for (const student of studentData) {
+    // Utiliza Promise.all para realizar todas las actualizaciones de forma concurrente
+    await Promise.all(studentData.map(async (student) => {
       const {
         horas_realizadas, horas_realizar, horas_faltantes, horas_acumuladas,
       } = student
@@ -197,7 +198,7 @@ export default function Becarios() {
       const horasRealizarSiguienteCiclo = horas_realizar
 
       // Actualizar la columna horas_acumuladas
-      await supabase
+      return supabase
         .from('becado')
         .update({
           acumulado_anual: excedenteHoras,
@@ -207,7 +208,7 @@ export default function Becarios() {
           horas_acumuladas: excedenteHoras,
         })
         .eq('id', student.id)
-    }
+    }))
   }
 
   useEffect(() => {
